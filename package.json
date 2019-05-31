@@ -67,6 +67,7 @@
         "eslint-plugin-react": "^7.13.0",
         "eslint-plugin-react-hooks": "^1.6.0",
         "eslint-plugin-vue": "^5.0.0",
+        "nodemon": "^1.19.1",
         "prettier": "^1.17.1",
         "pretty-quick": "^1.11.0",
         "sass": "^1.18.0",
