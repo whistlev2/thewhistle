@@ -1,0 +1,4 @@
+node_modules
+server-prod
+server/public
+vue.config.js

@@ -1,0 +1,32 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "module": "esnext",
+        "strict": true,
+        "jsx": "preserve",
+        "allowJs": true,
+        "noEmit": true,
+        "importHelpers": true,
+        "moduleResolution": "node",
+        "experimentalDecorators": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "isolatedModules": false,
+        "sourceMap": true,
+        "noImplicitThis": true,
+        "baseUrl": ".",
+        "types": ["node", "webpack-env", "vuetify", "mocha", "chai"],
+        "paths": {
+            "*": ["types/*"],
+            "@/*": ["src/*"]
+        },
+        "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+    },
+    "include": [
+        "server/**/*.ts",
+        "src/**/*.ts",
+        "src/**/*.vue",
+        "tests/**/*.ts"
+    ],
+    "exclude": ["node_modules"]
+}
