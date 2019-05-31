@@ -74,3 +74,6 @@ The production server can then start by running
 ```
 npm start
 ```
+
+## Deployment
+Pushes to master automatically deploy the staging app to Heroku, pending the tests passing on CircleCI.
