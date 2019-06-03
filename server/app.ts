@@ -21,14 +21,8 @@ app.use(cookieParser());
 app.use(subdomain('api', apiRouter));
 app.use(express.static(path.join(__dirname, '/public/')));
 
-// app.get(/.*/, (req: Request, res: Response): void =>
-//     res.sendFile(__dirname + '/public/index.html'));
-
-
-// app.get(/.*/, (req: Request, res: Response): void => {
-//   console.log("********CALLED ROUTER*************");
-//   res.sendFile(__dirname + '/public/tst.html');
-// });
+app.get(/.*/, (req: Request, res: Response): void =>
+    res.sendFile(__dirname + '/public/index.html'));
 
 
 module.exports = app;
