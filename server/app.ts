@@ -7,6 +7,8 @@ import cors from 'cors';
 
 import { Request, Response } from 'express';
 
+const db = require('./queries');
+
 var apiRouter = require('./routes/api').default;
 
 var app = express();
@@ -19,7 +21,14 @@ app.use(cookieParser());
 app.use(subdomain('api', apiRouter));
 app.use(express.static(path.join(__dirname, '/public/')));
 
-app.get(/.*/, (req: Request, res: Response): void =>
-    res.sendFile(__dirname + '/public/index.html'));
+// app.get(/.*/, (req: Request, res: Response): void =>
+//     res.sendFile(__dirname + '/public/index.html'));
+
+
+// app.get(/.*/, (req: Request, res: Response): void => {
+//   console.log("********CALLED ROUTER*************");
+//   res.sendFile(__dirname + '/public/tst.html');
+// });
+
 
 module.exports = app;
