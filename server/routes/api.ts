@@ -2,7 +2,11 @@ var Router = require('express').Router;
 var router = Router();
 import { Request, Response, NextFunction } from 'express';
 
+<<<<<<< HEAD
 import { getSurveys, getReports, saveTypeformResponse } from '../queries';
+=======
+import { getResponses, getForm } from '../interfaces/typeform'
+>>>>>>> add get form structure call
 
 import { getResponses, getForm } from '../interfaces/typeform'
 /* GET home page. */
@@ -41,8 +45,11 @@ router.get('/form', function(req: Request, res: Response, next: NextFunction): v
     getForm('Bks8di', res)
 });
 
+<<<<<<< HEAD
 
 
 
 
+=======
+>>>>>>> add get form structure call
 export default router;
