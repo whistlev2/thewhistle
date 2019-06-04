@@ -4,6 +4,7 @@ import { Request, Response, NextFunction } from 'express';
 
 import { getSurveys, getReports, saveTypeformResponse } from '../queries';
 
+import { getResponses, getForm } from '../interfaces/typeform'
 /* GET home page. */
 router.get('/test', function(
     _req: Request,
@@ -31,6 +32,17 @@ router.post('/response', function(
   saveTypeformResponse(req.body.form_response);
   res.send([]);
 });
+
+router.get('/responses', function(req: Request, res: Response, next: NextFunction): void {
+    getResponses('Bks8di', res)
+});
+
+router.get('/form', function(req: Request, res: Response, next: NextFunction): void {
+    getForm('Bks8di', res)
+});
+
+
+
 
 
 export default router;
