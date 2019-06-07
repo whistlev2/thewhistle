@@ -47,6 +47,7 @@ class App extends Vue {
         axios
             .get(url)
             .then(response => {
+                console.log(response);
                 this.setApiData(response.data);
             })
             .catch(err => {

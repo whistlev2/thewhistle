@@ -77,3 +77,16 @@ npm start
 
 ## Deployment
 Pushes to master automatically deploy the staging app to Heroku, pending the tests passing on CircleCI.
+
+## Database
+Make sure `db-migrate` is installed.  `npm -g install db-migrate`
+then (where database name is `testDB`)  
+```
+db-migrate db:create thewhistle
+```
+
+Creating a migration
+
+```
+db-migrate create initial-migration
+```

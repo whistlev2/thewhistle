@@ -7,6 +7,8 @@ import cors from 'cors';
 
 import { Request, Response } from 'express';
 
+const db = require('./queries');
+
 var apiRouter = require('./routes/api').default;
 
 var app = express();
@@ -21,5 +23,6 @@ app.use(express.static(path.join(__dirname, '/public/')));
 
 app.get(/.*/, (req: Request, res: Response): void =>
     res.sendFile(__dirname + '/public/index.html'));
+
 
 module.exports = app;
