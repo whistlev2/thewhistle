@@ -1,34 +1,33 @@
 <template>
     <v-data-table :headers="getTableHeaders()" :items="reports">
         <template v-slot:items="props">
-        <td>{{ props.item.id }}</td>
-        <td>{{ props.item.name }}</td>
-        <td>{{ props.item.date }}</td>
-      </template>
+            <td>{{ props.item.id }}</td>
+            <td>{{ props.item.name }}</td>
+            <td>{{ props.item.date }}</td>
+        </template>
     </v-data-table>
 </template>
 
 <script lang="ts">
 import axios from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
-@Component({
-})
+@Component({})
 class App extends Vue {
     reports: object[] = [];
     tableHeaders: object[] = [
         {
             text: 'ID',
-            value: 'id',
+            value: 'id'
         },
         {
             text: 'Name',
-            value: 'name',
+            value: 'name'
         },
         {
             text: 'Date',
-            value: 'date',
-        },
-    ]
+            value: 'date'
+        }
+    ];
     getReports(): object[] {
         return this.reports;
     }
@@ -39,7 +38,8 @@ class App extends Vue {
         return this.tableHeaders;
     }
     mounted() {
-        const url = 'http://api.' + process.env.VUE_APP_SERVER_DOMAIN + '/reports';
+        const url =
+            'http://api.' + process.env.VUE_APP_SERVER_DOMAIN + '/reports';
         axios
             .get(url)
             .then(response => {

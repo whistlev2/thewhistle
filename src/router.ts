@@ -20,14 +20,12 @@ export default new Router({
         {
             path: '/forms',
             name: 'forms',
-            component: (): Promise<any> => //TODO: Make this type more specific
-                import('./views/Forms.vue') //Lazy load component
+            component: (): Promise<any> => import('./views/Forms.vue') //TODO: Make this type more specific //Lazy load component
         },
         {
             path: '/users',
             name: 'users',
-            component: (): Promise<any> => //TODO: Make this type more specific
-                import('./views/Users.vue') //Lazy load component
-        },
+            component: (): Promise<any> => import('./views/Users.vue') //TODO: Make this type more specific //Lazy load component
+        }
     ]
 });

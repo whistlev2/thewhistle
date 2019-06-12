@@ -1,7 +1,7 @@
 <template>
     <v-app>
         <v-toolbar tabs color="#033549" dark dense class="hidden-sm-and-down">
-            <img src="logo.png"/>
+            <img src="logo.png" />
             <v-spacer></v-spacer>
             <v-toolbar-items>
                 <v-tabs color="transparent">
@@ -13,7 +13,7 @@
             </v-toolbar-items>
         </v-toolbar>
         <v-toolbar tabs color="#033549" dark dense class="hidden-md-and-up">
-            <img src="logo.png"/>
+            <img src="logo.png" />
             <v-spacer></v-spacer>
             <v-toolbar-items>
                 <v-tabs color="transparent">
@@ -24,7 +24,6 @@
                 </v-tabs>
             </v-toolbar-items>
         </v-toolbar>
-        <router-view>
-        </router-view>
+        <router-view> </router-view>
     </v-app>
 </template>
