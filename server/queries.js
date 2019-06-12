@@ -32,7 +32,21 @@ const getReports = (req, res) => {
     res.json(ret);
 };
 
+function saveTypeformResponse(data) {
+  console.log(data);
+  const query = 'INSERT INTO rawresponse(response_json) VALUES($1)'
+  const values = [data]
+  pool.query(query, values, (error, results) => {
+      if (error) {
+          console.log(error);
+      }
+      console.log(results)
+  });
+}
+
+
 module.exports = {
     getSurveys,
-    getReports
+    getReports,
+    saveTypeformResponse
 };

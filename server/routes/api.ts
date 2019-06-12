@@ -2,7 +2,7 @@ var Router = require('express').Router;
 var router = Router();
 import { Request, Response, NextFunction } from 'express';
 
-import { getSurveys, getReports } from '../queries';
+import { getSurveys, getReports, saveTypeformResponse } from '../queries';
 
 /* GET home page. */
 router.get('/test', function(
@@ -28,7 +28,7 @@ router.post('/response', function(
     res: Response,
     next: NextFunction
 ): void {
-  console.log(req.body.form_response);
+  saveTypeformResponse(req.body.form_response);
   res.send([]);
 });
 

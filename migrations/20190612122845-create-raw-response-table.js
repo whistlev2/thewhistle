@@ -16,9 +16,9 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function(db, callback) {
     db.createTable(
-        'raw-response',
+        'rawresponse',
         {
-            id: { type: 'int', primaryKey: true },
+            id: { type: 'int', primaryKey: true, autoIncrement: true },
             response_json: 'json'
         },
         callback
@@ -26,7 +26,7 @@ exports.up = function(db, callback) {
 };
 
 exports.down = function(db, callback) {
-    db.dropTable('raw-response', callback);
+    db.dropTable('rawresponse', callback);
 };
 
 exports._meta = {
