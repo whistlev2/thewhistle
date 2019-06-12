@@ -23,4 +23,14 @@ router.get('/db', function(
 
 router.get('/reports', getReports);
 
+router.post('/response', function(
+    req: Request,
+    res: Response,
+    next: NextFunction
+): void {
+  console.log(req.body.form_response);
+  res.send([]);
+});
+
+
 export default router;

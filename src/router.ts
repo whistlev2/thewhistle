@@ -18,6 +18,11 @@ export default new Router({
             component: Reports
         },
         {
+            path: '/survey/:id',
+            name: 'survey',
+            component: (): Promise<any> => import('./views/Survey.vue')
+        },
+        {
             path: '/forms',
             name: 'forms',
             component: (): Promise<any> => import('./views/Forms.vue') //TODO: Make this type more specific //Lazy load component
