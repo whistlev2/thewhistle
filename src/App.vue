@@ -1,60 +1,30 @@
 <template>
     <v-app>
-        <v-toolbar app>
-            <v-toolbar-title class="headline text-uppercase">
-                <span>Vuetify</span>
-                <span class="font-weight-light">{{ apiData }} DESIGN</span>
-            </v-toolbar-title>
+        <v-toolbar tabs color="#033549" dark dense class="hidden-sm-and-down">
+            <img src="logo.png"/>
             <v-spacer></v-spacer>
-            <v-btn
-                flat
-                href="https://github.com/vuetifyjs/vuetify/releases/latest"
-                target="_blank"
-            >
-                <span class="mr-2">Latest Release</span>
-            </v-btn>
+            <v-toolbar-items>
+                <v-tabs color="transparent">
+                    <v-tab to="/reports">Reports</v-tab>
+                    <v-tab to="/forms">Forms</v-tab>
+                    <v-tab to="/users">Users</v-tab>
+                    <v-tab to="logout">Logout</v-tab>
+                </v-tabs>
+            </v-toolbar-items>
         </v-toolbar>
-
-        <v-content>
-            <HelloWorld />
-        </v-content>
+        <v-toolbar tabs color="#033549" dark dense class="hidden-md-and-up">
+            <img src="logo.png"/>
+            <v-spacer></v-spacer>
+            <v-toolbar-items>
+                <v-tabs color="transparent">
+                    <v-tab to="/reports"><v-icon>list_alt</v-icon></v-tab>
+                    <v-tab to="/forms"><v-icon>edit</v-icon></v-tab>
+                    <v-tab to="/users"><v-icon>person</v-icon></v-tab>
+                    <v-tab to="logout"><v-icon>exit_to_app</v-icon></v-tab>
+                </v-tabs>
+            </v-toolbar-items>
+        </v-toolbar>
+        <router-view>
+        </router-view>
     </v-app>
 </template>
-
-<script lang="ts">
-import HelloWorld from './components/HelloWorld.vue';
-import axios from 'axios';
-import { Component, Vue } from 'vue-property-decorator';
-
-@Component({
-    components: {
-        HelloWorld,
-    },
-})
-class App extends Vue {
-    apiData: string = '';
-
-    getApiData(): string {
-        return this.apiData;
-    }
-
-    setApiData(apiData: string): void {
-        this.apiData = apiData;
-    }
-
-    mounted() {
-        const url = 'http://api.' + process.env.VUE_APP_SERVER_DOMAIN + '/test';
-        axios
-            .get(url)
-            .then(response => {
-                console.log(response);
-                this.setApiData(response.data);
-            })
-            .catch(err => {
-                console.error(err);
-            });
-    }
-}
-export default App;
-
-</script>
