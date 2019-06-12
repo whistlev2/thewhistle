@@ -18,18 +18,12 @@ const getSurveys = (request, response) => {
 };
 
 const getReports = (req, res) => {
-    const ret = [
-        {
-            id: 'a',
-            name: 'tom',
-            date: 'today'
-        },
-        {
-            id: 'b',
-            name: 'louis'
-        }
-    ];
-    res.json(ret);
+  pool.query('SELECT * FROM rawresponse ORDER BY id ASC', (error, results) => {
+      if (error) {
+          throw error;
+      }
+      res.json(results.rows);
+  });
 };
 
 function saveTypeformResponse(data) {

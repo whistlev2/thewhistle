@@ -2,8 +2,8 @@
     <v-data-table :headers="getTableHeaders()" :items="reports">
         <template v-slot:items="props">
             <td>{{ props.item.id }}</td>
-            <td>{{ props.item.name }}</td>
-            <td>{{ props.item.date }}</td>
+            <td>{{ props.item.response_json }}</td>
+            <!-- <td>{{ props.item.date }}</td> -->
         </template>
     </v-data-table>
 </template>
@@ -22,10 +22,6 @@ class App extends Vue {
         {
             text: 'Name',
             value: 'name'
-        },
-        {
-            text: 'Date',
-            value: 'date'
         }
     ];
     getReports(): object[] {
