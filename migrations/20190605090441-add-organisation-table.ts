@@ -15,18 +15,15 @@ exports.setup = function(options: any, seedLink: any) {
 };
 
 exports.up = function(db: any, callback: any) {
-    db.createTable(
-        'ts',
-        {
-            id: { type: 'int', primaryKey: true },
-            name: 'string'
-        },
-        callback
-    );
+  db.createTable('organisations', {
+    id: { type: 'int', primaryKey: true },
+    name: 'string',
+    active: 'boolean',
+  }, callback);
 };
 
 exports.down = function(db: any, callback: any) {
-    db.dropTable('ts', callback);
+  db.dropTable('organisations', callback);
 };
 
 exports._meta = {
