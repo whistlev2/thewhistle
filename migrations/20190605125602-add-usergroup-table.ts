@@ -16,7 +16,7 @@ exports.setup = function(options: any, seedLink: any) {
 
 exports.up = function(db: any, callback: any) {
   db.createTable('usergroups', {
-    id: { type: 'int', primaryKey: true },
+    id: { type: 'int', primaryKey: true, autoIncrement: true },
     user_id: 'int',
     group_id: 'int'
   }, addUserForeignKey);
