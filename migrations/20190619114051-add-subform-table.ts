@@ -9,15 +9,16 @@ var seed;
   * This enables us to not have to rely on NODE_PATH.
   */
   exports.up = function(db: any, callback: any) {
-    db.createTable('subform', {
-      id: { type: 'int', primaryKey: true, autoIncrement: true },      
+    db.createTable('subforms', {
+      id: { type: 'int', primaryKey: true, autoIncrement: true },
       typeform_id: 'string',
+      form_json: 'json',
       timestamp: 'timestamp'
     }, callback);
   };
 
   exports.down = function(db: any, callback: any) {
-    db.dropTable('subform', callback);
+    db.dropTable('subforms', callback);
   };
 
 exports._meta = {
