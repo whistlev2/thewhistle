@@ -27,32 +27,4 @@ export function getResponses(form: string, res: Response) {
   request.get(url, bearer, function (error, response, body){
     res.json(body);
   })
-
-}
-
-
-export function oldgetResponses(form: string, response: Response) {
-  const options = {
-    hostname: TYPEFORM_API_BASE_URL,
-    port: 443,
-    path: `/forms/${form}/responses`,
-    method: 'GET',
-    headers: {
-      'Authorization': "Bearer " + ACCESS_TOKEN,
-      'Accept': 'application/json'
-    }
-  }
-
-  const req = https.request(options, (res) => {
-    console.log(`statusCode: ${res.statusCode}`)
-    res.on('data', (d) => {
-      process.stdout.write(d)
-    })
-  })
-
-  req.on('error', (error) => {
-    console.error(error)
-  })
-
-  req.end()
 }

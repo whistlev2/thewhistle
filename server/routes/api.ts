@@ -33,11 +33,19 @@ router.post('/response', function(
   res.send([]);
 });
 
-router.get('/responses', function(req: Request, res: Response, next: NextFunction): void {
+router.get('/responses', function(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void {
     getResponses('Bks8di', res)
 });
 
-router.get('/form', function(req: Request, res: Response, next: NextFunction): void {
+router.get('/form', function(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void {
     getForm('Bks8di', res)
 });
 
