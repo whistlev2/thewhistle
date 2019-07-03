@@ -38,7 +38,7 @@ router.get('/responses', function(
   res: Response,
   next: NextFunction
 ): void {
-    getResponses('Bks8di', res)
+    getResponses('nYkngh', res)
 });
 
 router.get('/form', function(
@@ -46,7 +46,7 @@ router.get('/form', function(
   res: Response,
   next: NextFunction
 ): void {
-    getForm('Bks8di', res)
+    getForm('nYkngh', res)
 });
 
 export default router;
