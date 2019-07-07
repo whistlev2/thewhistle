@@ -31,6 +31,11 @@ export default new Router({
             path: '/users',
             name: 'users',
             component: (): Promise<any> => import('./views/Users.vue') //TODO: Make this type more specific //Lazy load component
+        },
+        {
+            path: '/report/:id',
+            name: 'report',
+            component: (): Promise<any> => import('./views/Report.vue')
         }
     ]
 });

@@ -1,9 +1,11 @@
 <template>
     <v-data-table :headers="getTableHeaders()" :items="tableRows">
         <template v-slot:items="props">
-            <td v-for="header in getTableHeaders()" :key="header.value">
-                {{ props.item[header.value] }}
-            </td>
+            <router-link tag="tr" :to="getReportPath(props.item.id)">
+                <td v-for="header in getTableHeaders()" :key="header.value">
+                    {{ props.item[header.value] }}
+                </td>
+            </router-link>
         </template>
     </v-data-table>
 </template>
@@ -50,6 +52,7 @@ class App extends Vue {
         let rows = [];
         for (let rowIndex = 0; rowIndex < this.reports.length; rowIndex++) {
             let row = {};
+            row.id = this.reports[rowIndex].form_id; //TODO: Define types
             let answers = this.reports[rowIndex].answers; //TODO: Define type
             for (let columnIndex = 0; columnIndex < answers.length; columnIndex++) {
                 let key = answers[columnIndex].field.id;
@@ -74,6 +77,10 @@ class App extends Vue {
             .catch(err => {
                 console.error(err);
             });
+    }
+
+    getReportPath(id: string): string {
+        return '/report/' + id;
     }
 }
 export default App;
