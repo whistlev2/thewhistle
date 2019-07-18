@@ -18,7 +18,7 @@ class RawResponse {
             if (error) {
                 throw error;
             }
-            let ret = this.processJson(results.rows);
+            let ret = RawResponse.processJson(results.rows);
             res.json(ret);
         });
     }
