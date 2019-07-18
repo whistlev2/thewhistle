@@ -7,7 +7,7 @@ import cors from 'cors';
 
 import { Request, Response } from 'express';
 
-const db = require('./queries');
+const db = require('./db');
 
 var apiRouter = require('./routes/api').default;
 
