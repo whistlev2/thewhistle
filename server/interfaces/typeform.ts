@@ -11,22 +11,25 @@ const ACCESS_TOKEN = "5RZ4iZoAyrcRZyxdQzxDTDRnxM48iZw4RabZ2i2joJbv"
 //
 
 const bearer = {
-'auth': {
-  'bearer': ACCESS_TOKEN
+    'auth': {
+        'bearer': ACCESS_TOKEN
+    }
 }
+class Typeform {
+    
+    private static jsonCallback(error, response, body){
+        res.json(body);
+    }
+
+    static getForm(form: string, res: Response) {
+        const url = `https://${TYPEFORM_API_BASE_URL}/forms/${form}`;
+        request.get(url, bearer, this.jsonCallback);
+    }
+
+    static getResponses(form: string, res: Response) {
+        const url = `https://${TYPEFORM_API_BASE_URL}/forms/${form}/responses`;
+        request.get(url, bearer, this.jsonCallback);
+    }
 }
 
-export function getForm(form: string, res: Response) {
-  const url = `https://${TYPEFORM_API_BASE_URL}/forms/${form}`
-  request.get(url, bearer, function (error, response, body){
-    res.json(body);
-  })
-}
-
-
-export function getResponses(form: string, res: Response) {
-  const url = `https://${TYPEFORM_API_BASE_URL}/forms/${form}/responses`
-  request.get(url, bearer, function (error, response, body){
-    res.json(body);
-  })
-}
+export default Typeform;

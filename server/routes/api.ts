@@ -3,7 +3,7 @@ var router = Router();
 import { Request, Response, NextFunction } from 'express';
 
 import { getSurveys, getReports, saveTypeformResponse } from '../queries';
-import { getResponses, getForm } from '../interfaces/typeform'
+import Typeform from '../interfaces/typeform'
 
 /* GET home page. */
 router.get('/test', function(
@@ -38,7 +38,7 @@ router.get('/responses', function(
   res: Response,
   next: NextFunction
 ): void {
-    getResponses('nYkngh', res)
+    Typeform.getResponses('nYkngh', res)
 });
 
 router.get('/form', function(
@@ -46,7 +46,7 @@ router.get('/form', function(
   res: Response,
   next: NextFunction
 ): void {
-    getForm('nYkngh', res)
+    Typeform.getForm('nYkngh', res)
 });
 
 export default router;
