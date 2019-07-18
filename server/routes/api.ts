@@ -2,7 +2,7 @@ var Router = require('express').Router;
 var router = Router();
 import { Request, Response, NextFunction } from 'express';
 import Surveys from '../queries/surveys';
-import Rawresponse from '../queries/rawresponse';
+import RawResponse from '../queries/rawresponse';
 import Typeform from '../interfaces/typeform'
 
 /* GET home page. */
@@ -22,14 +22,14 @@ router.get('/db', function(
     Surveys.getAll(req, res);
 }); //TODO: Simplify syntax
 
-router.get('/reports', Rawresponse.get);
+router.get('/reports', RawResponse.get);
 
 router.post('/response', function(
     req: Request,
     res: Response,
     next: NextFunction
 ): void {
-  Rawresponse.insertResponse(req.body.form_response);
+  RawResponse.insertResponse(req.body.form_response);
   res.send([]);
 });
 
