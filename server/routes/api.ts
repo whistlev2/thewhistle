@@ -2,6 +2,7 @@ var Router = require('express').Router;
 var router = Router();
 import { Request, Response, NextFunction } from 'express';
 import Surveys from '../queries/surveys';
+import SimpleSurveys from '../queries/simpleSurveys';
 import RawResponse from '../queries/rawresponse';
 import Typeform from '../interfaces/typeform'
 
@@ -48,5 +49,14 @@ router.get('/form', function(
 ): void {
     Typeform.getForm('nYkngh', res)
 });
+
+router.post('/store', function(
+    req: Request,
+    res: Response,
+    next: NextFunction
+): void {
+  SimpleSurveys.store(req, res)  
+});
+
 
 export default router;
