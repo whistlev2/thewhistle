@@ -1,10 +1,7 @@
 var _ = require('underscore');
 
-export default function(context) {
-    console.log(context);
-    //console.log(getSurvey().fields);
-    // _.each(getTestSurvey().fields, console.log)
-    context.survey = _.each(getTestSurvey().fields, function(item) {
+export default function LoadSimpleSurvey({ next, router }) {
+    var formData = _.each(getTestSurvey().fields, function(item) {
         var tmpItem = item;
 
         tmpItem.field_title = '' + item.id + '_' + item.title;
@@ -19,10 +16,12 @@ export default function(context) {
                 }
             );
         }
-        return tmpItem;
+        return tmpItem
     });
-    console.log(context.survey);
-    return context;
+
+
+    router.formDat = formData;
+    return next();
 }
 
 function getSurvey() {

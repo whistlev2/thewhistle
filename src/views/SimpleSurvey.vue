@@ -88,20 +88,12 @@
 
 <script>
 export default {
-    asyncData(context) {
-        console.log(context);
-        // called every time before loading the component
-        // as the name said, it can be async
-        // Also, the returned object will be merged with your data object
-        // console.log(context)
-        return { survey: context.survey };
-    },
-    fetch() {
-        // The `fetch` method is used to fill the store before rendering the page
-    },
-    head() {
-        // Set Meta Tags for this Page
+  name: `simplesurvey`,
+  data() {
+    var dat = this.$root.$router.formDat;
+    return {
+      survey: dat
     }
-    // and more functionality to discover
+  }
 };
 </script>
