@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Reports from './views/Reports.vue';
 
-import LoadSimpleSurvey from './middleware/LoadSimpleSurvey.js'
+import LoadSimpleSurvey from './middleware/LoadSimpleSurvey.js';
 
 Vue.use(Router);
 
@@ -29,7 +29,7 @@ export default new Router({
             name: 'simplesurvey',
             component: (): Promise<any> => import('./views/SimpleSurvey.vue'),
             meta: {
-              middleware: LoadSimpleSurvey
+                middleware: LoadSimpleSurvey
             }
         },
         {

@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from 'express';
 import Surveys from '../queries/surveys';
 import SimpleSurveys from '../queries/simpleSurveys';
 import RawResponse from '../queries/rawresponse';
-import Typeform from '../interfaces/typeform'
+import Typeform from '../interfaces/typeform';
 
 /* GET home page. */
 router.get('/test', function(
@@ -30,24 +30,24 @@ router.post('/response', function(
     res: Response,
     next: NextFunction
 ): void {
-  RawResponse.insertResponse(req.body.form_response);
-  res.send([]);
+    RawResponse.insertResponse(req.body.form_response);
+    res.send([]);
 });
 
 router.get('/responses', function(
-  req: Request,
-  res: Response,
-  next: NextFunction
+    req: Request,
+    res: Response,
+    next: NextFunction
 ): void {
-    Typeform.getResponses('nYkngh', res)
+    Typeform.getResponses('nYkngh', res);
 });
 
 router.get('/form', function(
-  req: Request,
-  res: Response,
-  next: NextFunction
+    req: Request,
+    res: Response,
+    next: NextFunction
 ): void {
-    Typeform.getForm('nYkngh', res)
+    Typeform.getForm('nYkngh', res);
 });
 
 router.post('/store', function(
@@ -55,8 +55,7 @@ router.post('/store', function(
     res: Response,
     next: NextFunction
 ): void {
-  SimpleSurveys.store(req, res)  
+    SimpleSurveys.store(req, res);
 });
-
 
 export default router;
