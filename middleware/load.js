@@ -2,7 +2,7 @@ import {loadReport, extractTestSurvey} from './testData'
 
 export default function (context) {
   var path = context.route.params;
-  console.log(path)
+  // console.log(path)
 
   if(path.hasOwnProperty('reports')) {
     context.responses = loadReport(path.reports);
