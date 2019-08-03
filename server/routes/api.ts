@@ -49,4 +49,6 @@ router.get('/form', function(
     Typeform.getForm('nYkngh', res)
 });
 
+router.get('/branches', Surveys.getBranches);
+
 export default router;
