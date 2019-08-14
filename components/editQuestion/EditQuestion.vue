@@ -1,9 +1,9 @@
 <template>
   <div>
 
-      <EditShortText :question="$attrs.question" v-if="$attrs.question.type == 'short_text'" />
-      <EditLongText :question="$attrs.question" v-else-if="$attrs.question.type == 'long_text'" />
-      <EditMultipleChoice :question="$attrs.question" v-else-if="$attrs.question.type == 'multiple_choice'" />
+      <EditShortText :question="$attrs.question" :surveyID="$attrs.surveyID" v-if="$attrs.question.type == 'short_text'" />
+      <!-- <EditLongText :question="$attrs.question" v-else-if="$attrs.question.type == 'long_text'" /> -->
+      <!-- <EditMultipleChoice :question="$attrs.question" v-else-if="$attrs.question.type == 'multiple_choice'" /> -->
 
   </div>
 </template>
@@ -20,7 +20,7 @@ export default {
   components: {
     EditShortText,
     EditLongText,
-    EditMultipleChoice    
+    EditMultipleChoice
   }
 }
 </script>

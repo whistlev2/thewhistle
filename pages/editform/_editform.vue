@@ -1,12 +1,9 @@
 <template>
     <div>
         <h1>Hi</h1>
-        <form action="/store" class="v-form">
             <template v-for="question in survey">
-                <EditQuestion :question="question"/>
+                <EditQuestion :question="question" :surveyID="surveyID" />
             </template>
-            <input type="submit" value="Submit" />
-        </form>
     </div>
 </template>
 
@@ -18,7 +15,8 @@ export default {
   },
   asyncData (context) {
     return {
-      survey: context.survey
+      survey: context.survey,
+      surveyID: context.surveyID
    }
  }
 }
