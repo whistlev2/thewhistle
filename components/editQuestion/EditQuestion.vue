@@ -3,7 +3,7 @@
     <EditShortText />
   </div>
 </template>
-<script lang="ts">
+<script>
 // import { Component, Vue } from 'vue-property-decorator'
 
 import EditShortText from './EditShortText.vue';
@@ -17,26 +17,7 @@ export default {
   },
   asyncData (context) {
     console.log(context);
-    return {
-      question: {title: "hello", field_title: "field"},
-      componentType:"EditShortText",
-   }
- },
+    return {}
+ }
 }
-
-// @Component({
-//   components: {
-//     'EditDate': EditDate,
-//     'EditShortText': EditShortText,
-//     'EditLongText': EditLongText,
-//     'EditMultipleChoice': EditMultipleChoice
-//   }
-// })
-// class EditQuestion extends Vue {
-//   question: Object = {};
-//   componentType: String = "EditLongText";
-//
-// }
-//
-// export default EditQuestion;
 </script>
