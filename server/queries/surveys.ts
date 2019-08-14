@@ -38,7 +38,7 @@ class Surveys {
     }
 
     static getBranches(req, res) {
-        res.send(Surveys.);
+        res.send(Surveys.getPage('d6d24d19-dd8b-4a99-b7e7-74be45eb77bc'));
     }
 
     static getPage(questionRef) {
