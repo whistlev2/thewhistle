@@ -1,6 +1,8 @@
 import {
     loadReport,
-    extractTestSurvey
+    getTestSurvey,
+    extractTestSurvey,
+    branchSurvey
 } from './testData'
 
 import Lowtech from './lowtech';
@@ -18,8 +20,14 @@ export default function (context) {
     }
 
     if (path.hasOwnProperty('htmlform')) {
-        context.survey = extractTestSurvey(path.survey);
+        context.survey = extractTestSurvey(getTestSurvey());
     }
+
+    if (path.hasOwnProperty('editform')) {
+      context.survey = extractTestSurvey(getTestSurvey());
+        // context.survey = extractTestSurvey(branchSurvey());
+    }
+
 
     if (path.hasOwnProperty('lowtech')) {
         context.questions = Lowtech.getNextQuestions(path.lowtech);
