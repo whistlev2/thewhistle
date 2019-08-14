@@ -1,13 +1,16 @@
 <template>
   <div>
-    <p id="my-embedded-typeform"> HELLO</p>
+    <p id="my-embedded-typeform">{{ json }}</p>
   </div>
 </template>
 
-<<script>
+<script>
 export default {
+  props: [
+    'json'
+  ],
   mounted() {
-    console.log(context.json);
+    console.log(this.$el)
  }
 }
 </script>
