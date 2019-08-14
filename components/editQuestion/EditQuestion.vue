@@ -11,6 +11,7 @@ import EditShortText from './EditShortText.vue';
 // import EditMultipleChoice from './EditMultipleChoice.vue';
 // import EditDate from './EditDate.vue';
 
+
 export default {
   components: {
     EditShortText
