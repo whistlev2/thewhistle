@@ -1,13 +1,6 @@
 <template>
 <div class="v-text-field__slot">
-    LONG TEXT
-    <p>{{ question.title }}</p>
-    <textarea
-        rows="4"
-        cols="50"
-        :name="question.field_title"
-        style="border:1px solid red"
-    ></textarea>
+    <p>{{ $attrs.question.title }}</p>
 </div>
 </template>
 

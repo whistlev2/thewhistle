@@ -24,8 +24,8 @@ export default function (context) {
     }
 
     if (path.hasOwnProperty('editform')) {
-      context.survey = extractTestSurvey(getTestSurvey());
-        // context.survey = extractTestSurvey(branchSurvey());
+      // context.survey = extractTestSurvey(getTestSurvey());
+        context.survey = extractTestSurvey(branchSurvey());
     }
 
 
