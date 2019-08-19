@@ -1,6 +1,11 @@
 var _ = require('underscore');
 
 
+
+export function surveyById(id) {
+  return branchSurvey()
+}
+
 export function extractTestSurvey(survey) {
   return _.each(survey.fields, function(item) {
     var tmpItem = item;

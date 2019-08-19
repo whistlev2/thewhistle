@@ -2,14 +2,14 @@ import {
     loadReport,
     getTestSurvey,
     extractTestSurvey,
-    branchSurvey
+    branchSurvey,
+    surveyById
 } from './testData'
 
 import Lowtech from './lowtech';
 
 export default function (context) {
     var path = context.route.params;
-    console.log(path)
 
     if (path.hasOwnProperty('reports')) {
         context.responses = loadReport(path.reports);
@@ -24,9 +24,10 @@ export default function (context) {
     }
 
     if (path.hasOwnProperty('editform')) {
-      // context.survey = extractTestSurvey(getTestSurvey());
-        context.survey = extractTestSurvey(branchSurvey());
-        context.surveyID = path.editform;
+        const id = path.editform;
+        context.surveyID = id;
+        context.survey = extractTestSurvey(surveyById(id));
+
     }
 
 

@@ -14,6 +14,7 @@ export default {
     EditQuestion
   },
   asyncData (context) {
+    console.log(context);
     return {
       survey: context.survey,
       surveyID: context.surveyID

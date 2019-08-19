@@ -1,6 +1,9 @@
 const express = require('express')
 const consola = require('consola')
 const { Nuxt, Builder } = require('nuxt')
+
+const surveys = require('../server/queries/surveys.js');
+
 const app = express()
 
 var _ = require('underscore');
@@ -35,9 +38,7 @@ async function start() {
 }
 
 app.get('/store', (req, res) => {
-  var query = req.query;
-  res.status(200).json(query)
+  surveys.getSurvey(req, res)
 })
-
 
 start()

@@ -5,6 +5,9 @@ module.exports = {
   router: {
     middleware: 'load'
   },
+  serverMiddleware: [
+    '~/api/logger'
+  ],
   /*
   ** Headers of the page
   */
