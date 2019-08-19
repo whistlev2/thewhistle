@@ -26,7 +26,7 @@ export default function (context) {
     if (path.hasOwnProperty('editform')) {
         const id = path.editform;
         context.surveyID = id;
-        context.survey = extractTestSurvey(surveyById(id));
+        // context.survey = extractTestSurvey(surveyById(id));
 
     }
 

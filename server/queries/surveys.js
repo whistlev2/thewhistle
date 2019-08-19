@@ -1,6 +1,5 @@
-// import db from '../db';
+var _ = require('underscore');
 
-// const db = require('../db.ts')
 const surveyUtils = require('../surveyUtils.js')
 
 const Pool = require('pg').Pool;
@@ -13,12 +12,30 @@ const db = new Pool({
 });
 
 
-exports.getSurveyJSON = function (id) {
+function extractTestSurvey(survey) {
+  return _.each(survey.fields, function(item) {
+    var tmpItem = item;
+
+    tmpItem.field_title = "" + item.id + "_" + item.title;
+
+    if(item.hasOwnProperty("properties")) {
+      tmpItem.properties.choices = _.each(item.properties.choices, function(choice) {
+          var tmpChoice = choice;
+          tmpChoice.field_label = "" + item.id + "_" + choice.label;
+          return tmpChoice;
+      })
+    }
+    return tmpItem
+  })
+}
+
+
+exports.getSurveyJSON = function (id, res) {
   db.query(`SELECT form_json FROM subforms WHERE typeform_id='${id}'`, (error, results) => {
       if (error) {
           throw error;
       }
-      return results.rows[0].form_json;
+      res.json(extractTestSurvey(results.rows[0].form_json));
   });
 }
 

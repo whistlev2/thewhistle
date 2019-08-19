@@ -1,7 +1,9 @@
+const surveys = require('../server/queries/surveys.js');
+
 export default function (req, res, next) {
     // req is the Node.js http request object
-    
 
+    // surveys.getSurveyJSON('jo8KJj')
     // res is the Node.js http response object
 
     // next is a function to call to invoke the next middleware

@@ -41,4 +41,9 @@ app.get('/store', (req, res) => {
   surveys.getSurvey(req, res)
 })
 
+app.get('/surveyjson', (req, res) => {
+  id = 'jo8KJj'
+  surveys.getSurveyJSON(id, res)
+})
+
 start()
