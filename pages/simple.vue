@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Hello</h1>
-    <form action="/store" class="v-form">
+    <form action="/update-field" class="v-form">
     <template v-for="item in survey">
 
       <!-- Short Text -->

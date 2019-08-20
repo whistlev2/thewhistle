@@ -15,7 +15,7 @@
         "sourceMap": true,
         "noImplicitThis": true,
         "baseUrl": ".",
-        "types": ["node", "webpack-env", "vuetify", "mocha", "chai"],
+        "types": ["node", "webpack-env", "vuetify", "mocha", "chai", "@nuxt/types"],
         "paths": {
             "*": ["types/*"],
             "@/*": ["src/*"]

@@ -16,7 +16,7 @@ const bearer = {
     }
 }
 class Typeform {
-    
+
     private static jsonCallback(error, response, body){
         res.json(body);
     }
@@ -29,6 +29,21 @@ class Typeform {
     static getResponses(form: string, res: Response) {
         const url = `https://${TYPEFORM_API_BASE_URL}/forms/${form}/responses`;
         request.get(url, bearer, this.jsonCallback);
+    }
+
+    static updateForm(formID: string, form: string) {
+      const url = `https://${TYPEFORM_API_BASE_URL}/forms/${formID}`;
+      const reqOptions = {
+        uri: url,
+        body: form,
+        method: 'PUT',
+        headers: bearer
+      }
+
+      request(reqOptions, function(error, response) {
+        console.log(error);
+        console.log(response);
+      })
     }
 }
 

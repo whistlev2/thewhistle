@@ -7,4 +7,4 @@ const db = new Pool({
     port: 5432
 });
 
-export default db;
+exports.db;

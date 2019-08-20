@@ -1,6 +1,9 @@
 const express = require('express')
 const consola = require('consola')
 const { Nuxt, Builder } = require('nuxt')
+
+const surveys = require('../server/queries/surveys.js');
+
 const app = express()
 
 var _ = require('underscore');
@@ -34,37 +37,22 @@ async function start() {
   })
 }
 
-app.get('/store', (req, res) => {
-  var query = req.query;
-  // var query = {
-  //   ebwu6u2Vl2ei_Location: 'gdsgdf',
-  //   'VWQ6GhGLJsOW_What happened?': 'gfgfdgf',
-  //    wNsKGlMaufZe_Gender: 'on',
-  //    'dVQ0VY9scXI1_When?': '2019-07-16',
-  //    v3Q81stRELhB_Happy: 'on',
-  //    v3Q81stRELhB_Sad: 'on'
-  //  };
-   var response = {}
-   _.each(query, function(val ,key) {
-     var keys = key.split("_");
-     var id = keys[0];
-     var title = keys[1];
-     if(response.hasOwnProperty(id)) {
-       response['' + id].push(get_value(title, val))
-     } else {
-       response['' + id] = [get_value(title, val)]
-     }
-   })
-   console.log(response)
-  res.status(200).json(query)
+// TODO - rename route and function
+app.get('/update-field', (req, res) => {
+  surveys.updateField(req, res)
 })
 
-function get_value(key, value) {
-  if(value == 'on') {
-    return key
-  } else {
-    return value
-  }
-}
+app.get('/update-choice', (req, res) => {
+  surveys.updateSurveyChoice(req, res)
+})
+
+app.get('/update-dropdown-choice', (req, res) => {
+  surveys.updateDropdownChoice(req, res)
+})
+
+app.get('/surveyjson/:id', (req, res) => {
+  const id = req.params.id;
+  surveys.getSurveyJSON(id, res)
+})
 
 start()

@@ -5,6 +5,9 @@ module.exports = {
   router: {
     middleware: 'load'
   },
+  serverMiddleware: [
+    '~/api/logger'
+  ],
   /*
   ** Headers of the page
   */
@@ -61,6 +64,7 @@ module.exports = {
       success: colors.green.accent3
     }
   },
+  buildModules: ['@nuxt/typescript-build'],
   /*
   ** Build configuration
   */

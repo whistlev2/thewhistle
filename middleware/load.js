@@ -1,13 +1,17 @@
+import axios from 'axios'
+
 import {
     loadReport,
-    extractTestSurvey
+    getTestSurvey,
+    extractTestSurvey,
+    branchSurvey,
+    surveyById
 } from './testData'
 
 import Lowtech from './lowtech';
 
 export default function (context) {
     var path = context.route.params;
-    // console.log(path)
 
     if (path.hasOwnProperty('reports')) {
         context.responses = loadReport(path.reports);
@@ -18,8 +22,20 @@ export default function (context) {
     }
 
     if (path.hasOwnProperty('htmlform')) {
-        context.survey = extractTestSurvey(path.survey);
+        context.survey = extractTestSurvey(getTestSurvey());
     }
+
+    if (path.hasOwnProperty('editform')) {
+        const id = path.editform;
+        context.surveyID = id;
+        axios.get('http://localhost:3000/surveyjson').then(function(v){
+          context.survey = v;
+          return context
+        })
+        // context.survey = extractTestSurvey(surveyById(id));
+
+    }
+
 
     if (path.hasOwnProperty('lowtech')) {
         context.questions = Lowtech.getNextQuestions(path.lowtech);
