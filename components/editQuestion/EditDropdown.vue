@@ -6,7 +6,7 @@
     <input type="text" name="title" :value="$attrs.question.title" style="border:1px solid red"/>
     <input type="submit" value="Submit" />
 </form>
-  <h2>Edit options</h2>
+  <h3>Edit options</h3>
   <EditDropdownChoice v-for="choice in $attrs.question.properties.choices" :surveyID="$attrs.surveyID" :questionID="$attrs.question.id" :choice="choice"/>
 </div>
 </template>
