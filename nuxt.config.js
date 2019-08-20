@@ -64,6 +64,7 @@ module.exports = {
       success: colors.green.accent3
     }
   },
+  buildModules: ['@nuxt/typescript-build'],
   /*
   ** Build configuration
   */

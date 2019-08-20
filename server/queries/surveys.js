@@ -1,5 +1,7 @@
 var _ = require('underscore');
 
+const typeform = require('../interfaces/typeform.js')
+
 const surveyUtils = require('../surveyUtils.js')
 
 const Pool = require('pg').Pool;
@@ -75,7 +77,8 @@ updateSurvey = function (id, survey) {
           console.log(error);
           throw error;
       }
-      console.log(results)
+      // console.log(results)
+      typeform.updateForm(id, ns);
     });
 
 }

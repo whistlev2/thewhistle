@@ -7,7 +7,7 @@
     <input type="submit" value="Submit" />
 </form>
   <h3>Edit options</h3>
-  <EditDropdownChoice v-for="choice in $attrs.question.properties.choices" :surveyID="$attrs.surveyID" :questionID="$attrs.question.id" :choice="choice"/>
+  <EditDropdownChoice v-for="choice in $attrs.question.properties.choices" :surveyID="$attrs.surveyID" :questionID="$attrs.question.id" :choice="choice" :key="choice.label" />
 </div>
 </template>
 <script>
