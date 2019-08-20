@@ -37,12 +37,21 @@ async function start() {
   })
 }
 
-app.get('/store', (req, res) => {
-  surveys.getSurvey(req, res)
+// TODO - rename route and function
+app.get('/update-field', (req, res) => {
+  surveys.updateField(req, res)
 })
 
-app.get('/surveyjson', (req, res) => {
-  id = 'jo8KJj'
+app.get('/update-choice', (req, res) => {
+  surveys.updateSurveyChoice(req, res)
+})
+
+app.get('/update-dropdown-choice', (req, res) => {
+  surveys.updateDropdownChoice(req, res)
+})
+
+app.get('/surveyjson/:id', (req, res) => {
+  const id = req.params.id;
   surveys.getSurveyJSON(id, res)
 })
 

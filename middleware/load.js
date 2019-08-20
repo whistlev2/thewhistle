@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 import {
     loadReport,
     getTestSurvey,
@@ -26,6 +28,10 @@ export default function (context) {
     if (path.hasOwnProperty('editform')) {
         const id = path.editform;
         context.surveyID = id;
+        axios.get('http://localhost:3000/surveyjson').then(function(v){
+          context.survey = v;
+          return context
+        })
         // context.survey = extractTestSurvey(surveyById(id));
 
     }

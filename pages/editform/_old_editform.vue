@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1>Hi</h1>
-        <form action="/store" class="v-form">
+        <form action="/update-field" class="v-form">
             <template v-for="question in survey">
                 <EditQuestion :question="question"/>
             </template>

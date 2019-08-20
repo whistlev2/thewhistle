@@ -33,13 +33,13 @@ function extractTestSurvey(survey) {
 exports.getSurveyJSON = function (id, res) {
   db.query(`SELECT form_json FROM subforms WHERE typeform_id='${id}'`, (error, results) => {
       if (error) {
-          throw error;
+          res.json(error);
       }
       res.json(extractTestSurvey(results.rows[0].form_json));
   });
 }
 
-exports.getSurvey = function (req, res) {
+function editSurvey(req, res, updateFunction) {
   const id = req.query.surveyID
   db.query(`SELECT form_json FROM subforms WHERE typeform_id='${id}'`, (error, results) => {
       if (error) {
@@ -47,12 +47,26 @@ exports.getSurvey = function (req, res) {
       }
       var query = req.query;
       const survey = results.rows[0].form_json;
-      updatedSurvey = surveyUtils.updateField(survey, query);
+      updatedSurvey = updateFunction(survey, query);
       updateSurvey(id, updatedSurvey);
       query.survey = updatedSurvey;
       res.status(200).json(query);
   });
 }
+
+exports.updateField = function (req, res) {
+  editSurvey(req, res, surveyUtils.updateField);
+}
+
+exports.updateSurveyChoice = function (req, res) {
+  editSurvey(req, res, surveyUtils.updateChoice);
+}
+
+exports.updateDropdownChoice = function (req, res) {
+  editSurvey(req, res, surveyUtils.updateDropdownChoice);
+}
+
+
 
 updateSurvey = function (id, survey) {
   const ns = JSON.stringify(survey)

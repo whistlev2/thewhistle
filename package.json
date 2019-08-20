@@ -15,6 +15,7 @@
         "prettier": "pretty-quick",
         "typeform-webhook": "ngrok http -host-header=rewrite api.thewhistle.local:3000",
         "dev": "cross-env NODE_ENV=development nodemon server/index.js --watch server",
+        "prod": "cross-env NODE_ENV=production nodemon server/index.js --watch server",
         "build": "nuxt build",
         "generate": "nuxt generate"
     },

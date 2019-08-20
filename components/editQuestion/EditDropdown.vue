@@ -7,14 +7,14 @@
     <input type="submit" value="Submit" />
 </form>
   <h2>Edit options</h2>
-  <EditChoice v-for="choice in $attrs.question.properties.choices" :surveyID="$attrs.surveyID" :questionID="$attrs.question.id" :choice="choice" :key="$attrs.question.properties.choices.id"/> 
+  <EditDropdownChoice v-for="choice in $attrs.question.properties.choices" :surveyID="$attrs.surveyID" :questionID="$attrs.question.id" :choice="choice"/>
 </div>
 </template>
 <script>
-import EditChoice from './EditChoice.vue';
+import EditDropdownChoice from './EditDropdownChoice.vue';
 export default {
   components: {
-    EditChoice,
+    EditDropdownChoice
   }
 }
 </script>
