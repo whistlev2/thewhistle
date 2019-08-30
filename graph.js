@@ -1,21 +1,35 @@
+var fs = require('fs');
 var _ = require('underscore');
-
-var tst = ["A", "B", "C"];
-
-// console.log(fields(survey()))
-// var fields = fields(survey())
-// console.log(forward_links(fields))
-var lgic = logic(survey())
-
-console.log(all_links());
+var exec = require('child_process').exec;
 
 
-function all_links() {
-  var forward = forward_links(fields(survey()))
-  var brn = branches(logic(survey()))
-  return _.uniq(_.flatten(forward.concat(brn)))
+createGraph(survey())
+
+function createGraph(survey) {
+  var nodes = _.reduce(fields(survey), (acc, x) => acc + `\"${x}\"\n`, "")
+
+  var links = _.reduce(all_links(survey), (acc, link) => acc + `\"${link.from}\" -> \"${link.to}\"\n`, "")
+
+  var dat = `strict digraph { \n${nodes} ${links} }`
+  writeToFile(dat)
 }
 
+function writeToFile(dat) {
+  fs.writeFile('tst.dot', dat, (err) => {
+    if (err) throw err;
+    exec("dot -Tpng tst.dot > tst.png", (err, stdout, stderr) => {
+        exec("open tst.png")
+    })
+
+  })
+}
+
+function all_links(survey) {
+  var forward = forward_links(fields(survey))
+  var brn = branches(survey.logic)
+  var all = _.flatten(forward.concat(brn))
+  return _.uniq(all, true, _.iteratee((n) => JSON.stringify(n)))
+}
 
 function branches(logic) {
   return _.map(logic, (b) => calc_branch(b))
@@ -24,27 +38,20 @@ function branches(logic) {
 function calc_branch(b) {
   var ref = b.ref
   return _.map(b.actions, (action) => make_link(ref, action.details.to.value))
-  // ref = get_title_from_ref(l.ref)
 }
 
 function make_link(a, b) {
-  return `${a} -> ${b}`
+  // return `${a} -> ${b}`
+  return {to: b, from: a}
 }
-// function get_title_from_ref(ref) {
-//
-// }
 
 function forward_links(fields) {
   var len = fields.length - 1
-  return _.map(fields.slice(0, len), (field, indx) => `${field.ref} -> ${fields[indx+1].ref}`)
-}
-
-function logic(survey) {
-  return survey.logic
+  return _.map(fields.slice(0, len), (field, indx) => make_link(field, fields[indx+1]))
 }
 
 function fields(survey) {
-  return _.map(survey.fields, (x) => x);
+  return _.map(survey.fields, (x) => x.ref);
 }
 
 
