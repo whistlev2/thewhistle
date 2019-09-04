@@ -330,7 +330,6 @@ export function getTestSurvey() {
 }
 
 export function loadReport(report) {
-  console.log(report);
   return [{
    "form_id":"Bks8di",
    "token":"1cdb10914e1428399fca09d6976e2b29",

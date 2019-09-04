@@ -5,9 +5,12 @@
     <input type="hidden" name="questionID" :value="$attrs.question.id" />
     <input type="text" name="title" :value="$attrs.question.title" style="border:1px solid red"/>
     <input type="submit" value="Submit" />
-</form>
+  </form>
+  <br>
   <h3>Edit options</h3>
-  <EditDropdownChoice v-for="choice in $attrs.question.properties.choices" :surveyID="$attrs.surveyID" :questionID="$attrs.question.id" :choice="choice" :key="choice.label" />
+  <v-btn action="addChoice">Add option</v-btn>
+  <br><br>
+  <EditDropdownChoice v-for="choice in $attrs.question.properties.choices" :surveyID="$attrs.surveyID" :question="$attrs.question" :jumpOptions="$attrs.jumpOptions" :choice="choice" :key="choice.label" />
 </div>
 </template>
 <script>
