@@ -6,7 +6,7 @@ module.exports = {
   },
   mode: 'universal',
   router: {
-    middleware: 'load'
+    middleware: ['auth', 'load']
   },
   serverMiddleware: [
     '~/api/logger'
