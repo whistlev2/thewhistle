@@ -17,6 +17,7 @@ export default {
     EditQuestion
   },
   // middleware: 'survey',
+  //TODO: Work out how to do async calls in middleware
   asyncData (context) {
     return axios.get(`http://localhost:3000/formjson/${context.surveyID}`).then(function(res) {
       const allQuestions = getAllQuestions(res.data);
