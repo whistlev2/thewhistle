@@ -4,6 +4,7 @@ const passport = require('passport')
 const router = express.Router()
 
 const userQueries = require('../queries/users.js')
+const responseQueries = require('../queries/responses.js')
 
 const usr = {
   id: 1,
@@ -90,6 +91,10 @@ router.get('/organisation/:id/user/:uid/form/:fid', (req, res) => {
           ]
         }
         res.json(r)
+      })
+
+      router.get('/organisation/:id/reports', (req, res) => {
+        res.json(responseQueries.getResponse())
       })
 
 
