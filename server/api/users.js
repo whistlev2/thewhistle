@@ -85,12 +85,14 @@ router.get('/organisation/:id/user/:uid/form/:fid', (req, res) => {
       router.get('/report/:id', (req, res) => {
         var r = {
           reports: [
-            id: 4567,
-            fields: []
+            {
+              id: 4567,
+              fields: []
+            }
           ]
         }
         res.json(r)
-      }
+      })
 
 
 
