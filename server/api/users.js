@@ -3,6 +3,8 @@ const passport = require('passport')
 
 const router = express.Router()
 
+const userQueries = require('../queries/users.js')
+
 const usr = {
   id: 1,
   name: "name",
@@ -18,16 +20,12 @@ const form = {
 }
 
 router.get('/', (req, res) => {
-  const user = {id: 1, name: 'BOB', email: "test@tst.com", org: "TestOrg"}
-  res.json(user)
+  userQueries.getUsers(res)
 })
 
-
 router.get('/organisation/:id/users', (req, res) => {
-  var userList = {
-    users: [usr]}
-    res.json(userList)
-  })
+    userQueries.getOrgUsers(res, req.params.id)
+})
 
 router.get('/organisation/:id/user/:uid', (req, res) => {
     var r = {
