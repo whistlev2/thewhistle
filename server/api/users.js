@@ -47,7 +47,7 @@ router.get('/organisation/:id/users', (req, res) => {
       }
       res.json(r)
       }
-    })
+    )
 
 
 

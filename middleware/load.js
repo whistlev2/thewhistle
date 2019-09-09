@@ -1,32 +1,49 @@
 import axios from 'axios'
 
 import {
-    loadReport,
+    loadReports,
     getTestSurvey,
     extractTestSurvey,
     branchSurvey,
-    surveyById
+    surveyById,
+    loadOrganisations,
+    loadForms
 } from './testData'
+
+import Pages from './pages.ts'
 
 import Lowtech from './lowtech';
 
 export default function (context) {
-    var path = context.route.params;
+    var params = context.route.params;
+    var path = context.route.path;
 
-    if (path.hasOwnProperty('reports')) {
-        context.responses = loadReport(path.reports);
+    if (path == '/organisations') {
+        context.responses = Pages.loadOrganisations();
+    }
+    
+    if (path == '/reports') {
+        context.responses = Pages.loadReports();
     }
 
-    if (path.hasOwnProperty('survey')) {
-        context.survey = path.survey; //extractTestSurvey(path.survey);
+    if (path == '/forms') {
+        context.responses = Pages.loadForms();
     }
 
-    if (path.hasOwnProperty('htmlform')) {
+    if (path == '/users') {
+        context.responses = Pages.loadUsers();
+    }
+
+    if (params.hasOwnProperty('survey')) {
+        context.survey = params.survey; //extractTestSurvey(params.survey);
+    }
+
+    if (params.hasOwnProperty('htmlform')) {
         context.survey = extractTestSurvey(getTestSurvey());
     }
 
-    if (path.hasOwnProperty('editform')) {
-        const id = path.editform;
+    if (params.hasOwnProperty('editform')) {
+        const id = params.editform;
         context.surveyID = id;
         axios.get('http://localhost:3000/surveyjson').then(function(v){
           context.survey = v;
@@ -36,9 +53,8 @@ export default function (context) {
 
     }
 
-
-    if (path.hasOwnProperty('lowtech')) {
-        context.questions = Lowtech.getNextQuestions(path.lowtech);
+    if (params.hasOwnProperty('lowtech')) {
+        context.questions = Lowtech.getNextQuestions(params.lowtech);
     }
 
     return context

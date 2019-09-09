@@ -1,7 +1,6 @@
 <template>
   <v-app light>
-
-
+    <MenuBar />
     <v-content>
       <v-container>
         <nuxt />
@@ -18,7 +17,11 @@
 </template>
 
 <script>
+import MenuBar from '../components/MenuBar.vue'
 export default {
+  components: {
+    MenuBar
+  },
   data() {
     return {
       clipped: false,
