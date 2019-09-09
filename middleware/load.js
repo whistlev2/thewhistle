@@ -7,7 +7,8 @@ import {
     branchSurvey,
     surveyById,
     loadOrganisations,
-    loadForms
+    loadForms,
+    loadEditForm
 } from './testData'
 
 import Pages from './pages.ts'
@@ -34,23 +35,17 @@ export default async function (context) {
         context.users = await Pages.loadUsers();
     }
 
+    if (path.startsWith('/edit-form/') && params.hasOwnProperty('form')) {
+        context.form = await Pages.loadEditForm(params.form);
+        context.surveyID = params.form;
+    }
+
     if (params.hasOwnProperty('survey')) {
         context.survey = params.survey; //extractTestSurvey(params.survey);
     }
 
     if (params.hasOwnProperty('htmlform')) {
         context.survey = extractTestSurvey(getTestSurvey());
-    }
-
-    if (params.hasOwnProperty('editform')) {
-        const id = params.editform;
-        context.surveyID = id;
-        axios.get('http://localhost:3000/surveyjson').then(function(v){
-          context.survey = v;
-          return context
-        })
-        // context.survey = extractTestSurvey(surveyById(id));
-
     }
 
     if (params.hasOwnProperty('lowtech')) {
