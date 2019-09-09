@@ -2,6 +2,8 @@ const express = require('express')
 const consola = require('consola')
 const { Nuxt, Builder } = require('nuxt')
 
+const api = require('./api/index.js')
+
 const surveys = require('../server/queries/surveys.js');
 
 const app = express()
@@ -25,6 +27,8 @@ async function start() {
   } else {
     await nuxt.ready()
   }
+
+  app.use('/api', api)
 
   // Give nuxt middleware to express
   app.use(nuxt.render)
