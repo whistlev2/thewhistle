@@ -7,7 +7,8 @@ class Pages {
 
 
     static async loadReports() {
-        const reports = await axios.get('http://localhost:3000/api/users/organisation/1/reports');
+        const url = process.env.baseURL + '/api/users/organisation/1/reports';
+        const reports = await axios.get(url);
         return reports;
     }
 
