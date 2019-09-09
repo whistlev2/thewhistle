@@ -1,20 +1,23 @@
+import axios from 'axios';
+
 class Pages {
-    static loadOrganisations() {
+    static async loadOrganisations() {
         return '';
     }
 
 
-    static loadReports() {
+    static async loadReports() {
+        const reports = await axios.get('http://localhost:3000/api/users/organisation/1/reports');
+        return reports;
+    }
+
+
+    static async loadForms() {
         return '';
     }
 
 
-    static loadForms() {
-        return '';
-    }
-
-
-    static loadUsers() {
+    static async loadUsers() {
         return '';
     }
 }

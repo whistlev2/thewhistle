@@ -40,7 +40,6 @@ export default {
         }
     },
   asyncData (context) {
-      console.log('USER CONTEXT', context);
   },
   fetch () {
   },

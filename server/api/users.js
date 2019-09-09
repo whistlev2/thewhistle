@@ -71,12 +71,7 @@ router.get('/organisation/:id/user/:uid/form/:fid', (req, res) => {
         }
       ]}
       res.json(r)
-<<<<<<< HEAD
-      }
-    )
-=======
     })
->>>>>>> dd5a489338a6fe8fbaabfea73cad37b5704514db
 
     router.get('/user/:uid/form/:fid', (req, res) => {
       var r = {

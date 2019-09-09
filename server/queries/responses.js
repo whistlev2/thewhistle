@@ -38,7 +38,7 @@ function formatResponse(responses) {
 
   return {
     headers: headers,
-    body: answers
+    items: answers
   }
 }
 

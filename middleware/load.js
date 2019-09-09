@@ -14,24 +14,24 @@ import Pages from './pages.ts'
 
 import Lowtech from './lowtech';
 
-export default function (context) {
+export default async function (context) {
     var params = context.route.params;
     var path = context.route.path;
 
     if (path == '/organisations') {
-        context.responses = Pages.loadOrganisations();
+        context.organisations = await Pages.loadOrganisations();
     }
     
     if (path == '/reports') {
-        context.responses = Pages.loadReports();
+        context.reports = await Pages.loadReports();
     }
 
     if (path == '/forms') {
-        context.responses = Pages.loadForms();
+        context.forms = await Pages.loadForms();
     }
 
     if (path == '/users') {
-        context.responses = Pages.loadUsers();
+        context.users = await Pages.loadUsers();
     }
 
     if (params.hasOwnProperty('survey')) {
