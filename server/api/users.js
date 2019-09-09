@@ -3,6 +3,9 @@ const passport = require('passport')
 
 const router = express.Router()
 
+const userQueries = require('../queries/users.js')
+const responseQueries = require('../queries/responses.js')
+
 const usr = {
   id: 1,
   name: "name",
@@ -12,46 +15,94 @@ const usr = {
 const form = {
   formId: "ASDFG",
   formName: "Test From",
-	userAccess: "All",
-	editAccess: true
+  userAccess: "All",
+  editAccess: true
 
 }
 
 router.get('/', (req, res) => {
-  const user = {id: 1, name: 'BOB', email: "test@tst.com", org: "TestOrg"}
-  res.json(user)
+  userQueries.getUsers(res)
 })
 
-
 router.get('/organisation/:id/users', (req, res) => {
-  var userList = {
-    users: [usr]}
-    res.json(userList)
-  })
+    userQueries.getOrgUsers(res, req.params.id)
+})
 
-  router.get('/organisation/:id/user/:uid', (req, res) => {
+router.get('/organisation/:id/user/:uid', (req, res) => {
     var r = {
       user: usr,
       forms: [form]
     }
-      res.json(r)
-    })
+    res.json(r)
+  })
 
 
-    router.get('/organisation/:id/user/:uid/form/:fid', (req, res) => {
-      var r = {
-        allReports: true,
-        allowedReports : [
-          {reportID: "QWERTY",
-          access: true}]
+router.get('/organisation/:id/user/:uid/form/:fid', (req, res) => {
+    var r = {
+      allReports: true,
+      allowedReports : [
+        {
+          reportID: "QWERTY",
+          access: true
+        }
+      ]
+    }
+    res.json(r)
+  })
+
+  router.get('/organisation/:id/user/:uid/forms', (req, res) => {
+    var r = {
+      forms: [{
+        id: 45,
+        name: "testFormName",
+        testURL: "testURL",
+        publishedURL: "pubURL"
       }
+    ]}
+    res.json(r)
+  })
+
+
+  router.get('/user/:uid/admin-orgs-access', (req, res) => {
+    var r = {
+      organisations: [
+        {
+          orgName: "orgName", id: "ERTYU", role: "admin"
+        }
+      ]}
       res.json(r)
+<<<<<<< HEAD
       }
     )
+=======
+    })
+>>>>>>> dd5a489338a6fe8fbaabfea73cad37b5704514db
+
+    router.get('/user/:uid/form/:fid', (req, res) => {
+      var r = {
+        reports: [
+          {reportId: 987}
+        ]}
+        res.json(r)
+      })
+
+      router.get('/report/:id', (req, res) => {
+        var r = {
+          reports: [
+            {
+              id: 4567,
+              fields: []
+            }
+          ]
+        }
+        res.json(r)
+      })
+
+      router.get('/organisation/:id/reports', (req, res) => {
+        res.json(responseQueries.getResponse())
+      })
 
 
 
 
-
-
-  module.exports = router
+      module.exports = router
