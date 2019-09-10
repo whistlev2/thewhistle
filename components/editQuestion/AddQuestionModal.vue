@@ -62,12 +62,10 @@
                     relativePosition: this.$attrs.relativePosition,
                     surveyID: this.$attrs.surveyID
                 }
-                console.log('close soooon', postData);
                 this.closeModal();
                 //TODO: POST data
             },
             closeModal() {
-                console.log('CLOOOOOSE');
                 this.$attrs.show = false;
                 this.$emit('close');
             }

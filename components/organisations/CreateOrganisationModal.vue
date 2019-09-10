@@ -1,0 +1,69 @@
+<template>
+    <v-row justify="center">
+        <v-dialog v-model="$attrs.show" max-width="600px">
+            <v-card>
+                <v-card-title>
+                    <span class="headline">Create Organisation</span>
+                </v-card-title>
+                <v-card-text>
+                    <v-container>
+                        <v-row>
+                            <v-form ref="form" v-model="valid">
+                                <v-col cols="12">
+                                    <v-text-field v-model="questionText" :rules="notBlank" label="Organisation Name" required></v-text-field>
+                                </v-col>
+                                <v-col cols="12">
+                                    <v-text-field v-model="questionRef" :rules="notBlank" label="Organisation Abbreviation"
+                                        hint="Max 8 characters, no spaces." counter="8"
+                                        persistent-hint="true" required></v-text-field>
+                                </v-col>
+                            </v-form>
+                        </v-row>
+                    </v-container>
+                </v-card-text>
+                <v-card-actions>
+                    <div class="flex-grow-1"></div>
+                    <v-btn color="blue darken-1" text v-on:click="closeModal">Close</v-btn>
+                    <v-btn color="blue darken-1" disabled="!valid" text @click="createOrganisation">Create</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+    </v-row>
+</template>
+<script>
+    export default {
+        data() {
+            return {
+                organisationName: '',
+                organisationSlug: '',
+                notBlank: [v => !!v || 'Required'],
+                valid: false
+            }
+        },
+        methods: {
+            createOrganisation() {
+                const postData = {
+                    name: this.organisationName,
+                    slug: this.organisationSlug
+                }
+                this.closeModal();
+                //TODO: POST data
+            },
+
+            closeModal() {
+                this.$attrs.show = false;
+                this.$emit('close');
+            },
+
+            validSlug(slug) {
+                if (slug.length > 8) {
+                    return 'Abbreviations cannot be more than 8 characters long.';
+                }
+                if (slug.indexOf(' ') !== -1) {
+                    return 'Abbreviations cannot contain spaces. Try ' + slug.replace(' ', '-') + '?';
+                }
+                return true;
+            }
+        }
+    }
+</script>

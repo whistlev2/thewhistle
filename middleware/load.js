@@ -41,6 +41,10 @@ export default async function (context) {
         context.allQuestions = Pages.getAllQuestions(context.form);
     }
 
+    if (path.startsWith('/report/') && params.hasOwnProperty('report')) {
+        context.report = await Pages.loadReport(params.report);
+    }
+
     if (params.hasOwnProperty('survey')) {
         context.survey = params.survey; //extractTestSurvey(params.survey);
     }
