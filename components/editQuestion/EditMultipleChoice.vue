@@ -6,8 +6,11 @@
     <input type="text" name="title" :value="$attrs.question.title" style="border:1px solid red"/>
     <input type="submit" value="Submit" />
 </form>
+  <br>
   <h3>Edit options</h3>
-  <EditChoice v-for="choice in $attrs.question.properties.choices" :surveyID="$attrs.surveyID" :questionID="$attrs.question.id" :choice="choice" :key="$attrs.question.properties.choices.id"/>
+  <v-btn action="addChoice">Add option</v-btn>
+  <br><br>
+  <EditChoice v-for="choice in $attrs.question.properties.choices" :surveyID="$attrs.surveyID" :question="$attrs.question" :jumpOptions="$attrs.jumpOptions" :choice="choice" :key="choice.ref"/>
 </div>
 </template>
 <script>

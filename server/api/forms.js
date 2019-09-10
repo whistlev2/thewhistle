@@ -6,7 +6,7 @@ const router = express.Router()
 
 
 router.get('/:id', (req, res) => {
-    Surveys.getSurveyJSON(req.params.id, res);
+    Surveys.getFormJSON(req.params.id, res);
 })
 
 

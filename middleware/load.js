@@ -38,6 +38,7 @@ export default async function (context) {
     if (path.startsWith('/edit-form/') && params.hasOwnProperty('form')) {
         context.form = await Pages.loadEditForm(params.form);
         context.surveyID = params.form;
+        context.allQuestions = Pages.getAllQuestions(context.form);
     }
 
     if (params.hasOwnProperty('survey')) {

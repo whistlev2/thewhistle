@@ -59,4 +59,8 @@ app.get('/surveyjson/:id', (req, res) => {
   surveys.getSurveyJSON(id, res)
 })
 
+app.get('/formjson/:id', (req, res) => {
+  surveys.getFormJSON(req.params.id, res)
+})
+
 start()

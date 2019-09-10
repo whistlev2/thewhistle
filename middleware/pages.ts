@@ -1,6 +1,17 @@
 import axios from 'axios';
 
 class Pages {
+    static getAllQuestions(form) {
+        let ret = [];
+        for (let i = 0; i < form.length; i++) {
+            ret[i] = {
+                ref: form[i].ref,
+                text: form[i].title
+            };
+        }
+        return ret;
+    }
+
     static async loadEditForm(formID) {
         const url = process.env.baseURL + '/api/forms/' + formID;
         const form = await axios.get(url);
