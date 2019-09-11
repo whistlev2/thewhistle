@@ -34,7 +34,7 @@ function extractTestSurvey(survey) {
 }
 
 exports.getMyForms = function(uid, res) {
-  db.query(`SELECT form_json, subforms.slug AS slug, user_role, published FROM subforms join userforms on userforms.user_id=subforms.id WHERE user_id=${uid}`, (error, results) => {
+  db.query(`SELECT form_json, subforms.slug AS slug, user_role, published FROM subforms left join userforms on userforms.form_id=subforms.id WHERE user_id=${uid}`, (error, results) => {
       if (error) {
           res.json(error);
       }
