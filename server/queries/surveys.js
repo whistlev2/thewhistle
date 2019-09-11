@@ -34,11 +34,19 @@ function extractTestSurvey(survey) {
 }
 
 exports.getMyForms = function(uid, res) {
-  db.query(`SELECT subforms.slug AS slug, organisations.slug AS organisation, user_role, published FROM subforms join userforms on userforms.user_id=subforms.id join organisations on subforms.organisation_id=organisations.id WHERE user_id=${uid}`, (error, results) => {
+  db.query(`SELECT form_json, subforms.slug AS slug, user_role, published FROM subforms join userforms on userforms.user_id=subforms.id WHERE user_id=${uid}`, (error, results) => {
       if (error) {
           res.json(error);
       }
-      res.json(results.rows);
+
+      res.json(_.map(results.rows, function(res) {
+        return {
+          title: res.form_json.title,
+          slug: res.slug,
+          userRole: res.user_role,
+          published: res.published
+        }
+      }))
   });
 }
 
