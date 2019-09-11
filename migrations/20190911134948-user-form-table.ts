@@ -19,6 +19,7 @@ exports.up = function(db: any, callback: any) {
     id: { type: 'int', primaryKey: true, autoIncrement: true },
     user_id: 'int',
     form_id: 'int',
+    user_role: 'string',
     created_at: {type: 'timestamp', notNull: true, defaultValue: 'NOW'},
   }, addUserForeignKey);
 
