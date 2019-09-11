@@ -1,10 +1,9 @@
 <template>
     <div>
-        <v-card v-for="form in forms" :key="form.id">
-            <v-card-title class="align-end fill-height">{{ form.name }}</v-card-title>
+        <v-card v-for="form in forms" :key="form.slug" style="margin-bottom: 30px;">
+            <v-card-title class="align-end fill-height">{{ form.title }}</v-card-title>
             <v-card-actions>
-                <FormEditActions v-if="form.editAccess" :form="form" />
-                <FormViewActions :form="form" />
+                <FormActions :form="form" />
             </v-card-actions>
         </v-card>
     </div>
@@ -12,13 +11,11 @@
 
 <script>
 
-import FormEditActions from '../components/forms/FormEditActions.vue';
-import FormViewActions from '../components/forms/FormViewActions.vue';
+import FormActions from '../components/forms/FormActions.vue';
 
 export default {
     components: {
-        FormEditActions,
-        FormViewActions
+        FormActions
     },
 
     asyncData(context) {

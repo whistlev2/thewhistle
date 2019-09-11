@@ -55,22 +55,24 @@ class Pages {
 
 
     static async loadForms() {
-        return [
+        const url = process.env.baseURL + '/api/forms/myforms';
+        const form = await axios.get(url);
+        console.log(form.data);
+        return form.data;
+        /* return [
             {
-                id: 'fid1',
                 slug: 'rape-is-a-crime',
                 name: 'Rape is a Crime',
-                organisation: 'grn',
-                editAccess: true
+                userRole: 'admin',
+                published: true
             },
             {
-                id: 'fid2',
                 slug: 'everyday-racism',
                 name: 'End Everyday Racism',
-                organisation: 'eer',
-                editAccess: false
+                userRole: 'user',
+                published: false
             }
-        ];
+        ]; */
     }
 
 
