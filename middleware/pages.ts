@@ -55,24 +55,9 @@ class Pages {
 
 
     static async loadForms() {
-        const url = process.env.baseURL + '/api/forms/myforms';
+        const url = process.env.baseURL + '/api/forms';
         const form = await axios.get(url);
-        console.log(form.data);
         return form.data;
-        /* return [
-            {
-                slug: 'rape-is-a-crime',
-                name: 'Rape is a Crime',
-                userRole: 'admin',
-                published: true
-            },
-            {
-                slug: 'everyday-racism',
-                name: 'End Everyday Racism',
-                userRole: 'user',
-                published: false
-            }
-        ]; */
     }
 
 

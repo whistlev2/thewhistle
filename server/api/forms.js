@@ -5,12 +5,12 @@ const express = require('express');
 const router = express.Router()
 
 
-router.get('/myforms', (req, res) => {
+router.get('/', (req, res) => {
     var userID = 1
     Surveys.getMyForms(userID, res);
 })
 
-router.get('/:id', (req, res) => {
+router.get('/json/:id', (req, res) => {
     Surveys.getFormJSON(req.params.id, res);
 })
 
