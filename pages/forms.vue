@@ -1,52 +1,31 @@
 <template>
     <div>
-        FORMS
-  <v-data-table
-  :headers="headers"
-  :items="items"
-  :items-per-page="5"
-  class="elevation-1"
-></v-data-table>
+        <v-card v-for="form in forms" :key="form.id">
+            <v-card-title class="align-end fill-height">{{ form.name }}</v-card-title>
+            <v-card-actions>
+                <FormEditActions v-if="form.editAccess" :form="form" />
+                <FormViewActions :form="form" />
+            </v-card-actions>
+        </v-card>
     </div>
 </template>
 
-
 <script>
 
-export default {
+import FormEditActions from '../components/forms/FormEditActions.vue';
+import FormViewActions from '../components/forms/FormViewActions.vue';
 
-    data() {
-        return {
-            headers: [
-                {
-                    text: 'Name',
-                    value: 'ref1'
-                },
-                {
-                    text: 'Email',
-                    value: 'ref2'
-                }
-            ],
-            items: [
-                {
-                    ref1: 'Tom',
-                    ref2: 'tjcberman@gmail.com'
-                },
-                {
-                    ref1: 'Louis',
-                    ref2: 'lmcs97@gmail.com'
-                }
-            ]
-        }
+export default {
+    components: {
+        FormEditActions,
+        FormViewActions
     },
-  asyncData (context) {
-  },
-  fetch () {
-  },
-  head () {
-    // Set Meta Tags for this Page
-  },
-  // and more functionality to discover
+
+    asyncData(context) {
+        return {
+            forms: context.forms
+        };
+    },
 
 }
 </script>

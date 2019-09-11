@@ -25,34 +25,34 @@ import EditFileUpload from './EditFileUpload.vue';
 import QuestionActions from './QuestionActions.vue';
 
 export default {
-  components: {
-    EditShortText,
-    EditLongText,
-    EditMultipleChoice,
-    EditDate,
-    EditDropdown,
-    EditFileUpload,
-    QuestionActions
-  },
-  computed: {
-    jumpOptions: function () {
-      const allQuestions = this.$attrs.allQuestions;
-      const questionRef = this.$attrs.question.ref;
-      let afterQuestion = false;
-      let ret = [];
+    components: {
+        EditShortText,
+        EditLongText,
+        EditMultipleChoice,
+        EditDate,
+        EditDropdown,
+        EditFileUpload,
+        QuestionActions
+    },
+    computed: {
+        jumpOptions: function () {
+            const allQuestions = this.$attrs.allQuestions;
+            const questionRef = this.$attrs.question.ref;
+            let afterQuestion = false;
+            let ret = [];
 
-      for (let i = 0; i < allQuestions.length; i++) {
-        if (!afterQuestion) {
-          if (allQuestions[i].ref == questionRef) {
-            afterQuestion = true;
-          }
-        } else {
-          ret.push(allQuestions[i]);
+            for (let i = 0; i < allQuestions.length; i++) {
+                if (!afterQuestion) {
+                    if (allQuestions[i].ref == questionRef) {
+                        afterQuestion = true;
+                    }
+                } else {
+                    ret.push(allQuestions[i]);
+                }
+            }
+
+            return ret;
         }
-      }
-
-      return ret;
-    }
-  },
+    },
 }
 </script>

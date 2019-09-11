@@ -55,7 +55,22 @@ class Pages {
 
 
     static async loadForms() {
-        return '';
+        return [
+            {
+                id: 'fid1',
+                slug: 'rape-is-a-crime',
+                name: 'Rape is a Crime',
+                organisation: 'grn',
+                editAccess: true
+            },
+            {
+                id: 'fid2',
+                slug: 'everyday-racism',
+                name: 'End Everyday Racism',
+                organisation: 'eer',
+                editAccess: false
+            }
+        ];
     }
 
 
