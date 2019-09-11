@@ -1,12 +1,7 @@
 <template>
     <div>
         USERS
-  <v-data-table
-  :headers="headers"
-  :items="items"
-  :items-per-page="5"
-  class="elevation-1"
-></v-data-table>
+        <v-data-table :headers="headers" :items="items" :items-per-page="5" class="elevation-1"></v-data-table>
     </div>
 </template>
 
@@ -17,8 +12,7 @@ export default {
 
     data() {
         return {
-            headers: [
-                {
+            headers: [{
                     text: 'Name',
                     value: 'ref1'
                 },
@@ -27,8 +21,7 @@ export default {
                     value: 'ref2'
                 }
             ],
-            items: [
-                {
+            items: [{
                     ref1: 'Tom',
                     ref2: 'tjcberman@gmail.com'
                 },
@@ -39,14 +32,7 @@ export default {
             ]
         }
     },
-  asyncData (context) {
-  },
-  fetch () {
-  },
-  head () {
-    // Set Meta Tags for this Page
-  },
-  // and more functionality to discover
+    asyncData(context) {},
 
 }
 </script>
