@@ -33,6 +33,15 @@ function extractTestSurvey(survey) {
     })
 }
 
+exports.getMyForms = function(uid, res) {
+  db.query(`SELECT slug FROM subforms join userforms on userforms.user_id=subforms.id WHERE user_id=${uid}`, (error, results) => {
+      if (error) {
+          res.json(error);
+      }
+      res.json(results.rows);
+  });
+}
+
 
 exports.getSurveyJSON = function (id, res) {
     db.query(`SELECT form_json FROM subforms WHERE typeform_id='${id}'`, (error, results) => {
