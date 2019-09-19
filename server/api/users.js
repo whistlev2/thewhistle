@@ -95,7 +95,7 @@ router.get('/organisation/:id/user/:uid/form/:fid', (req, res) => {
       })
 
       router.get('/organisation/:id/reports', (req, res) => {
-        res.json(responseQueries.getResponse())
+        responseQueries.getResponse(res, 'nYkngh')
       })
 
 

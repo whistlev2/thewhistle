@@ -48,7 +48,7 @@ class Pages {
 
 
     static async loadReports() {
-        const url = process.env.baseURL + '/api/users/organisation/1/reports';
+        const url = process.env.baseURL + '/api/reports/nYkngh';
         const reports = await axios.get(url);
         return reports.data;
     }
