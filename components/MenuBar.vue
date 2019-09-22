@@ -8,7 +8,6 @@
 
             <v-toolbar-items>
                 <v-btn to="/organisations" text>Organisations</v-btn>
-                <v-btn to="/reports" text>Reports</v-btn>
                 <v-btn to="/forms" text>Forms</v-btn>
                 <v-btn to="/users" text>Users</v-btn>
                 <v-btn to="/logout" text>Logout</v-btn>

@@ -89,6 +89,7 @@
         "eslint-plugin-react-hooks": "^1.6.0",
         "eslint-plugin-vue": "^5.0.0",
         "fs": "0.0.1-security",
+        "material-design-icons-iconfont": "^5.0.1",
         "ngrok": "^3.1.1",
         "nodemon": "^1.19.1",
         "prettier": "^1.17.1",

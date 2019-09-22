@@ -23,9 +23,7 @@ export default async function (context) {
         context.organisations = await Pages.loadOrganisations();
     }
     
-    if (path == '/reports') {
-        context.reports = await Pages.loadReports();
-    }
+    
 
     if (path == '/forms') {
         context.forms = await Pages.loadForms();
@@ -33,6 +31,10 @@ export default async function (context) {
 
     if (path == '/users') {
         context.users = await Pages.loadUsers();
+    }
+
+    if (path.startsWith('/reports') && params.hasOwnProperty('form')) {
+        context.reports = await Pages.loadReports(params.form);
     }
 
     if (path.startsWith('/edit-form/') && params.hasOwnProperty('form')) {

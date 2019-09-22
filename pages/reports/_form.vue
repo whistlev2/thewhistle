@@ -20,7 +20,6 @@ export default {
     },
 
     asyncData(context) {
-        console.log('plug', context.reports);
         return context.reports;
     },
 

@@ -13,6 +13,7 @@ router.post('/webhook', (req, res) => {
 })
 
 router.get('/:form_id', (req, res) => {
+  //TODO: Change from form id to slug
   responses.getFormResponses(res, req.params.form_id);
 })
 

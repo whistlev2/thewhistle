@@ -66,7 +66,8 @@ function formatAnswers(answers) {
 
 exports.getFormResponses = function (res, formId) {
     db.query(`SELECT definition, value, raw_response_id FROM rawresponse JOIN questionresponses ON rawresponse.id = questionresponses.raw_response_id WHERE form_id='${formId}'`, (error, results) => {
-      const formattedResponses = formatResponses(results.rows);
+        console.log(results.rows);
+        const formattedResponses = formatResponses(results.rows);
       res.json(formattedResponses);
     })
 }

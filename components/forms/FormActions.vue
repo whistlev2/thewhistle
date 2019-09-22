@@ -38,7 +38,7 @@ export default {
         },
         responsesURL: function () {
             //TODO: Parse query params
-            return `/reports?form=${this.$attrs.form.slug}`;
+            return `/reports/${this.$attrs.form.slug}`;
         },
         editURL: function () {
             return `/edit-form/${this.$attrs.form.slug}`;
