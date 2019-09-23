@@ -14,5 +14,9 @@ router.get('/json/:id', (req, res) => {
     Surveys.getFormJSON(req.params.id, res);
 })
 
+router.get('/:slug', (req, res) => {
+    Surveys.getFormFromSlug(req.params.slug, res);
+})
+
 
 module.exports = router

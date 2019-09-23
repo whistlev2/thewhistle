@@ -17,47 +17,57 @@ const headers = {
   'Accept': 'application/json'
 }
 
-// const bearer = {
-//     'auth': {
-//         'bearer': ACCESS_TOKEN
-//     }
+const bearer = {
+    'auth': {
+        'bearer': ACCESS_TOKEN
+    }
+}
+
+
+// private static jsonCallback(error, response, body){
+//     res.json(body);
+// }
+//
+// static getForm(form: string, res: Response) {
+//     const url = `https://${TYPEFORM_API_BASE_URL}/forms/${form}`;
+//     request.get(url, bearer, this.jsonCallback);
+// }
+//
+// static getResponses(form: string, res: Response) {
+//     const url = `https://${TYPEFORM_API_BASE_URL}/forms/${form}/responses`;
+//     request.get(url, bearer, this.jsonCallback);
 // }
 
+function jsonCallback(error, res, body) {
+  res.json(body);
+}
 
-    // private static jsonCallback(error, response, body){
-    //     res.json(body);
-    // }
-    //
-    // static getForm(form: string, res: Response) {
-    //     const url = `https://${TYPEFORM_API_BASE_URL}/forms/${form}`;
-    //     request.get(url, bearer, this.jsonCallback);
-    // }
-    //
-    // static getResponses(form: string, res: Response) {
-    //     const url = `https://${TYPEFORM_API_BASE_URL}/forms/${form}/responses`;
-    //     request.get(url, bearer, this.jsonCallback);
-    // }
+exports.getForm = function (form, res) {
+  const url = `https://${TYPEFORM_API_BASE_URL}/forms/${form}`;
+  request.get(url, bearer, jsonCallback);
+}
 
-exports.updateForm = function(formID, form) {
-      const url = `https://${TYPEFORM_API_BASE_URL}/forms/${formID}`;
+exports.updateForm = function (formID, form) {
+  const url = `https://${TYPEFORM_API_BASE_URL}/forms/${formID}`;
 
-      request.put({
-        url:url,
-        headers: headers,
-        body: form}, function(error, response) {
-            console.log(error);
-            console.log(response);
-        })
+  request.put({
+    url: url,
+    headers: headers,
+    body: form
+  }, function (error, response) {
+    console.log(error);
+    console.log(response);
+  })
 
-      // const reqOptions = {
-      //   uri: url,
-      //   body: form,
-      //   method: 'PUT',
-      //   headers: bearer
-      // }
-      //
-      // request(reqOptions, function(error, response) {
-      //   console.log(error);
-      //   console.log(response);
-      // })
+  // const reqOptions = {
+  //   uri: url,
+  //   body: form,
+  //   method: 'PUT',
+  //   headers: bearer
+  // }
+  //
+  // request(reqOptions, function(error, response) {
+  //   console.log(error);
+  //   console.log(response);
+  // })
 }

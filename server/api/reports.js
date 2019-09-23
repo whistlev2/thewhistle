@@ -12,9 +12,9 @@ router.post('/webhook', (req, res) => {
   res.status(200).json([])
 })
 
-router.get('/:form_id', (req, res) => {
+router.get('/:slug', (req, res) => {
   //TODO: Change from form id to slug
-  responses.getFormResponses(res, req.params.form_id);
+  responses.getFormResponsesFromSlug(res, req.params.slug);
 })
 
 module.exports = router

@@ -60,6 +60,11 @@ exports.getSurveyJSON = function (id, res) {
     });
 }
 
+exports.getTypeformJson = function(res) {
+    console.log(typeform)
+    typeform.getForm('ysuMcf', res);
+}
+
 exports.getFormJSON = function (id, res) {
     fs.readFile('branching_test.json', {
         encoding: 'utf-8'
@@ -117,7 +122,19 @@ exports.updateDropdownChoice = function (req, res) {
     editSurvey(req, res, surveyUtils.updateDropdownChoice);
 }
 
-
+exports.getFormFromSlug = function (slug, res) {
+    db.query(`SELECT typeform_id, form_json FROM subforms WHERE slug='${ slug }'`, (error, results) => {
+        if (error) {
+            throw error;
+        }
+        console.log('slug', slug);
+        const form = results.rows[0];
+        res.json({
+            name: form.form_json.title,
+            id: form.typeform_id
+        });
+    });
+}
 
 updateSurvey = function (id, survey) {
     const ns = JSON.stringify(survey)

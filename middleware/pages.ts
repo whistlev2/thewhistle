@@ -13,7 +13,7 @@ class Pages {
     }
 
     static async loadEditForm(formID) {
-        const url = process.env.baseURL + '/api/forms/' + formID;
+        const url = process.env.baseURL + '/api/forms/json/' + formID;
         const form = await axios.get(url);
         return form.data;
     }
@@ -63,6 +63,12 @@ class Pages {
 
     static async loadUsers() {
         return '';
+    }
+
+    static async loadFormFromSlug(slug) {
+        const url = process.env.baseURL + `/api/forms/${slug}`;
+        const form = await axios.get(url);
+        return form.data;
     }
 
 

@@ -64,11 +64,16 @@ function formatAnswers(answers) {
   return ret;
 }
 
-exports.getFormResponses = function (res, formId) {
+exports.getFormResponsesFromSlug = function (res, slug) {
+    db.query(`SELECT typeform_id FROM subforms WHERE slug='${slug}'`, (error, results) => {
+        getFormResponses(res, results.rows[0].typeform_id);
+    })
+}
+
+function getFormResponses(res, formId) {
     db.query(`SELECT definition, value, raw_response_id FROM rawresponse JOIN questionresponses ON rawresponse.id = questionresponses.raw_response_id WHERE form_id='${formId}'`, (error, results) => {
-        console.log(results.rows);
         const formattedResponses = formatResponses(results.rows);
-      res.json(formattedResponses);
+        res.json(formattedResponses);
     })
 }
 
@@ -113,11 +118,18 @@ function formatItems(items) {
 function getVal(answer) {
     //console.log(answer);
     switch (answer.type) {
+        case 'boolean':
+            return answer.boolean ? 'Yes' : 'No';
+            break;
         case 'number':
             return answer.number;
             break;
         case 'choice':
-            return answer.choice.label;
+            if (answer.choice.hasOwnProperty('other')) {
+                return answer.choice.other;
+            } else {
+                return answer.choice.label;
+            }
             break;
         case 'choices':
             return answer.choices.labels;

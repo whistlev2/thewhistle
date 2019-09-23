@@ -1,7 +1,7 @@
 <template>
     <v-app light>
-        <MobileMenuBar v-if="windowWidth < 800" />
-        <MenuBar v-else />
+        <!-- <MobileMenuBar v-if="windowWidth < 500" /> -->
+        <MenuBar  />
         <v-content>
             <v-container>
                 <nuxt />
