@@ -61,16 +61,16 @@ exports.getSurveyJSON = function (id, res) {
 }
 
 exports.getTypeformJson = function(res) {
-    console.log(typeform)
     typeform.getForm('ysuMcf', res);
 }
 
-exports.getFormJSON = function (id, res) {
-    fs.readFile('branching_test.json', {
-        encoding: 'utf-8'
-    }, function (err, data) {
-        const formJson = JSON.parse(data);
-        const ret = rearrangeFormJson(formJson);
+exports.getFormJSON = function (slug, res) {
+    db.query(`SELECT form_json FROM subforms WHERE slug='${ slug }'`, (error, results) => {
+        if (error) {
+            throw error;
+        }
+        const form = results.rows[0].form_json;
+        const ret = rearrangeFormJson(form);
         res.json(ret);
     });
 }
@@ -89,6 +89,7 @@ function rearrangeFormJson(formJson) {
 function getQuestionLogic(formLogic, questionRef) {
     for (let i = 0; i < formLogic.length; i++) {
         if (formLogic[i].ref == questionRef) {
+            let questionLogic = formLogic[i].actions;
             return formLogic[i].actions;
         }
     }
@@ -127,7 +128,6 @@ exports.getFormFromSlug = function (slug, res) {
         if (error) {
             throw error;
         }
-        console.log('slug', slug);
         const form = results.rows[0];
         res.json({
             name: form.form_json.title,

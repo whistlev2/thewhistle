@@ -103,6 +103,10 @@ class Pages {
                 access: false
             }
         ]};
+        //TODO: Don't return static data & create api endpoint
+        /* const url = process.env.baseURL + `/api/report/${reportId}`;
+        const report = await axios.get(url);
+        return report.data; */
     }
 
 

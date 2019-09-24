@@ -10,8 +10,8 @@ router.get('/', (req, res) => {
     Surveys.getMyForms(userID, res);
 })
 
-router.get('/json/:id', (req, res) => {
-    Surveys.getFormJSON(req.params.id, res);
+router.get('/json/:slug', (req, res) => {
+    Surveys.getFormJSON(req.params.slug, res);
 })
 
 router.get('/:slug', (req, res) => {

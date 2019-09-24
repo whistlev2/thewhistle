@@ -8,6 +8,7 @@
         <EditDropdown :question="$attrs.question" :surveyID="$attrs.surveyID" :jumpOptions="jumpOptions" v-if="$attrs.question.type == 'dropdown'" />
         <!-- TODO - test file upload comp works -->
         <EditFileUpload :question="$attrs.question" :surveyID="$attrs.surveyID" v-if="$attrs.question.type == 'file_upload'" />
+        <EditYesNo :question="$attrs.question" :surveyID="$attrs.surveyID" :jumpOptions="jumpOptions" v-if="$attrs.question.type == 'yes_no'" />
 
         <QuestionActions :question="$attrs.question" :surveyID="$attrs.surveyID" :jumpOptions="jumpOptions" />
         <br><br><br>
@@ -22,6 +23,7 @@ import EditMultipleChoice from './EditMultipleChoice.vue';
 import EditDate from './EditDate.vue';
 import EditDropdown from './EditDropdown.vue';
 import EditFileUpload from './EditFileUpload.vue';
+import EditYesNo from './EditYesNo.vue';
 import QuestionActions from './QuestionActions.vue';
 
 export default {
@@ -32,6 +34,7 @@ export default {
         EditDate,
         EditDropdown,
         EditFileUpload,
+        EditYesNo,
         QuestionActions
     },
     computed: {
@@ -40,7 +43,6 @@ export default {
             const questionRef = this.$attrs.question.ref;
             let afterQuestion = false;
             let ret = [];
-
             for (let i = 0; i < allQuestions.length; i++) {
                 if (!afterQuestion) {
                     if (allQuestions[i].ref == questionRef) {

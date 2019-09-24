@@ -89,6 +89,7 @@ function formatResponses(responses) {
     }
     //TODO: If val is an array, parse it to a nice looking string for the table
     items[`${responses[i].raw_response_id}`][responses[i].definition.ref] = responses[i].value.value;
+    items[`${responses[i].raw_response_id}`].url = `/report/${responses[i].raw_response_id}`
   }
 
   return {
@@ -110,6 +111,7 @@ function formatItems(items) {
   for (let [_, value] of Object.entries(items)) {
     ret.push(value);
   }
+  
   return ret;
 }
 

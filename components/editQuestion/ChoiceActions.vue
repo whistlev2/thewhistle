@@ -15,7 +15,7 @@
         </div>
         <v-btn action="addOptionJump" v-else>Add option jump</v-btn>
         <br>
-        <v-btn action="addChoice">Add option</v-btn>
+        <v-btn action="addChoice" v-if="$attrs.question.type != 'yes_no'">Add option</v-btn>
         <br><br>
     </div>
 </template>

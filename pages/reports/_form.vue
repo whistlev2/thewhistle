@@ -42,6 +42,9 @@ export default {
             }
             return ret;
         }
+    },
+    mounted () {
+        this.headers.push({ text: 'Actions', value: 'action', sortable: false });
     }
 
 }

@@ -7,18 +7,17 @@
             <input type="submit" value="Submit" />
         </form>
         <br>
-        <h3>Edit options</h3>
-        <v-btn action="addChoice">Add option</v-btn>
-        <br><br>
-        <EditChoice v-for="choice in $attrs.question.properties.choices" :surveyID="$attrs.surveyID"
-            :question="$attrs.question" :jumpOptions="$attrs.jumpOptions" :choice="choice" :key="choice.ref" />
+        <EditYesNoChoice :choice="true" :surveyID="$attrs.surveyID" :question="$attrs.question" :jumpOptions="$attrs.jumpOptions" />
+        <EditYesNoChoice :choice="false" :surveyID="$attrs.surveyID" :question="$attrs.question" :jumpOptions="$attrs.jumpOptions" />
     </div>
 </template>
 <script>
     import EditChoice from './EditChoice.vue';
+    import EditYesNoChoice from './EditYesNoChoice.vue';
     export default {
         components: {
             EditChoice,
-        }
+            EditYesNoChoice
+        },
     }
 </script>

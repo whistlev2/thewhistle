@@ -31,10 +31,10 @@ export default {
     },
     computed: {
         testURL: function () {
-            return `/submit-report/${this.$attrs.form.slug}/test`;
+            return `/survey/${this.$attrs.form.slug}/test`;
         },
         actualURL: function () {
-            return `/submit-report/${this.$attrs.form.slug}`;
+            return `/survey/${this.$attrs.form.slug}`;
         },
         responsesURL: function () {
             //TODO: Parse query params
