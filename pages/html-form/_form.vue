@@ -7,6 +7,7 @@
                 <div
                     v-if="item.type == 'short_text'"
                     class="v-text-field__slot"
+                    :key="item"
                 >
                     <p>{{ item.title }}</p>
                     <input
@@ -17,7 +18,7 @@
                 </div>
 
                 <!-- Short Text -->
-                <div v-if="item.type == 'long_text'" class="v-text-field__slot">
+                <div v-if="item.type == 'long_text'" class="v-text-field__slot" :key="item">
                     <p>{{ item.title }}</p>
                     <textarea
                         rows="4"

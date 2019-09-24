@@ -10,7 +10,6 @@ export default {
     'json'
   ],
   mounted() {
-    console.log(this.$el)
  }
 }
 </script>

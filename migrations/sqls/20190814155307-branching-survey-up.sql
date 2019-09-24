@@ -1,4 +1,4 @@
-insert into subforms (id, typeform_id, form_json) values (3, 'jo8KJj',
+insert into subforms (id, slug, typeform_id, test_typeform_id, organisation_id, form_json, test_form_json) values (3, 'branching', 'jo8KJj','jo8KJj', 1,
   '{
       "id": "jo8KJj",
       "title": "Branching Test",
@@ -230,4 +230,4 @@ insert into subforms (id, typeform_id, form_json) values (3, 'jo8KJj',
           "display": "https:\/\/whistle632914.typeform.com\/to\/jo8KJj"
       }
   }
-  ')
+  ', '{}')

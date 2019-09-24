@@ -1,44 +1,62 @@
 import axios from 'axios'
 
 import {
-    loadReport,
+    loadReports,
     getTestSurvey,
     extractTestSurvey,
     branchSurvey,
-    surveyById
+    surveyById,
+    loadOrganisations,
+    loadForms,
+    loadEditForm
 } from './testData'
+
+import Pages from './pages.ts'
 
 import Lowtech from './lowtech';
 
-export default function (context) {
-    var path = context.route.params;
+export default async function (context) {
+    var params = context.route.params;
+    var path = context.route.path;
 
-    if (path.hasOwnProperty('reports')) {
-        context.responses = loadReport(path.reports);
+    if (path == '/organisations') {
+        context.organisations = await Pages.loadOrganisations();
+    }
+    
+    
+
+    if (path == '/forms') {
+        context.forms = await Pages.loadForms();
     }
 
-    if (path.hasOwnProperty('survey')) {
-        context.survey = path.survey; //extractTestSurvey(path.survey);
+    if (path == '/users') {
+        context.users = await Pages.loadUsers();
     }
 
-    if (path.hasOwnProperty('htmlform')) {
+    if (path.startsWith('/reports') && params.hasOwnProperty('form')) {
+        context.reports = await Pages.loadReports(params.form);
+    }
+
+    if (path.startsWith('/edit-form/') && params.hasOwnProperty('form')) {
+        context.form = await Pages.loadEditForm(params.form);
+        context.surveyID = params.form;
+        context.allQuestions = Pages.getAllQuestions(context.form);
+    }
+
+    if (path.startsWith('/report/') && params.hasOwnProperty('report')) {
+        context.report = await Pages.loadReport(params.report);
+    }
+
+    if (path.startsWith('/survey/') && params.hasOwnProperty('survey')) {
+        context.form = await Pages.loadFormFromSlug(params.survey);
+    }
+
+    if (params.hasOwnProperty('htmlform')) {
         context.survey = extractTestSurvey(getTestSurvey());
     }
 
-    if (path.hasOwnProperty('editform')) {
-        const id = path.editform;
-        context.surveyID = id;
-        axios.get('http://localhost:3000/surveyjson').then(function(v){
-          context.survey = v;
-          return context
-        })
-        // context.survey = extractTestSurvey(surveyById(id));
-
-    }
-
-
-    if (path.hasOwnProperty('lowtech')) {
-        context.questions = Lowtech.getNextQuestions(path.lowtech);
+    if (params.hasOwnProperty('lowtech')) {
+        context.questions = Lowtech.getNextQuestions(params.lowtech);
     }
 
     return context

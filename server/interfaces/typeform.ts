@@ -17,7 +17,7 @@ const bearer = {
 }
 class Typeform {
 
-    private static jsonCallback(error, response, body){
+    private static jsonCallback(error, res, body){
         res.json(body);
     }
 

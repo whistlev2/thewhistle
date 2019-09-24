@@ -18,6 +18,7 @@ exports.up = function(db: any, callback: any) {
   db.createTable('organisations', {
     id: { type: 'int', primaryKey: true, autoIncrement: true },
     name: 'string',
+    slug: 'string',
     active: 'boolean',
   }, callback);
 };

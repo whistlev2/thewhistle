@@ -1,5 +1,5 @@
 /* Replace with your SQL commands */
-insert into subforms (id, typeform_id, form_json) values (2, 'nYkngh', '{
+insert into subforms (id, slug, typeform_id, organisation_id, form_json) values (2, 'aform', 'nYkngh', 1, '{
     "id": "nYkngh",
     "title": "Whistle",
     "theme": {

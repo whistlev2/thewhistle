@@ -41,12 +41,14 @@ router.get('/responses', function(
     Typeform.getResponses('nYkngh', res)
 });
 
-router.get('/form', function(
+router.get('/form/:id', function(
   req: Request,
   res: Response,
   next: NextFunction
 ): void {
-    Typeform.getForm('nYkngh', res)
+    const id = req.params.id;
+    console.log(id);
+    Surveys.getSurveyJSON(id, res);
 });
 
 export default router;

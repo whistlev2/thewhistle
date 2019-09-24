@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h1>The survey {{ surveyId }}</h1>
+    <h1>The survey {{ form.name }}</h1>
     <no-ssr>
-      <survey :id="surveyId"></survey>
+      <survey :id="form.id"></survey>
     </no-ssr>
   </div>
 </template>
@@ -10,7 +10,9 @@
 <script>
   export default {
     asyncData: (context) => {
-      return { surveyId: context.survey }
+      return {
+        form: context.form
+      }
     },
     components: {
       'survey': () => import('@/pages/survey/Survey.vue')
