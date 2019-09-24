@@ -13,7 +13,6 @@ router.use('/forms', forms)
 
 router.use('/reports', reports)
 
-router.use('/auth', auth)
-
+router.use('/report', report)
 
 module.exports = router

@@ -1,13 +1,22 @@
 <template>
-  <div>
-    <nuxt v-if="showPage" />
-    <login-form v-else></login-form>
-  </div>
+    <v-app light>
+        <MobileMenuBar v-if="windowWidth < 500" />
+        <!-- <MenuBar  /> -->
+        <v-content>
+            <v-container>
+                <nuxt />
+            </v-container>
+        </v-content>
+        <v-navigation-drawer v-model="rightDrawer" :right="right" temporary fixed>
+        </v-navigation-drawer>
+    </v-app>
 </template>
 
 <script>
-import LoginForm from '~/components/LoginForm'
 
+//TODO - NTH - Use favico shortcut icon
+import MenuBar from '../components/MenuBar.vue'
+import MobileMenuBar from '../components/MobileMenuBar.vue'
 export default {
   data() {
     var path = this.$route.path

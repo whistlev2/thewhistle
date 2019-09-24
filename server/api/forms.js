@@ -6,6 +6,7 @@ const router = express.Router()
 
 
 router.get('/', (req, res) => {
+    // TODO - BE - add userID to form query
     var userID = 1
     Surveys.getMyForms(userID, res);
 })

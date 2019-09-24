@@ -4,17 +4,9 @@ const typeform = require('../interfaces/typeform.js')
 
 const surveyUtils = require('../surveyUtils.js')
 
-const Pool = require('pg').Pool;
-const db = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'thewhistle',
-    password: 'postgres',
-    port: 5432
-});
+const db = require('../db.ts')
 
-//TODO: Import DB instead
-
+// TODO - NTH change word survey to form
 
 function extractTestSurvey(survey) {
     return _.each(survey.fields, function (item) {
@@ -148,19 +140,3 @@ updateSurvey = function (id, survey) {
     });
 
 }
-
-
-// class Surveys {
-//     static getAll(req, res) {
-//         db.query('SELECT * FROM surveys ORDER BY id ASC', (error, results) => {
-//             if (error) {
-//                 throw error;
-//             }
-//             req.json(results.rows);
-//         });
-//     }
-
-// static getSurvey(surveyID) {
-//   return "BOB"
-// }
-// }

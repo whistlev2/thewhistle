@@ -47,7 +47,7 @@
                     slug: this.organisationSlug
                 }
                 this.closeModal();
-                //TODO: POST data
+                // TODO - NTH - create new organisation - passes in name and slug 
             },
 
             closeModal() {

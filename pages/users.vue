@@ -1,5 +1,6 @@
 <template>
     <div>
+      <!-- TODO - L - user views -->
         USERS
         <v-data-table :headers="headers" :items="items" :items-per-page="5" class="elevation-1"></v-data-table>
     </div>
@@ -9,7 +10,7 @@
 <script>
 
 export default {
-
+// TODO - L - return data from backend
     data() {
         return {
             headers: [{

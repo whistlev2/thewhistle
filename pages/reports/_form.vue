@@ -28,7 +28,7 @@ export default {
             const filters = Object.entries(this.$route.query);
             let ret = [];
             var showItem;
-            //TODO: Parse query strings properly
+            //TODO - Parse query strings properly
             for (let i = 0; i < this.items.length; i++) {
                 showItem = true;
                 for (let [key, value] of filters) {
