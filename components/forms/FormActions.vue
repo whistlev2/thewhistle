@@ -37,7 +37,7 @@ export default {
             return `/survey/${this.$attrs.form.slug}`;
         },
         responsesURL: function () {
-            //TODO: Parse query params
+            //TODO - NTH - mkase sure slug is well behaved Parse query params
             return `/reports/${this.$attrs.form.slug}`;
         },
         editURL: function () {

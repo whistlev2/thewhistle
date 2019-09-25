@@ -67,7 +67,7 @@ async function start() {
   })
 }
 
-// TODO - rename route and function
+// TODO - move Form editing endpoints to seperate file
 app.get('/update-field', (req, res) => {
   surveys.updateField(req, res)
 })

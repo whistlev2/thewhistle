@@ -1,4 +1,4 @@
-
+// TODO - L - to confirm progress 
 class Lowtech {
     static getForm() {
         //Will need to change to interact with database.
@@ -87,7 +87,7 @@ class Lowtech {
                 }
             }
         }
-        //TODO: Throw error
+        //TODO - Throw error
         return null
     }
 
@@ -108,7 +108,7 @@ class Lowtech {
 
 export default Lowtech;
 
-let formJson = 
+let formJson =
 {
     "id": "jo8KJj",
     "title": "Branching Test",

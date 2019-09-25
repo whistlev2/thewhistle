@@ -19,6 +19,7 @@ class Pages {
     }
 
 
+    // TODO - Get organisations for user
     static async loadOrganisations() {
         const headers = [{
                 text: 'Organisation',
@@ -61,6 +62,7 @@ class Pages {
     }
 
 
+    // TODO - Get users from API
     static async loadUsers() {
         return '';
     }
@@ -73,40 +75,9 @@ class Pages {
 
 
     static async loadReport(reportId) {
-        return {
-            questions: [{
-            ref: 'UlkKrBxbI2m1',
-            key: 'How good',
-            value: 2
-        }, {
-            ref: 'FnkrDwaGeauK',
-            key: 'City',
-            value: 'A'
-        }, {
-            ref: 'tXKSSANrdGW0',
-            key: 'A choice',
-            value: 'A'
-        }, {
-            ref: 'kTUGCk0ROpcd',
-            key: 'Tell us',
-            value: 'dsadsad'
-        }],
-        users: [
-            {
-                ref: 'user1',
-                name: 'Tom',
-                access: true
-            },
-            {
-                ref: 'user2',
-                name: 'Louis',
-                access: false
-            }
-        ]};
-        //TODO: Don't return static data & create api endpoint
-        /* const url = process.env.baseURL + `/api/report/${reportId}`;
+        const url = process.env.baseURL + `/api/report/${reportId}`;
         const report = await axios.get(url);
-        return report.data; */
+        return report.data;
     }
 
 

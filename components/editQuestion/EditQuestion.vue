@@ -6,7 +6,7 @@
         <EditLongText :question="$attrs.question" :surveyID="$attrs.surveyID" v-if="$attrs.question.type == 'long_text'" />
         <EditMultipleChoice :question="$attrs.question" :surveyID="$attrs.surveyID" :jumpOptions="jumpOptions" v-if="$attrs.question.type == 'multiple_choice'" />
         <EditDropdown :question="$attrs.question" :surveyID="$attrs.surveyID" :jumpOptions="jumpOptions" v-if="$attrs.question.type == 'dropdown'" />
-        <!-- TODO - test file upload comp works -->
+        <!-- TODO - NTH - test file upload comp works -->
         <EditFileUpload :question="$attrs.question" :surveyID="$attrs.surveyID" v-if="$attrs.question.type == 'file_upload'" />
         <EditYesNo :question="$attrs.question" :surveyID="$attrs.surveyID" :jumpOptions="jumpOptions" v-if="$attrs.question.type == 'yes_no'" />
 

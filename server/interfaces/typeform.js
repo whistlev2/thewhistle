@@ -12,6 +12,9 @@ const ACCESS_TOKEN = "5o33hz2vjVsNbKCu8T4Zb2cYnNM6kWknvqnsfe5mX4Dn"
 // "2Ybxuf6NPCQbHh9Zsptb7qPFCMaJ5UX3cA2tGHWGCM8P"
 //
 
+
+// TODO - BIG - integrate TS functionality into JS file
+
 const headers = {
   'Authorization': 'Bearer ' + ACCESS_TOKEN,
   'Accept': 'application/json'

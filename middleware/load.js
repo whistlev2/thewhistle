@@ -1,16 +1,5 @@
 import axios from 'axios'
 
-import {
-    loadReports,
-    getTestSurvey,
-    extractTestSurvey,
-    branchSurvey,
-    surveyById,
-    loadOrganisations,
-    loadForms,
-    loadEditForm
-} from './testData'
-
 import Pages from './pages.ts'
 
 import Lowtech from './lowtech';
@@ -22,8 +11,6 @@ export default async function (context) {
     if (path == '/organisations') {
         context.organisations = await Pages.loadOrganisations();
     }
-    
-    
 
     if (path == '/forms') {
         context.forms = await Pages.loadForms();
@@ -51,10 +38,11 @@ export default async function (context) {
         context.form = await Pages.loadFormFromSlug(params.survey);
     }
 
+    // TODO - change conditions for path
     if (params.hasOwnProperty('htmlform')) {
         context.survey = extractTestSurvey(getTestSurvey());
     }
-
+    // TODO - change conditions for path
     if (params.hasOwnProperty('lowtech')) {
         context.questions = Lowtech.getNextQuestions(params.lowtech);
     }

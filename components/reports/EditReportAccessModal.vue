@@ -31,7 +31,7 @@
             updateAccess() {
                 const postData = this.getPostData();
                 this.closeModal();
-                //TODO: POST data
+                //TODO - Updates who has access to the report takes a list of user id's and updates access
             },
 
             closeModal() {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>The survey {{ form.name }}</h1>
+    <h1>{{ form.name }}</h1>
     <no-ssr>
       <survey :id="form.id"></survey>
     </no-ssr>

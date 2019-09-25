@@ -1,5 +1,7 @@
 import db from '../db';
 
+// TODO - L - include new fields
+
 class RawResponse {
     private static processJson(rows) {
         let ret = [];
@@ -18,7 +20,7 @@ class RawResponse {
             if (error) {
                 throw error;
             }
-            
+
             let ret = RawResponse.processJson(results.rows);
             res.json(ret);
         });

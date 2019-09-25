@@ -1,11 +1,6 @@
-const Pool = require('pg').Pool;
-const db = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'thewhistle',
-    password: 'postgres',
-    port: 5432
-});
+const db = require('../db.ts')
+
+// TODO - combine the users.js API functions with this file
 
 exports.getUsers = function (res) {
   db.query(`SELECT * FROM users`, (error, results) => {

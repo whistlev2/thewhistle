@@ -1,3 +1,5 @@
+<!-- TODO - allow user to switch organisation -->
+<!-- Radio button selector -->
 <template>
     <div>
         <v-data-table :headers="headers" :items="items" :items-per-page="5" class="elevation-1"></v-data-table>

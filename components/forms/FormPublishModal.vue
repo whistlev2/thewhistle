@@ -22,7 +22,7 @@
         methods: {
             publishForm() {
                 this.closeModal();
-                //TODO: POST data
+                //TODO - L - post from ID to API to change published flag from false to true
             },
 
             closeModal() {

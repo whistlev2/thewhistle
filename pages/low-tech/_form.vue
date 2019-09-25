@@ -1,3 +1,4 @@
+<!-- TODO - determine JS compatability and redirect -->
 <template>
     <div>
         <question v-for="question in questions" :json="question" v-bind:key="question.id">

@@ -1,5 +1,5 @@
 <template>
-    <!--     TODO: Make responsive -->
+    <!--     TODO - Make responsive -->
     <v-card color="#033549" flat height="48px" tile>
         <v-toolbar absolute color="#033549" height="48px" dark>
 

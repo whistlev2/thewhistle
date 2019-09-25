@@ -20,6 +20,9 @@ const form = {
 
 }
 
+// TODO - BIG - integrate user into user API 
+
+
 router.get('/', (req, res) => {
   userQueries.getUsers(res)
 })

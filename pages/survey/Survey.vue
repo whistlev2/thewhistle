@@ -1,6 +1,8 @@
+<!-- TODO - NTH move to Components file -->
 <template>
   <div>
-    <div style="height: 400px" id="my-embedded-typeform"></div>
+    <!-- TODO - ensure height works -->
+    <div style="height: 100%" id="my-embedded-typeform"></div>
   </div>
 </template>
 
@@ -8,10 +10,10 @@
 import * as typeformEmbed from '@typeform/embed'
 
 export default {
-  
+
   mounted() {
     var formID = this.$attrs.id
-    const url =`https://admin.typeform.com/to/${formID}`;   
+    const url =`https://admin.typeform.com/to/${formID}`;
     var el = document.getElementById("my-embedded-typeform");
 
    // When instantiating a widget embed, you must provide the DOM element
