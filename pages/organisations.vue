@@ -18,13 +18,27 @@ export default {
     },
 
     data() {
+        console.log(this.$store.state)
+        const headers = [{
+                text: 'Organisation',
+                value: 'ref1'
+            },
+            {
+                text: 'My role',
+                value: 'ref2'
+            }
+        ];
+        const items = [{
+              ref1: `${this.$store.state.authUser.name}`,
+              ref2: 'admin'
+        }]
+
+
         return {
+            headers: headers,
+            items: items,
             showCreateModal: false
         }
-    },
-
-    asyncData(context) {
-        return context.organisations;
     },
 
     methods: {

@@ -60,11 +60,8 @@ function saveNewPassword(id, newPassword) {
   })
 }
 
-
-
-
 exports.deserializeUser = function (id, done) {
-  db.query(`SELECT * FROM users WHERE id='${id}'`, (error, results) => {
+  db.query(`SELECT * FROM users JOIN organisations ON organisations.id = users.organisation_id WHERE users.id='${id}'`, (error, results) => {
     if (error) {
       done(error)
     }

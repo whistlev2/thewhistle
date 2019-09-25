@@ -18,36 +18,6 @@ class Pages {
         return form.data;
     }
 
-
-    // TODO - Get organisations for user
-    static async loadOrganisations() {
-        const headers = [{
-                text: 'Organisation',
-                value: 'ref1'
-            },
-            {
-                text: 'My role',
-                value: 'ref2'
-            }
-        ];
-        const items = [
-            {
-                ref1: 'HFRN',
-                ref2: 'admin'
-            },
-            {
-                ref1: 'SCOC',
-                ref2: 'user'
-            }
-        ];
-
-        return {
-            headers: headers,
-            items: items
-        };
-    }
-
-
     static async loadReports(form) {
         const url = process.env.baseURL + `/api/reports/${form}`;
         const reports = await axios.get(url);
@@ -55,8 +25,10 @@ class Pages {
     }
 
 
-    static async loadForms() {
-        const url = process.env.baseURL + '/api/forms';
+    static async loadForms(user) {
+        console.log(user)
+        const userId = 1 // user.id
+        const url = process.env.baseURL + '/api/forms/user/' + userId;
         const form = await axios.get(url);
         return form.data;
     }
