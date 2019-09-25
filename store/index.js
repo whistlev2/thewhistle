@@ -29,10 +29,11 @@ export const actions = {
       throw new Error('Wrong email or password')
     }
   },
-  async register ({ commit }, { email, password }) {
+  async register ({ commit }, { email, password, organisation_id }) {
+    console.log('MAKE NEW USER')
     if (!email || !password) throw new Error('Email and password are required')
     try {
-      const { data } = await axios.post('/api/auth/register', { email, password })
+      const { data } = await axios.post('/api/auth/register', { email, password, organisation_id })
       commit('SET_USER', data)
     } catch (error) {
       switch (error.response.status || 500) {

@@ -19,17 +19,18 @@ exports.serializeUser = function (user, done) {
 exports.createNewUser = function(email, password, organisation_id) {
   bcrypt.genSalt(10, (err, salt) => {
     if (err) return next(err)
-    bcrypt.hash(password, salt, (err, hash) => {
+    // bcrypt.hash(password, salt, (err, hash) => {
       if (err) return err
-      const query = 'INSERT INTO users(email, hash, organisation_id) VALUES($1, $2, $3) RETURNING id'
-      const values = [email, hash, organisation_id];
+      const query = 'INSERT INTO users(email, password, organisation_id) VALUES($1, $2, $3) RETURNING id'
+      const values = [email, password, organisation_id];
 
       db.query(query, values, (error, results) => {
+        console.log('query', err)
           if (error) {
               console.error(error);
           }
         })
-    })
+    // })
   })
 }
 

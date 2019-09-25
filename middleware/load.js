@@ -7,10 +7,9 @@ import Lowtech from './lowtech';
 export default async function (context) {
     var params = context.route.params;
     var path = context.route.path;
-    var user = context.req.user
 
     if (path == '/forms') {
-
+        var user = context.req.user
         context.forms = await Pages.loadForms(user);
     }
 

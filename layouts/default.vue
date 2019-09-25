@@ -3,8 +3,9 @@
         <MenuBar />
         <v-content>
             <v-container>
-              <nuxt v-if="showPage" />
-              <login-form v-else></login-form>
+              <nuxt />
+              <!-- <nuxt v-if="showPage" />
+              <login-form v-else></login-form> -->
             </v-container>
         </v-content>
         <v-navigation-drawer v-model="rightDrawer" :right="right" temporary fixed>
