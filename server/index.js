@@ -6,7 +6,6 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
 
-const api = require('./api/index.js')
 
 const { db } = require('./db.ts')
 
