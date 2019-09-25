@@ -1,52 +1,19 @@
 <template>
-    <v-app light>
-        <!-- <MobileMenuBar v-if="windowWidth < 500" /> -->
-        <MenuBar  />
-        <v-content>
-            <v-container>
-                <nuxt />
-            </v-container>
-        </v-content>
-        <v-navigation-drawer v-model="rightDrawer" :right="right" temporary fixed>
-        </v-navigation-drawer>
-    </v-app>
+  <div>
+    <nuxt v-if="showPage" />
+    <login-form v-else></login-form>
+  </div>
 </template>
 
 <script>
-import MenuBar from '../components/MenuBar.vue'
-import MobileMenuBar from '../components/MobileMenuBar.vue'
+import LoginForm from '~/components/LoginForm'
+
 export default {
-    components: {
-        MenuBar,
-        MobileMenuBar
-    },
-    data() {
-        return {
-            clipped: false,
-            drawer: false,
-            fixed: false,
-            items: [{
-                    icon: 'apps',
-                    title: 'Welcome',
-                    to: '/'
-                },
-                {
-                    icon: 'bubble_chart',
-                    title: 'Inspire',
-                    to: '/inspire'
-                }
-            ],
-            miniVariant: false,
-            right: true,
-            rightDrawer: false,
-            title: 'Vuetify.js',
-            windowWidth: 0
-        }
-    },
-    mounted() {
-        window.onresize = () => {
-            this.windowWidth = window.innerWidth
-        }
-    }
+  data() {
+    var path = this.$route.path
+    var showPage = this.$store.state.authUser || path.includes('survey') || path.includes('htmlform')
+    return { showPage: showPage }
+  },
+  components: { LoginForm }
 }
 </script>

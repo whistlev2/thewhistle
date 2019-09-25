@@ -20,6 +20,7 @@ exports.up = function(db: any, callback: any) {
     first_name: 'string',
     surname: 'string',
     email: 'string',
+    password: 'string',
     role: 'string',
     organisation_id: 'int'
   }, addForeignKey);
