@@ -8,9 +8,7 @@ module.exports = {
   router: {
     middleware: ['auth', 'load']
   },
-  serverMiddleware: [
-    '~/api/logger'
-  ],
+  serverMiddleware: [],
   /*
   ** Headers of the page
   */
