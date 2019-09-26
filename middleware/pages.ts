@@ -46,11 +46,11 @@ class Pages {
     }
 
 
-    static async loadReport(reportId) {
-        const url = process.env.baseURL + `/api/report/${reportId}`;
-        const report = await axios.get(url);
-        return report.data;
-    }
+    // static async loadReport(reportId) {
+    //     const url = process.env.baseURL + `/api/report/${reportId}`;
+    //     const report = await axios.get(url);
+    //     return report.data;
+    // }
 
 
     static async loadFormViewAccess(userId, formId) {
