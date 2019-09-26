@@ -26,7 +26,6 @@ class Pages {
 
 
     static async loadForms(user) {
-        console.log(user)
         const userId = 1 // user.id
         const url = process.env.baseURL + '/api/forms/user/' + userId;
         const form = await axios.get(url);
@@ -34,9 +33,10 @@ class Pages {
     }
 
 
-    // TODO - Get users from API
-    static async loadUsers() {
-        return '';
+    static async loadUsers(orgId) {
+      const url = process.env.baseURL + '/api/users/organisation/'+ orgId +'/users';
+      const form = await axios.get(url);
+      return form.data;
     }
 
     static async loadFormFromSlug(slug) {

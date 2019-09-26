@@ -29,7 +29,6 @@ export default {
   data: getDefaultData,
   methods: {
     reset () {
-      console.log(this)
       const d = getDefaultData()
       Object.keys(d).forEach((key) => {
         this.$data[key] = d[key]

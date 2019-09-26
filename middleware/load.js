@@ -8,14 +8,14 @@ export default async function (context) {
     var params = context.route.params;
     var path = context.route.path;
 
-    if (path == '/forms') {
-        var user = context.req.user
-        context.forms = await Pages.loadForms(user);
-    }
+    // if (path == '/forms') {
+    //     var user = context.req.user
+    //     context.forms = await Pages.loadForms(user);
+    // }
 
-    if (path == '/users') {
-        context.users = await Pages.loadUsers();
-    }
+    // if (path == '/users') {
+    //     context.users = await Pages.loadUsers();
+    // }
 
     if (path.startsWith('/reports') && params.hasOwnProperty('form')) {
         context.reports = await Pages.loadReports(params.form);

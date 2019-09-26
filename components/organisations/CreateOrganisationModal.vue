@@ -10,10 +10,10 @@
                         <v-row>
                             <v-form ref="form" v-model="valid">
                                 <v-col cols="12">
-                                    <v-text-field v-model="questionText" :rules="notBlank" label="Name" required></v-text-field>
+                                    <v-text-field v-model="organisationName" :rules="notBlank" label="Name" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field v-model="questionRef" :rules="notBlank" label="Abbreviation"
+                                    <v-text-field v-model="organisationSlug" :rules="notBlank" label="Abbreviation"
                                         hint="Max 8 characters, no spaces." counter="8"
                                         persistent-hint="true" required></v-text-field>
                                 </v-col>
@@ -47,7 +47,7 @@
                     slug: this.organisationSlug
                 }
                 this.closeModal();
-                // TODO - NTH - create new organisation - passes in name and slug 
+                // TODO - NTH - create new organisation - passes in name and slug
             },
 
             closeModal() {

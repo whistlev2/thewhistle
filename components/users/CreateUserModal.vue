@@ -32,6 +32,8 @@
     export default {
         data() {
             return {
+                email: '',
+                password: '',
                 orgId: 1,
                 notBlank: [v => !!v || 'Required'],
                 valid: false

@@ -1,5 +1,3 @@
-<!-- TODO - allow user to switch organisation -->
-<!-- Radio button selector -->
 <template>
     <div>
         <v-data-table :headers="headers" :items="items" :items-per-page="5" class="elevation-1"></v-data-table>
@@ -18,7 +16,7 @@ export default {
     },
 
     data() {
-        console.log(this.$store.state)
+        const name = this.$store.state.authUser ? this.$store.state.authUser.name : "Not logged in"
         const headers = [{
                 text: 'Organisation',
                 value: 'ref1'
@@ -29,7 +27,7 @@ export default {
             }
         ];
         const items = [{
-              ref1: `${this.$store.state.authUser.name}`,
+              ref1: `${name}`,
               ref2: 'admin'
         }]
 

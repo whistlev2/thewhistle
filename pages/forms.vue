@@ -12,17 +12,27 @@
 <script>
 
 import FormActions from '../components/forms/FormActions.vue';
+import axios from 'axios'
 
 export default {
     components: {
         FormActions
     },
-
-    asyncData(context) {
+    data() {
         return {
-            forms: context.forms
-        };
-    },
-
+          forms: []
+        }
+      },
+      created() {
+        this.fetchData();
+      },
+      methods: {
+          fetchData() {
+            const url = '/api/forms/user/' + 1;
+            axios.get(url).then((d) => {
+              this.forms = d.data}
+            )
+          }
+        }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-btn :to="testURL" style="background-color:#033549; color:white; margin-bottom: 10px;" text>View Test</v-btn>
+        <v-btn :to="actualURL" style="background-color:#033549; color:white; margin-bottom: 10px;" text>View Form</v-btn>
         <v-btn v-if="this.$attrs.form.published" :to="actualURL" style="background-color:#033549; color:white; margin-bottom: 10px;" text>View Actual</v-btn>
         <v-btn :to="responsesURL" style="background-color:#033549; color:white; margin-bottom: 10px;" text>View Responses</v-btn>
         <template v-if="this.$attrs.form.userRole == 'admin'">
