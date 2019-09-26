@@ -17,9 +17,9 @@ export default async function (context) {
     //     context.users = await Pages.loadUsers();
     // }
 
-    // if (path.startsWith('/reports') && params.hasOwnProperty('form')) {
-    //     context.reports = await Pages.loadReports(params.form);
-    // }
+    if (path.startsWith('/reports') && params.hasOwnProperty('form')) {
+        context.reports = await Pages.loadReports(params.form);
+    }
 
     if (path.startsWith('/edit-form/') && params.hasOwnProperty('form')) {
         context.form = await Pages.loadEditForm(params.form);
