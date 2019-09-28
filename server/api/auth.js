@@ -7,11 +7,11 @@ const router = express.Router()
 
 
 router.post('/register', (req, res) => {
-  const { email, password, organisation_id } = req.body
+  const { email, password, organisation_id } = req.body  
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required' })
   }
-  auth.createNewUser(email, passport, organisation_id)
+  auth.createNewUser(email, password, organisation_id)
 
 })
 

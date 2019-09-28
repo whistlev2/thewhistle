@@ -1,7 +1,7 @@
 <!-- TODO - NTH - Add outline of admin metadata form -->
 <template>
     <div>
-        <v-container class="grey lighten-5" v-for="question in report.questions" :key="question.ref">
+        <v-container class="grey lighten-5" v-for="question in report" :key="question.ref">
             <v-row>
                 <v-col cols="6" md="4">
                     <v-card class="pa-2" outlined tile style="background-color: inherit; border: none; font-weight: bold;">
@@ -23,7 +23,8 @@
 <script>
 
 import EditReportAccessModal from '../../components/reports/EditReportAccessModal.vue';
-
+import axios from 'axios'
+var _ = require('underscore');
 export default {
     components: {
         EditReportAccessModal
@@ -31,17 +32,20 @@ export default {
 
     data() {
         return {
-            showEditAccessModal: false
-        }
-    },
-
-    asyncData(context) {
-        return {
-            report: context.report
-        }
-    },
-
+            showEditAccessModal: false,
+            report: []}
+          },
+      created() {
+        this.fetchData()
+      },
     methods: {
+      fetchData() {
+        const reportId = this.$route.params.report
+        const url = `/api/report/${reportId}`;
+        axios.get(url).then((d) => {          
+          this.report = _.map(d.data, (res) => {return {ref: res.question_ref, key: res.definition.title, value: res.value.value} })
+        })
+      },
         closeEditAccessModal() {
             this.showEditAccessModal = false;
         }

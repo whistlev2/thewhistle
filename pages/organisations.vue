@@ -1,5 +1,3 @@
-<!-- TODO - allow user to switch organisation -->
-<!-- Radio button selector -->
 <template>
     <div>
         <v-data-table :headers="headers" :items="items" :items-per-page="5" class="elevation-1"></v-data-table>
@@ -18,13 +16,27 @@ export default {
     },
 
     data() {
+        const name = this.$store.state.authUser ? this.$store.state.authUser.name : "Not logged in"
+        const headers = [{
+                text: 'Organisation',
+                value: 'ref1'
+            },
+            {
+                text: 'My role',
+                value: 'ref2'
+            }
+        ];
+        const items = [{
+              ref1: `${name}`,
+              ref2: 'admin'
+        }]
+
+
         return {
+            headers: headers,
+            items: items,
             showCreateModal: false
         }
-    },
-
-    asyncData(context) {
-        return context.organisations;
     },
 
     methods: {

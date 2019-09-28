@@ -21,10 +21,11 @@ exports.createNewUser = function(email, password, organisation_id) {
     if (err) return next(err)
     bcrypt.hash(password, salt, (err, hash) => {
       if (err) return err
-      const query = 'INSERT INTO users(email, hash, organisation_id) VALUES($1, $2, $3) RETURNING id'
+      const query = 'INSERT INTO users(email, password, organisation_id) VALUES($1, $2, $3) RETURNING id'
       const values = [email, hash, organisation_id];
 
       db.query(query, values, (error, results) => {
+        console.log('query', err)
           if (error) {
               console.error(error);
           }
@@ -60,11 +61,8 @@ function saveNewPassword(id, newPassword) {
   })
 }
 
-
-
-
 exports.deserializeUser = function (id, done) {
-  db.query(`SELECT * FROM users WHERE id='${id}'`, (error, results) => {
+  db.query(`SELECT * FROM users JOIN organisations ON organisations.id = users.organisation_id WHERE users.id='${id}'`, (error, results) => {
     if (error) {
       done(error)
     }

@@ -3,19 +3,17 @@
         <v-dialog v-model="$attrs.show" max-width="600px">
             <v-card>
                 <v-card-title>
-                    <span class="headline">Create Organisation</span>
+                    <span class="headline">Add User</span>
                 </v-card-title>
                 <v-card-text>
                     <v-container>
                         <v-row>
                             <v-form ref="form" v-model="valid">
                                 <v-col cols="12">
-                                    <v-text-field v-model="organisationName" :rules="notBlank" label="Name" required></v-text-field>
+                                    <v-text-field v-model="email" :rules="notBlank" label="Email" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field v-model="organisationSlug" :rules="notBlank" label="Abbreviation"
-                                        hint="Max 8 characters, no spaces." counter="8"
-                                        persistent-hint="true" required></v-text-field>
+                                    <v-text-field v-model="password" :rules="notBlank" label="Password" required></v-text-field>
                                 </v-col>
                             </v-form>
                         </v-row>
@@ -24,7 +22,7 @@
                 <v-card-actions>
                     <div class="flex-grow-1"></div>
                     <v-btn color="blue darken-1" text v-on:click="closeModal">Close</v-btn>
-                    <v-btn color="blue darken-1" disabled="!valid" text @click="createOrganisation">Create</v-btn>
+                    <v-btn color="blue darken-1" text @click="createUser">Create</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -34,18 +32,21 @@
     export default {
         data() {
             return {
-                organisationName: '',
-                organisationSlug: '',
+                email: '',
+                password: '',
+                orgId: 1,
                 notBlank: [v => !!v || 'Required'],
                 valid: false
             }
         },
         methods: {
-            createOrganisation() {
+            createUser() {
                 const postData = {
-                    name: this.organisationName,
-                    slug: this.organisationSlug
+                    email: this.email,
+                    password: this.password,
+                    organisation_id: this.orgId
                 }
+                this.$store.dispatch('register', postData)
                 this.closeModal();
                 // TODO - NTH - create new organisation - passes in name and slug
             },
@@ -53,16 +54,6 @@
             closeModal() {
                 this.$attrs.show = false;
                 this.$emit('close');
-            },
-
-            validSlug(slug) {
-                if (slug.length > 8) {
-                    return 'Abbreviations cannot be more than 8 characters long.';
-                }
-                if (slug.indexOf(' ') !== -1) {
-                    return 'Abbreviations cannot contain spaces. Try ' + slug.replace(' ', '-') + '?';
-                }
-                return true;
             }
         }
     }

@@ -2,15 +2,13 @@ const colors = require('vuetify/es5/util/colors').default
 
 module.exports = {
   env: {
-    baseURL: 'http://localhost:3000'
+    baseURL: process.env.BASE_URL || 'http://localhost:3000'
   },
   mode: 'universal',
   router: {
     middleware: ['auth', 'load']
   },
-  serverMiddleware: [
-    '~/api/logger'
-  ],
+  serverMiddleware: [],
   /*
   ** Headers of the page
   */

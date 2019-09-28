@@ -8,17 +8,14 @@ export default async function (context) {
     var params = context.route.params;
     var path = context.route.path;
 
-    if (path == '/organisations') {
-        context.organisations = await Pages.loadOrganisations();
-    }
+    // if (path == '/forms') {
+    //     var user = context.req.user
+    //     context.forms = await Pages.loadForms(user);
+    // }
 
-    if (path == '/forms') {
-        context.forms = await Pages.loadForms();
-    }
-
-    if (path == '/users') {
-        context.users = await Pages.loadUsers();
-    }
+    // if (path == '/users') {
+    //     context.users = await Pages.loadUsers();
+    // }
 
     if (path.startsWith('/reports') && params.hasOwnProperty('form')) {
         context.reports = await Pages.loadReports(params.form);
@@ -30,9 +27,9 @@ export default async function (context) {
         context.allQuestions = Pages.getAllQuestions(context.form);
     }
 
-    if (path.startsWith('/report/') && params.hasOwnProperty('report')) {
-        context.report = await Pages.loadReport(params.report);
-    }
+    // if (path.startsWith('/report/') && params.hasOwnProperty('report')) {
+    //     context.report = await Pages.loadReport(params.report);
+    // }
 
     if (path.startsWith('/survey/') && params.hasOwnProperty('survey')) {
         context.form = await Pages.loadFormFromSlug(params.survey);
