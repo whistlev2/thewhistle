@@ -90,3 +90,11 @@ Creating a migration
 ```
 db-migrate create initial-migration
 ```
+
+Clear Heroku cache
+```
+$ heroku plugins:install heroku-repo
+$ heroku repo:purge_cache -a appname
+$ git commit --allow-empty -m "Purge cache"
+$ git push heroku master
+```
