@@ -1,9 +1,11 @@
 const Pool = require('pg').Pool;
 
+var db = null
+
 if (process.env.NODE_ENV === 'production') {
-  const db = new Pool(process.env.DATABASE_URL)
+  db = new Pool(process.env.DATABASE_URL)
 } else {
-  const db = new Pool({
+  db = new Pool({
       user: 'postgres',
       host: 'localhost',
       database: 'thewhistle',

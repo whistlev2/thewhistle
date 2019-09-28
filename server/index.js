@@ -7,8 +7,6 @@ const cookieParser = require('cookie-parser')
 const session = require('express-session')
 
 
-const { db } = require('./db.ts')
-
 const api = require('./api/index.js')
 
 const surveys = require('../server/queries/surveys.js');
