@@ -3,9 +3,9 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "heroku-prebuild": "npm install -g cross-env",      
+        "heroku-prebuild": "npm install -g cross-env",
         "lint": "eslint --fix **/*.{js,ts,vue}",
-        "start": "cross-env NODE_ENV=production node server/index.js",
+        "start": "node server/index.js",
         "test:e2e": "vue-cli-service test:e2e",
         "test:unit": "vue-cli-service test:unit",
         "test": "jest",
