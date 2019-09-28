@@ -112,6 +112,7 @@
         "node": "10.x"
     },
     "scripts": {
-    "postinstall": "npm install -g cross-env"
+      "preinstall": "npm install -g cross-env",
+      "postinstall": "db-migrate up"
 }
 }
