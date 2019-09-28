@@ -104,8 +104,5 @@
         "typescript": "^3.4.3",
         "vue-eslint-parser": "^6.0.4",
         "webpack": "^4.37.0"
-    },
-    "engines": {
-        "node": "10.x"
     }
 }
