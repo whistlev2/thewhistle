@@ -1,10 +1,16 @@
 const Pool = require('pg').Pool;
-const db = new Pool({
-    user: process.env.DB_USER || 'postgres',
-    host: process.env.DB_HOST ||'localhost',
-    database: process.env.DB_NAME ||'thewhistle',
-    password: process.env.DB_PASSWORD || 'postgres',
-    port: process.env.DB_PORT || 5432
-});
+
+if (process.env.NODE_ENV === 'production') {
+  const db = new Pool(process.env.DATABASE_URL)
+} else {
+  const db = new Pool({
+      user: 'postgres',
+      host: 'localhost',
+      database: 'thewhistle',
+      password: 'postgres',
+      port: 5432
+  });
+}
+
 
 module.exports = db;
