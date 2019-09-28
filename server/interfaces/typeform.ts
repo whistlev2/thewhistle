@@ -17,7 +17,7 @@ const bearer = {
 }
 class Typeform {
 
-    private static jsonCallback(error, res, body){
+    private static jsonCallback(error: any, res: any, body: any){
         res.json(body);
     }
 
@@ -40,10 +40,10 @@ class Typeform {
         headers: bearer
       }
 
-      request(reqOptions, function(error, response) {
-        console.log(error);
-        console.log(response);
-      })
+      // request(reqOptions: string, function(error: any, response: any) {
+      //   console.log(error);
+      //   console.log(response);
+      // })
     }
 }
 
