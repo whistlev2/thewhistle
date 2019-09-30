@@ -2,7 +2,11 @@ const colors = require('vuetify/es5/util/colors').default
 
 module.exports = {
   env: {
-    baseURL: process.env.BASE_URL || 'http://localhost:3000'
+    baseURL: process.env.BASE_URL || 'http://localhost:3000',
+    server: {
+      host: process.env.BASE_URL || 'localhost',
+      port: process.env.PORT || 5000,
+    }
   },
   mode: 'universal',
   router: {
