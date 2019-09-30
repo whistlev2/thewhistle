@@ -3,11 +3,11 @@
         
         <div v-if="jump">
             Option jump:
-            <form action="/update-field" class="v-form">
-                <input type="hidden" name="surveyID" :value="$attrs.surveyID" />
-                <input type="hidden" name="questionID" :value="$attrs.question.id" />
+            <form action="/api/edit-form/update-option-jump" class="v-form">
+                <input type="hidden" name="formSlug" :value="$attrs.surveyID" />
+                <input type="hidden" name="question" :value="$attrs.question.ref" />
                 <input type="hidden" name="choiceRef" :value="$attrs.choice" />
-                <select v-model="jump" style="background-color:lightgray;">
+                <select v-model="jump" name="jump" style="background-color:lightgray;">
                     <option v-for="question in $attrs.jumpOptions" :value="question.ref" :key="question.ref" name="jump">{{ question.text }} ▼</option>
                 </select>
                 <v-btn type="submit">Update jump</v-btn>

@@ -5,13 +5,17 @@ const express = require('express');
 const router = express.Router()
 
 
-router.get('/user/:userID', (req, res) => {    
+router.get('/user/:userID', (req, res) => {
     var userID = req.params.userID
     Surveys.getMyForms(userID, res);
 })
 
 router.get('/json/:slug', (req, res) => {
     Surveys.getFormJSON(req.params.slug, res);
+})
+
+router.get('/test-json/:slug', (req, res) => {
+    Surveys.getTestFormJSON(req.params.slug, res);
 })
 
 router.get('/:slug', (req, res) => {

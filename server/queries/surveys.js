@@ -2,7 +2,7 @@ var _ = require('underscore');
 var fs = require('fs');
 const typeform = require('../interfaces/typeform.js')
 
-const surveyUtils = require('../surveyUtils.js')
+const surveyUtils = require('../utils/survey.js')
 
 const db = require('../db.ts')
 
@@ -62,6 +62,17 @@ exports.getFormJSON = function (slug, res) {
             throw error;
         }
         const form = results.rows[0].form_json;
+        const ret = rearrangeFormJson(form);
+        res.json(ret);
+    });
+}
+
+exports.getTestFormJSON = function (slug, res) {
+    db.query(`SELECT test_form_json FROM subforms WHERE slug='${ slug }'`, (error, results) => {
+        if (error) {
+            throw error;
+        }
+        const form = results.rows[0].test_form_json;
         const ret = rearrangeFormJson(form);
         res.json(ret);
     });

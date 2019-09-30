@@ -11,6 +11,7 @@
         "test": "jest",
         "prettier": "pretty-quick",
         "typeform-webhook": "ngrok http 3000",
+        "dev": "cross-env NODE_ENV=development nodemon server/index.js --watch server",
         "build": "nuxt build",
         "generate": "nuxt generate"
     },
@@ -60,6 +61,7 @@
         "pg-format": "^1.0.4",
         "pg-native": "^3.0.0",
         "request": "^2.88.0",
+        "request-promise": "^4.2.4",
         "sass-loader": "^7.1.0",
         "tls": "0.0.1",
         "ts-node": "^8.3.0",
