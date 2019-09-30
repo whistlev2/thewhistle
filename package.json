@@ -100,5 +100,8 @@
         "tsc": "^1.20150623.0",
         "vue-eslint-parser": "^6.0.4",
         "webpack": "^4.37.0"
+    },
+    "engines": {
+        "node": "10.x"
     }
 }
