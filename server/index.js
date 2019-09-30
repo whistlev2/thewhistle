@@ -60,7 +60,7 @@ async function start() {
 
 
   // Listen the server
-  app.listen(port, host)
+  app.listen(process.env.PORT || 5000)
   consola.ready({
     message: `Server listening on http://${host}:${port}`,
     badge: true
