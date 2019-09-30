@@ -1,9 +1,8 @@
 {
     "name": "the-whistle",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "private": true,
     "scripts": {
-        "heroku-prebuild": "npm install -g cross-env",
         "lint": "eslint --fix **/*.{js,ts,vue}",
         "start": "node server/index.js",
         "test:e2e": "vue-cli-service test:e2e",
