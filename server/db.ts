@@ -2,17 +2,27 @@ const Pool = require('pg').Pool;
 
 var db = null
 
-if (process.env.NODE_ENV === 'production') {
-  db = new Pool(process.env.DATABASE_URL)
-} else {
+// if (process.env.NODE_ENV === 'production') {
+//   db = new Pool(process.env.DATABASE_URL)
+// } else {
+  // const db_url = "postgres://cwopzhgecnuozu:2a8604eab1f84793080726fd221764a225f0d5a16131760cf5a5362c24f4b766@ec2-79-125-4-72.eu-west-1.compute.amazonaws.com:5432/d37eu06rjqd573"
+  // db = new Pool(db_url)
   db = new Pool({
-      user: 'postgres',
-      host: 'localhost',
-      database: 'thewhistle',
-      password: 'postgres',
-      port: 5432
+      user: 'cwopzhgecnuozu',
+      host: 'ec2-79-125-4-72.eu-west-1.compute.amazonaws.com',
+      database: 'd37eu06rjqd573',
+      password: '2a8604eab1f84793080726fd221764a225f0d5a16131760cf5a5362c24f4b766',
+      port: 5432,
+      ssl: true
   });
-}
+  // db = new Pool({
+  //     user: 'postgres',
+  //     host: 'localhost',
+  //     database: 'thewhistle',
+  //     password: 'postgres',
+  //     port: 5432
+  // });
+// }
 
 
 module.exports = db;

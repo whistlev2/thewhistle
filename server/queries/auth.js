@@ -1,13 +1,6 @@
 const bcrypt = require('bcrypt')
 
-const Pool = require('pg').Pool;
-const db = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'thewhistle',
-  password: 'postgres',
-  port: 5432
-});
+const db = require('../db.ts')
 
 const user = {id: 1, name: 'BOB', email: "test@tst.com", org: "TestOrg", password: "bob"}
 
@@ -72,10 +65,14 @@ exports.deserializeUser = function (id, done) {
 }
 
 exports.findUser = function (email, password, done) {
+  // console.log('FINDING USER', email, password)
+  console.log(db)
   db.query(`SELECT * FROM users WHERE email='${email}'`, (error, results) => {
     if (error) {
+      console.log(error)
       done(error)
     }
+    console.log(results)
     var user = results.rows[0]
     if(!user) return done(null, false, { message: 'No such user' })
 
