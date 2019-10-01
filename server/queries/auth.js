@@ -65,14 +65,11 @@ exports.deserializeUser = function (id, done) {
 }
 
 exports.findUser = function (email, password, done) {
-  // console.log('FINDING USER', email, password)
-  console.log(db)
   db.query(`SELECT * FROM users WHERE email='${email}'`, (error, results) => {
     if (error) {
       console.log(error)
       done(error)
-    }
-    console.log(results)
+    }    
     var user = results.rows[0]
     if(!user) return done(null, false, { message: 'No such user' })
 

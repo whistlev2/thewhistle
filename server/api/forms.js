@@ -5,7 +5,7 @@ const express = require('express');
 const router = express.Router()
 
 
-router.get('/user/:userId', (req, res) => {
+router.get('/user/:userID', (req, res) => {    
     var userID = req.params.userID
     Surveys.getMyForms(userID, res);
 })

@@ -26,19 +26,19 @@ function extractTestSurvey(survey) {
 }
 
 exports.getMyForms = function(uid, res) {
+  console.log("getMyForms", uid)
   db.query(`SELECT form_json, subforms.slug AS slug, user_role, published FROM subforms left join userforms on userforms.form_id=subforms.id WHERE user_id=${uid}`, (error, results) => {
       if (error) {
           res.json(error);
       }
-
-      res.json(_.map(results.rows, function(res) {
-        return {
-          title: res.form_json.title,
-          slug: res.slug,
-          userRole: res.user_role,
-          published: res.published
-        }
-      }))
+        res.json(_.map(results.rows, function(res) {
+          return {
+            title: res.form_json.title,
+            slug: res.slug,
+            userRole: res.user_role,
+            published: res.published
+          }
+        }))
   });
 }
 
