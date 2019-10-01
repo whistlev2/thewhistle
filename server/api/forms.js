@@ -6,8 +6,7 @@ const router = express.Router()
 
 
 router.get('/user/:userId', (req, res) => {
-    // var userID = req.params.userID
-    var userID = 2
+    var userID = req.params.userID
     Surveys.getMyForms(userID, res);
 })
 
