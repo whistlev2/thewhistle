@@ -13,7 +13,7 @@ class Pages {
     }
 
     static async loadEditForm(formID) {
-        const url = process.env.baseURL + '/api/forms/test-json/' + formID;
+        const url = process.env.baseURL + '/api/forms/json/' + formID;
         const form = await axios.get(url);
         return form.data;
     }

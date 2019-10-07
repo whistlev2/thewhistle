@@ -27,7 +27,7 @@ function extractTestSurvey(survey) {
 
 exports.getMyForms = function(uid, res) {
   console.log("getMyForms", uid)
-  db.query(`SELECT form_json, subforms.slug AS slug, user_role, published FROM subforms left join userforms on userforms.form_id=subforms.id WHERE user_id=${uid}`, (error, results) => {
+  db.query(`SELECT form_json, subforms.slug AS slug, user_role, published FROM subforms left join userforms on userforms.form_id=subforms.id WHERE user_id=${2}`, (error, results) => {
       if (error) {
           res.json(error);
       }
@@ -63,6 +63,7 @@ exports.getFormJSON = function (slug, res) {
         }
         const form = results.rows[0].form_json;
         const ret = rearrangeFormJson(form);
+        console.log(ret)
         res.json(ret);
     });
 }
@@ -90,6 +91,9 @@ function rearrangeFormJson(formJson) {
 }
 
 function getQuestionLogic(formLogic, questionRef) {
+    if(!formLogic) {
+      return null
+    }
     for (let i = 0; i < formLogic.length; i++) {
         if (formLogic[i].ref == questionRef) {
             let questionLogic = formLogic[i].actions;
@@ -100,15 +104,16 @@ function getQuestionLogic(formLogic, questionRef) {
 }
 
 function editSurvey(req, res, updateFunction) {
-    const id = req.query.surveyID
-    db.query(`SELECT form_json FROM subforms WHERE typeform_id='${id}'`, (error, results) => {
+    const slug = req.query.surveyID
+
+    db.query(`SELECT form_json FROM subforms WHERE slug='${slug}'`, (error, results) => {
         if (error) {
             throw error;
         }
         var query = req.query;
         const survey = results.rows[0].form_json;
         updatedSurvey = updateFunction(survey, query);
-        updateSurvey(id, updatedSurvey);
+        updateSurvey(slug, updatedSurvey);
         query.survey = updatedSurvey;
         res.status(200).json(query);
     });
@@ -139,15 +144,14 @@ exports.getFormFromSlug = function (slug, res) {
     });
 }
 
-updateSurvey = function (id, survey) {
-    const ns = JSON.stringify(survey)
-    db.query(`UPDATE subforms SET form_json='${ns}' WHERE typeform_id='${id}'`, (error, results) => {
+updateSurvey = function (slug, survey) {
+    db.query(`UPDATE subforms SET form_json='${JSON.stringify(survey)}' WHERE slug='${slug}'`, (error, results) => {
         if (error) {
             console.log(error);
             throw error;
         }
-        // console.log(results)
-        typeform.updateForm(id, ns);
+
+        const typeFormResponse = typeform.updateForm(survey.id, survey);        
     });
 
 }

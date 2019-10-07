@@ -32,7 +32,7 @@ exports.getForm = function (form) {
     const response = request.get(url, bearer, jsonCallback);
 }
 
-exports.updateForm = async function (formID, slug, form, res) {
+exports.updateForm = async function (formID, form) {
     const url = `https://${TYPEFORM_API_BASE_URL}/forms/${formID}`;
     const body = JSON.stringify(form);
     request.put({
@@ -42,9 +42,9 @@ exports.updateForm = async function (formID, slug, form, res) {
     }, function (error, response) {
         if (error) {
             console.log(error);
-            console.log(response);
         } else {
-            Subforms.updateTestJSON(slug, body, res);
+            console.log(response);
+            return response
         }
     })
 }

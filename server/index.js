@@ -30,7 +30,7 @@ async function start() {
     secret: '9dj48bhkldhr48fj3890drkgb6739&#HF(&5j5&*^%',
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 60000 }
+    cookie: { maxAge: 60000 * 60 }
   }))
 
   // Setup passport
