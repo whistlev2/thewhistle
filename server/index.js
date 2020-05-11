@@ -7,7 +7,7 @@ const {
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
-
+const dotenv = require('dotenv');
 
 const api = require('./api/index.js')
 
@@ -23,7 +23,7 @@ const config = require('../nuxt.config.js')
 config.dev = !(process.env.NODE_ENV === 'production')
 
 async function start() {
-
+    dotenv.config();
     app.use(bodyParser.json()); // support json encoded bodies
     app.use(bodyParser.urlencoded({
         extended: true

@@ -12,7 +12,7 @@
                 <v-btn to="/users" text>Users</v-btn>
                 <!-- TODO - Add user logic -->
                 <!-- TODO - L - Add edit own details and logout in dropdown -->
-                <v-btn to="/logout" text>Logout</v-btn>
+                <v-btn v-if="$auth.loggedIn" to="/logout" text>Logout</v-btn>
             </v-toolbar-items>
         </v-toolbar>
     </v-card>

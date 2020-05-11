@@ -87,25 +87,16 @@ exports.deserializeUser = function (id, done) {
     });
 } */
 
-exports.authenticateUser = function (email, password, done) {
-    db.query(`SELECT * FROM users WHERE email='${email}'`, (error, results) => {
-        if (error) {
-            return done(error);
-        }
-        var user = results.rows[0]
-        if (!user) {
-            return done(null, false)
-        }
-
-        bcrypt.compare(password, user.password, (err, isMatch) => {
-            if (err) {
-                throw err;
-            }
-            if (!isMatch) {
-                return done(null, false)
-            }
-            console.log('Match: ', isMatch);
-            return done(null, user)
-        })
-    })
+exports.authenticateUser = async function (email, password) {
+    const results = await db.query(`SELECT * FROM users WHERE email='${email}'`)
+    const user = results.rows[0];
+    
+    if (!user) {
+        return null;
+    }
+    console.log(user);
+    const match = await bcrypt.compare(password, user.password)
+    console.log(match);
+    user.password = null;
+    return match ? user : null;
 }

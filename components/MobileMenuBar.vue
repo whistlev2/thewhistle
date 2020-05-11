@@ -10,7 +10,7 @@
                 
             </v-toolbar-items>
             <v-spacer />
-            <v-btn to="/logout" text><v-icon>mdi-logout-variant</v-icon></v-btn>
+            <v-btn v-if="$auth.loggedIn" to="/logout" text><v-icon>mdi-logout-variant</v-icon></v-btn>
         </v-toolbar>
     </v-card>
 </template>

@@ -53,6 +53,7 @@
         "express-subdomain": "^1.0.5",
         "file-system": "^2.2.2",
         "fs-extra": "^8.1.0",
+        "jsonwebtoken": "^8.5.1",
         "morgan": "~1.9.0",
         "net": "^1.0.2",
         "nuxt": "^2.8.1",

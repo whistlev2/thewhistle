@@ -1,72 +1,41 @@
 <template>
-  <div class="wrapper">
-        <form  @submit.prevent="auth">
-          <p class="error" v-if="form.error">{{ form.error }}</p>
-          <p>Email: <input type="text" v-model="form.email" name="email" /></p>
-          <p>Password: <input type="password" v-model="form.password" name="password" /></p>
-          <button type="submit">Sign in</button>
-        </form>
-      </div>
+  <v-form v-model="valid">
+
+    <v-text-field v-model="loginInfo.email" 
+                  label="Email" 
+                  :rules="[ validEmail ]" />
+
+    <v-text-field v-model="loginInfo.password"
+                  label="Password"
+                  type="password" 
+                  :rules="[ validPassword ]" />
+
+    <v-btn @click="login(loginInfo)" :disabled="!valid">Login</v-btn>
+  </v-form>
 </template>
 
 <script>
-const getDefaultData = () => ({
-    modalShown: false,
-    form: {
-        error: null,
-        email: '',
-        password: ''
-    }
-})
-
 export default {
-    data: getDefaultData,
-    methods: {
-        reset() {
-            const d = getDefaultData()
-            Object.keys(d).forEach((key) => {
-                this.$data[key] = d[key]
-            })
-        },
-        async auth() {
-            try {
-                //LOGIN
-            } catch (e) {
-                this.form.error = e.message
+    data() {
+        return {
+            valid: false,
+            loginInfo: {
+                email: '',
+                password: ''
             }
+
+        }
+    },
+    methods: {
+        validPassword(password) {
+            return !!password || "Please enter a password";
         },
-       
-    }
+        validEmail(email) {
+            const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return emailRegex.test(email) || "Please enter a valid email";
+      
+        }
+    },
+    props: ["login"]
 }
 </script>
-
-<style>
-a {
-    text-decoration: underline;
-}
-
-.wrapper {
-    position: relative;
-}
-
-.modal {
-    position: absolute;
-    left: -1px;
-    top: -1px;
-    border: 1px solid #888;
-    background: #ddd;
-    padding: .4em .8em;
-}
-
-.modal form {
-    margin: 1em auto .2em;
-}
-
-.modal .form-switch {
-    float: right;
-}
-
-.error {
-    color: red;
-}
-</style>
