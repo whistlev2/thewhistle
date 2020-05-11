@@ -1,7 +1,10 @@
 const express = require('express')
 const consola = require('consola')
 const passport = require('passport')
-const { Nuxt, Builder } = require('nuxt')
+const {
+    Nuxt,
+    Builder
+} = require('nuxt')
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
@@ -22,71 +25,78 @@ config.dev = !(process.env.NODE_ENV === 'production')
 
 async function start() {
 
-  app.use(bodyParser.json()); // support json encoded bodies
-  app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(bodyParser.json()); // support json encoded bodies
+    app.use(bodyParser.urlencoded({
+        extended: true
+    }));
 
-  app.use(cookieParser())
-  app.use(session({
-    secret: '9dj48bhkldhr48fj3890drkgb6739&#HF(&5j5&*^%',
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 60000 }
-  }))
+    app.use(cookieParser())
+    app.use(session({
+        secret: '9dj48bhkldhr48fj3890drkgb6739&#HF(&5j5&*^%',
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            maxAge: 60000
+        }
+    }))
 
-  // Setup passport
-  app.use(passport.initialize())
-  app.use(passport.session())
-  require('./auth_config')(passport)
-  app.use('/api', api)
+    // Setup passport
+    app.use(passport.initialize())
+    app.use(passport.session())
+    require('./auth_config')(passport)
+    app.use('/api', api)
 
-  // Init Nuxt.js
-  const nuxt = new Nuxt(config)
+    // Init Nuxt.js
+    const nuxt = new Nuxt(config)
 
-  const { host, port } = nuxt.options.server
-  // console.log(nuxt.options.server)
+    const {
+        host,
+        port
+    } = nuxt.options.server
+    // console.log(nuxt.options.server)
 
-  // Build only in dev mode
-  if (config.dev) {
-    const builder = new Builder(nuxt)
-    await builder.build()
-  } else {
-    await nuxt.ready()
-  }
+    // Build only in dev mode
+    if (config.dev) {
+        const builder = new Builder(nuxt)
+        await builder.build()
+    } else {
+        await nuxt.ready()
+    }
 
-  app.use('/api', api)
+    app.use('/api', api)
 
-  // Give nuxt middleware to express
-  app.use(nuxt.render)
+    // Give nuxt middleware to express
+    app.use(nuxt.render)
 
 
-  // Listen the server
-  app.listen(process.env.PORT || 3000)
-  consola.ready({
-    message: `Server listening on http://${host}:${port}`,
-    badge: true
-  })
+    // Listen the server
+    app.listen(process.env.PORT || 3000)
+    consola.ready({
+        message: `Server listening on http://${host}:${port}`,
+        badge: true
+    })
 }
 
 // TODO - move Form editing endpoints to seperate file
 app.get('/update-field', (req, res) => {
-  surveys.updateField(req, res)
+    surveys.updateField(req, res)
 })
 
 app.get('/update-choice', (req, res) => {
-  surveys.updateSurveyChoice(req, res)
+    surveys.updateSurveyChoice(req, res)
 })
 
 app.get('/update-dropdown-choice', (req, res) => {
-  surveys.updateDropdownChoice(req, res)
+    surveys.updateDropdownChoice(req, res)
 })
 
 app.get('/surveyjson/:id', (req, res) => {
-  const id = req.params.id;
-  surveys.getSurveyJSON(id, res)
+    const id = req.params.id;
+    surveys.getSurveyJSON(id, res)
 })
 
 app.get('/formjson/:id', (req, res) => {
-  surveys.getFormJSON(req.params.id, res)
+    surveys.getFormJSON(req.params.id, res)
 })
 
 start()

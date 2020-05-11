@@ -29,32 +29,32 @@
     </v-row>
 </template>
 <script>
-    export default {
-        data() {
-            return {
-                email: '',
-                password: '',
-                orgId: 1,
-                notBlank: [v => !!v || 'Required'],
-                valid: false
+export default {
+    data() {
+        return {
+            email: '',
+            password: '',
+            orgId: 1,
+            notBlank: [v => !!v || 'Required'],
+            valid: false
+        }
+    },
+    methods: {
+        createUser() {
+            const postData = {
+                email: this.email,
+                password: this.password,
+                organisation_id: this.orgId
             }
+            this.$store.dispatch('register', postData)
+            this.closeModal();
+            // TODO - NTH - create new organisation - passes in name and slug
         },
-        methods: {
-            createUser() {
-                const postData = {
-                    email: this.email,
-                    password: this.password,
-                    organisation_id: this.orgId
-                }
-                this.$store.dispatch('register', postData)
-                this.closeModal();
-                // TODO - NTH - create new organisation - passes in name and slug
-            },
 
-            closeModal() {
-                this.$attrs.show = false;
-                this.$emit('close');
-            }
+        closeModal() {
+            this.$attrs.show = false;
+            this.$emit('close');
         }
     }
+}
 </script>

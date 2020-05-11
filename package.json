@@ -24,6 +24,8 @@
         "@babel/preset-typescript": "^7.3.3",
         "@nuxt/typescript-build": "^0.1.9",
         "@nuxt/typescript-runtime": "^0.1.2",
+        "@nuxtjs/auth": "^4.9.1",
+        "@nuxtjs/axios": "^5.10.3",
         "@nuxtjs/vuetify": "^1.0.0",
         "@typeform/embed": "^0.9.3",
         "auto-prefixer": "^0.4.2",
