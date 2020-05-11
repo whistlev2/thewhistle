@@ -15,13 +15,7 @@ const getDefaultData = () => ({
     form: {
         error: null,
         email: '',
-        password: '',
-        passwordAgain: '',
-        currentPassword: '' // For change password form
-    },
-    mode: {
-        register: false,
-        passwordRecovery: false
+        password: ''
     }
 })
 
@@ -36,45 +30,12 @@ export default {
         },
         async auth() {
             try {
-                if (this.mode.register && this.form.password !== this.form.passwordAgain) {
-                    throw Error('Passwords should match')
-                }
-                const action = 'login' //this.mode.register ? 'register' : 'login'
-                await this.$store.dispatch(action, {
-                    email: this.form.email,
-                    password: this.form.password
-                })
-                this.reset()
+                //LOGIN
             } catch (e) {
                 this.form.error = e.message
             }
         },
-        async logout() {
-            try {
-                await this.$store.dispatch('logout')
-                this.reset()
-            } catch (e) {
-                this.form.error = e.message
-            }
-        },
-        async changePassword() {
-            if (!this.mode.passwordRecovery) {
-                this.mode.passwordRecovery = true
-                return
-            }
-            try {
-                if (this.form.password !== this.form.passwordAgain) {
-                    throw Error('Passwords should match')
-                }
-                await this.$store.dispatch('changePassword', {
-                    currentPassword: this.form.currentPassword,
-                    newPassword: this.form.password
-                })
-                this.reset()
-            } catch (e) {
-                this.form.error = e.message
-            }
-        }
+       
     }
 }
 </script>

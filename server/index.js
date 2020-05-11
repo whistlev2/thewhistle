@@ -1,6 +1,5 @@
 const express = require('express')
 const consola = require('consola')
-const passport = require('passport')
 const {
     Nuxt,
     Builder
@@ -40,10 +39,6 @@ async function start() {
         }
     }))
 
-    // Setup passport
-    app.use(passport.initialize())
-    app.use(passport.session())
-    require('./auth_config')(passport)
     app.use('/api', api)
 
     // Init Nuxt.js

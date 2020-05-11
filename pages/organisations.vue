@@ -16,6 +16,7 @@ export default {
     },
 
     data() {
+        //TODO: today - change authUser accesses
         const name = this.$store.state.authUser ? this.$store.state.authUser.name : "Not logged in"
         const headers = [{
                 text: 'Organisation',
