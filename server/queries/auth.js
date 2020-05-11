@@ -94,9 +94,9 @@ exports.authenticateUser = async function (email, password) {
     if (!user) {
         return null;
     }
-    console.log(user);
+
     const match = await bcrypt.compare(password, user.password)
-    console.log(match);
+    
     user.password = null;
     return match ? user : null;
 }

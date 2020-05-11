@@ -14,22 +14,23 @@ export default {
     components: {
         CreateOrganisationModal
     },
+    middleware: ['jwt_auth'],
 
     data() {
         //TODO: today - change authUser accesses
         const name = this.$store.state.authUser ? this.$store.state.authUser.name : "Not logged in"
         const headers = [{
-                text: 'Organisation',
-                value: 'ref1'
-            },
-            {
-                text: 'My role',
-                value: 'ref2'
-            }
+            text: 'Organisation',
+            value: 'ref1'
+        },
+        {
+            text: 'My role',
+            value: 'ref2'
+        }
         ];
         const items = [{
-              ref1: `${name}`,
-              ref2: 'admin'
+            ref1: `${name}`,
+            ref2: 'admin'
         }]
 
 

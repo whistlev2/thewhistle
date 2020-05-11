@@ -2,7 +2,7 @@ var _ = require('underscore');
 var fs = require('fs');
 const typeform = require('../interfaces/typeform.js')
 
-const surveyUtils = require('../surveyUtils.js')
+const surveyUtils = require('../utils/survey.js')
 
 const db = require('../db.ts')
 
