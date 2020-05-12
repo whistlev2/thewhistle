@@ -29,7 +29,8 @@ router.post('/login', async (req, res) => {
             res.send('Incorrect email/password')
             return;
         }
-        const token = await jwt.sign({ user: user }, process.env.JWT_SECRET_KEY);
+        //Logout after 1 week
+        const token = await jwt.sign({ user: user }, process.env.JWT_SECRET_KEY, { expiresIn: "7d" });
         res.status(200);
         res.json({ token: token });
     } catch (err) {
