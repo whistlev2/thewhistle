@@ -34,7 +34,8 @@ router.post('/login', async (req, res) => {
         res.status(200);
         res.json({ token: token });
     } catch (err) {
-        //TODO: Catch err
+        res.status(401)
+        res.send('Could not authorise you, please try again.')
     }
 })
 

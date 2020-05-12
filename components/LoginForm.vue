@@ -1,5 +1,5 @@
 <template>
-  <v-form v-model="valid">
+  <v-form v-model="valid" lazy-validation>
 
     <v-text-field v-model="loginInfo.email" 
                   label="Email" 
