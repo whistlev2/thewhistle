@@ -70,6 +70,7 @@ async function start() {
         message: `Server listening on http://${host}:${port}`,
         badge: true
     })
+
 }
 
 // TODO - move Form editing endpoints to seperate file
