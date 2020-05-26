@@ -1,4 +1,4 @@
-insert into rawresponse (response_json) values ('{
+insert into reports (response_json) values ('{
   "total_items": 3,
   "page_count": 1,
   "items": [

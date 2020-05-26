@@ -10,7 +10,7 @@ exports.storeResponse = function (payload) {
 
 function storeRawResponse(payload) {
     const form_id = payload.form_response.form_id
-    const query = 'INSERT INTO rawresponse(response_json, form_id) VALUES($1, $2) RETURNING id'
+    const query = 'INSERT INTO reports(response_json, form_id) VALUES($1, $2) RETURNING id'
     const values = [payload, form_id];
     db.query(query, values, (error, results) => {
         if (error) {
@@ -66,7 +66,7 @@ exports.getFormResponsesFromSlug = function (res, slug) {
 }
 
 function getFormResponses(res, formId) {
-    db.query(`SELECT definition, value, raw_response_id FROM rawresponse JOIN questionresponses ON rawresponse.id = questionresponses.raw_response_id WHERE form_id='${formId}'`, (error, results) => {
+    db.query(`SELECT definition, value, raw_response_id FROM reports JOIN questionresponses ON reports.id = questionresponses.raw_response_id WHERE form_id='${formId}'`, (error, results) => {
         const formattedResponses = formatResponses(results.rows);
         res.json(formattedResponses);
     })

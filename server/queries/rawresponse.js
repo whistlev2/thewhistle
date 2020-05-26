@@ -16,7 +16,7 @@ class RawResponse {
     }
 
     static get(req, res) {
-        db.query('SELECT response_json FROM rawresponse ORDER BY id ASC LIMIT 1', (error, results) => {
+        db.query('SELECT response_json FROM reports ORDER BY id ASC LIMIT 1', (error, results) => {
             if (error) {
                 throw error;
             }
