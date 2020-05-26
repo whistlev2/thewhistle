@@ -9,9 +9,10 @@ exports.storeResponse = function (payload) {
 }
 
 function storeRawResponse(payload) {
-    const form_id = payload.form_response.form_id
-    const query = 'INSERT INTO reports(response_json, form_id) VALUES($1, $2) RETURNING id'
-    const values = [payload, form_id];
+    const form_id = payload.form_response.form_id;
+    const date = payload.form_response.submitted_at;
+    const query = 'INSERT INTO reports(response_json, form_id, date) VALUES($1, $2, $3) RETURNING id'
+    const values = [payload, form_id, date];
     db.query(query, values, (error, results) => {
         if (error) {
             console.error(error);

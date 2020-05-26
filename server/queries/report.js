@@ -18,7 +18,7 @@ exports.getFormSlug = async function (reportID) {
         console.log(reportID);
         console.log(typeof parseInt(reportID));
         console.log(parseInt(reportID))
-        const slugs = await db.query(`SELECT slug FROM subforms JOIN reports ON reports.form_id=subforms.typeform_id WHERE rawresponse.id=${parseInt(reportID)}`);
+        const slugs = await db.query(`SELECT slug FROM subforms JOIN reports ON reports.form_id=subforms.typeform_id WHERE reports.id=${parseInt(reportID)}`);
         console.log('Got slug')
         return slugs.rows[0].slug;
     } catch (err) {
