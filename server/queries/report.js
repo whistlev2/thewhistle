@@ -30,47 +30,22 @@ exports.getFormSlug = async function (reportID) {
 exports.getReporterID = async function (reportID) {
     console.log('got reporter')
     return 'REPORTER1';
+    //TODO: Implement
 }
 
 exports.getMetadata = async function (reportID) {
     console.log('got metadata');
-    return {
-        date: '12/05/2020',
-        assignedTo: null,
-        status: 'Being processed',
-        tags: ['test', 'important'],
-        notes: [
-            {
-                user: 'Louis',
-                time: '12:00:01 12/05/2020',
-                comment: 'This is a comment'
-            },
-            {
-                user: 'Not Louis',
-                time: '12:00:01 13/05/2020',
-                comment: 'Louis didn\'t write this'
-            }
-        ],
-        active: true,
-        location: 'Cambridge',
-        auditTrail: [
-            {
-                user: 'Louis',
-                time: '12:00:01 12/05/2020',
-                action: 'made test metadata'
-            },
-            {
-                user: 'Louis',
-                time: '12:00:04 12/05/2020',
-                action: 'made edit'
-            }
-        ]
-    };
-
-    
+    let metadata = await db.query(`SELECT reports.date, reports.status, reports.tags, reports.active, reports.location, CONCAT(users.first_name, ' ', users.surname) AS assigned_to FROM reports JOIN users ON reports.assigned_to=users.id  WHERE reports.id=${parseInt(reportID)}`);
+    metadata = metadata.rows[0];
+    metadata.tags = metadata.tags.split(',')
+    const date = new Date(metadata.date);
+    metadata.date = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+    console.log(metadata)
+    return metadata;
 }
 
 exports.getFiles = async function (reportID) {
+    //TODO: Implement
     return [
         {
             name: 'document1',
