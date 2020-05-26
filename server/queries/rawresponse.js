@@ -27,7 +27,7 @@ class RawResponse {
     }
 
     static insertResponse(data) {
-        const query = 'INSERT INTO rawresponse(response_json) VALUES($1)'
+        const query = 'INSERT INTO reports (response_json) VALUES($1)'
         const values = [data]
         db.query(query, values, (error, results) => {
             if (error) {
