@@ -45,7 +45,7 @@ exports.up = function (db: any, callback: any) {
             callback(err);
             return;
         }
-        db.addForeignKey('audit', 'reports', 'user_id', {
+        db.addForeignKey('audit', 'users', 'user_id', {
             'user_id': 'id'
         }, {
             onDelete: 'CASCADE',

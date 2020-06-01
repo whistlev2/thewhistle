@@ -8,7 +8,7 @@
                 <v-list-item-content>
                     <v-list-item-title>Assigned to</v-list-item-title>
                     <v-list-item-subtitle>
-                        <v-select :items="report.options.assignedTo" v-model="report.metadata.assignedTo" v-on:blur="updateAssigned"/>
+                        <v-select :items="report.options.assignedTo" v-model="report.metadata.assignedTo" v-on:change="updateAssigned" item-text="name" item-value="id" />
                     </v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
@@ -16,7 +16,7 @@
                 <v-list-item-content>
                     <v-list-item-title>Status</v-list-item-title>
                     <v-list-item-subtitle>
-                        <v-combobox :items="report.options.status" v-model="report.metadata.status" v-on:blur="updateStatus" />
+                        <v-combobox :items="report.options.status" v-model="report.metadata.status" v-on:change="updateStatus" />
                     </v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
@@ -75,7 +75,7 @@
                 <v-list-item-content>
                     <v-list-item-title>Tags</v-list-item-title>
                     <v-list-item-subtitle>
-                        <v-select :items="report.options.tags" v-model="report.metadata.tags" v-on:blur="updateTags"  multiple chips/>
+                        <v-combobox :items="report.options.tags" v-model="report.metadata.tags" v-on:change="updateTags"  multiple chips/>
                     </v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
@@ -97,7 +97,7 @@
                     </v-list-item-content>
                 </template>
 
-                <v-list-item v-for="edit in report.metadata.auditTrail" :key="edit.date + edit.action">
+                <v-list-item v-for="edit in report.audit" :key="edit.time + edit.action">
                     <v-list-item-content>
                         <v-list-item-title>
                             <strong>{{ edit.user }}</strong> - {{ edit.time}}
@@ -112,7 +112,7 @@
         <br>
         <v-list two-line subheader style="background-color: #dee9ed">
             <v-subheader>Notes</v-subheader>
-            <v-list-item v-for="note in report.metadata.notes" :key="note.time + note.comment">
+            <v-list-item v-for="note in report.notes" :key="note.time + note.comment">
                 <v-list-item-content>
                     <v-list-item-title>
                         <strong>{{ note.user }}</strong> - {{ note.time}}
@@ -164,6 +164,8 @@ export default {
                 id: '',
                 reporterID: '',
                 metadata: {},
+                notes: [],
+                audit: [],
                 formSlug: '',
                 responses: [],
                 organisation: {},
@@ -191,29 +193,35 @@ export default {
                 this.report.formSlug = d.data.formSlug;
                 this.report.files = d.data.files;
                 this.report.organisation = d.data.organisation;
-                this.report.options = d.data.options
+                this.report.options = d.data.options;
+                this.report.audit = d.data.audit;
+                this.report.notes = d.data.notes;
             });
         },
 
         updateAssigned() {
             const url = `/api/report/assigned/${this.report.id}`;
             const data = {
+                report: this.report.id,
+                user: this.$auth.user.id,
                 assigned: this.report.metadata.assignedTo
             };
-            axios.post(url, data).then(() =>
-                console.log('UPDATED ASSIGNMENT')
-                //TODO: Update audit trail
+            console.log('ASSIGN');
+            axios.post(url, data).then((response) => {
+                this.report.audit = response.data.audit
                 //TODO: Handle errors
-            );
+            });
         },
 
         updateStatus() {
             const url = `/api/report/status/${this.report.id}`;
             const data = {
+                report: this.report.id,
+                user: this.$auth.user.id,
                 status: this.report.metadata.status
             };
-            axios.post(url, data).then(() =>
-                console.log('UPDATED STATUS')
+            axios.post(url, data).then((response) =>
+                this.report.audit = response.data.audit
                 //TODO: Update audit trail
                 //TODO: Handle errors
             );
@@ -222,10 +230,12 @@ export default {
         updateTags() {
             const url = `/api/report/tags/${this.report.id}`;
             const data = {
+                report: this.report.id,
+                user: this.$auth.user.id,
                 tags: this.report.metadata.tags
             };
-            axios.post(url, data).then(() =>
-                console.log('UPDATED TAGS')
+            axios.post(url, data).then((response) =>
+                this.report.audit = response.data.audit
                 //TODO: Update audit trail
                 //TODO: Handle errors
             );
@@ -234,10 +244,12 @@ export default {
         updateActive() {
             const url = `/api/report/active/${this.report.id}`;
             const data = {
+                report: this.report.id,
+                user: this.$auth.user.id,
                 active: this.report.metadata.active
             };
-            axios.post(url, data).then(() =>
-                console.log('UPDATED ACTIVE')
+            axios.post(url, data).then((response) =>
+                this.report.audit = response.data.audit
                 //TODO: Update audit trail
                 //TODO: Handle errors
             );
@@ -246,10 +258,13 @@ export default {
         updateLocation(location) {
             const url = `/api/report/location/${this.report.id}`;
             const data = {
+                report: this.report.id,
+                user: this.$auth.user.id,
                 location: location
             };
-            axios.post(url, data).then(() =>
-                console.log('UPDATED LOCATION')
+            this.report.metadata.location = location;
+            axios.post(url, data).then((response) =>
+                this.report.audit = response.data.audit
                 //TODO: Update audit trail
                 //TODO: Handle errors
             );
@@ -258,14 +273,17 @@ export default {
         addComment() {
             const url = `/api/report/note/${this.report.id}`;
             const data = {
-                note: this.comment
+                report: this.report.id,
+                user: this.$auth.user.id,
+                comment: this.comment
             };
-            axios.post(url, data).then(() =>
-                console.log('UPDATED COMMENTS')
+            axios.post(url, data).then((response) => {
+                this.report.audit = response.data.audit;
+                this.report.notes = response.data.notes
                 //TODO: Add comment to interface
                 //TODO: Update audit trail
                 //TODO: Handle errors
-            );
+            });
         },
 
         openEditLocationModal() {

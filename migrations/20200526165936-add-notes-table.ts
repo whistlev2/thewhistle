@@ -45,7 +45,7 @@ exports.up = function (db: any, callback: any) {
             callback(err);
             return;
         }
-        db.addForeignKey('notes', 'reports', 'user_id', {
+        db.addForeignKey('notes', 'users', 'user_id', {
             'user_id': 'id'
         }, {
             onDelete: 'CASCADE',
@@ -57,7 +57,7 @@ exports.up = function (db: any, callback: any) {
 
 
 exports.down = function (db: any, callback: any) {
-    db.dropTable('audit', callback);
+    db.dropTable('notes', callback);
 };
 
 exports._meta = {

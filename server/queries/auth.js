@@ -15,22 +15,36 @@ exports.serializeUser = function (user, done) {
 }
 
 
-exports.createNewUser = function (email, password, organisation_id) {
+exports.createNewUser = function (email, password, firstName, surname, organisations) {
     bcrypt.genSalt(10, (err, salt) => {
         if (err) return next(err)
         bcrypt.hash(password, salt, (err, hash) => {
             if (err) return err
-            const query = 'INSERT INTO users(email, password, organisation_id) VALUES($1, $2, $3) RETURNING id'
-            const values = [email, hash, organisation_id];
+            const query = 'INSERT INTO users(email, password, first_name, surname) VALUES($1, $2, $3, $4) RETURNING id'
+            const values = [email, hash, firstName, surname];
 
             db.query(query, values, (error, results) => {
-                console.log('query', err)
                 if (error) {
                     console.error(error);
+                } else {
+                    const userID = results.rows[0].id;
+                    addUserOrgs(userID, organisations);
                 }
             })
         })
     })
+}
+
+function addUserOrgs(userID, organisations) {
+    const query = 'INSERT INTO userorgs(user_id, organisation_id) VALUES($1, $2)';
+    for (let i = 0; i < organisations.length; i++) {
+        let values = [userID, organisations[i]];
+        db.query(query, values, (error, results) => {
+            if (error) {
+                console.error(error);
+            }
+        })
+    }
 }
 
 exports.updatePassword = function (id, currentPassword, newPassword) {
