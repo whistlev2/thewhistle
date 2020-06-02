@@ -26,7 +26,7 @@ function extractTestSurvey(survey) {
 }
 
 exports.getUserForms = async function(userID) {
-    const results = await db.query('SELECT form')
+    const results = await db.query('SELECT form_json')
 }
 
 exports.getMyForms = function (uid, res) {

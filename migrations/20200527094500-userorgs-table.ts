@@ -25,7 +25,8 @@ exports.up = function (db: any, callback: any) {
                     autoIncrement: true
                 },
                 user_id: 'int',
-                organisation_id: 'int'
+                organisation_id: 'int',
+                role: 'string'
             },
             addUserForeignKey
         );
