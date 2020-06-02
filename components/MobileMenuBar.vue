@@ -10,7 +10,18 @@
                 
             </v-toolbar-items>
             <v-spacer />
-            <v-btn to="/logout" text><v-icon>mdi-logout-variant</v-icon></v-btn>
+            <v-btn v-if="$auth.loggedIn" @click="logout" text><v-icon>mdi-logout-variant</v-icon></v-btn>
         </v-toolbar>
     </v-card>
 </template>
+
+<script>
+import axios from 'axios';
+export default {
+    methods: {
+        logout() {
+            axios.post('/api/auth/logout');
+        },
+    }
+}
+</script>

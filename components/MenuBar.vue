@@ -12,8 +12,21 @@
                 <v-btn to="/users" text>Users</v-btn>
                 <!-- TODO - Add user logic -->
                 <!-- TODO - L - Add edit own details and logout in dropdown -->
-                <v-btn to="/logout" text>Logout</v-btn>
+                <v-btn v-if="$auth.loggedIn" @click="logout" text>Logout</v-btn>
             </v-toolbar-items>
         </v-toolbar>
     </v-card>
 </template>
+
+<script>
+import axios from 'axios';
+export default {
+    methods: {
+        logout() {
+            axios.post('api/auth/logout').then(() =>
+                this.$router.push('/login')
+            );
+        },
+    }
+}
+</script>

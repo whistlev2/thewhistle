@@ -12,18 +12,18 @@
     </v-app>
 </template>
 <script>
-import LoginForm from '~/components/LoginForm'
 import MenuBar from '../components/MenuBar.vue'
 import MobileMenuBar from '../components/MobileMenuBar.vue'
 export default {
     components: {
-        LoginForm,
         MenuBar,
         MobileMenuBar
     },
     data() {
-      var path = this.$route.path
-      var showPage = this.$store.state.authUser || path.includes('survey') || path.includes('htmlform')
+        //TODO: Dynamically change mobile menu bar
+        var path = this.$route.path
+        //TODO: Today - change showPage
+        var showPage = this.$store.state.authUser || path.includes('survey') || path.includes('htmlform')
         return {
             showPage: showPage,
             clipped: false,

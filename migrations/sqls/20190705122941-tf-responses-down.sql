@@ -1,1 +1,1 @@
-DELETE FROM rawresponse WHERE id=8
+DELETE FROM reports WHERE id=8

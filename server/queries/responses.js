@@ -4,57 +4,60 @@ var pgFormat = require('pg-format');
 const db = require('../db.ts')
 
 
-exports.storeResponse = function(payload) {
-  storeRawResponse(payload);
+exports.storeResponse = function (payload) {
+    storeRawResponse(payload);
 }
 
 function storeRawResponse(payload) {
-  const form_id = payload.form_response.form_id
-  const query = 'INSERT INTO rawresponse(response_json, form_id) VALUES($1, $2) RETURNING id'
-  const values = [payload, form_id];
-  db.query(query, values, (error, results) => {
-      if (error) {
-          console.error(error);
-      } else {
-          storeQuestionResponses(payload, results.rows[0].id);
-      }
-  });
+    const form_id = payload.form_response.form_id;
+    const date = payload.form_response.submitted_at;
+    const query = 'INSERT INTO reports(response_json, form_id, date) VALUES($1, $2, $3) RETURNING id'
+    const values = [payload, form_id, date];
+    db.query(query, values, (error, results) => {
+        if (error) {
+            console.error(error);
+        } else {
+            storeQuestionResponses(payload, results.rows[0].id);
+        }
+    });
 }
 
 function storeQuestionResponses(payload, responseID) {
-  const questionResponses = getQuestionResponses(payload, responseID);
-  const query = pgFormat('INSERT INTO questionresponses(question_ref, definition, raw_response_id, value) VALUES %L', questionResponses);
-  db.query(query, (error, results) => {
-      if (error) {
-          console.error(error);
-      }
-  });
+    const questionResponses = getQuestionResponses(payload, responseID);
+    const query = pgFormat('INSERT INTO questionresponses(question_ref, definition, raw_response_id, value) VALUES %L', questionResponses);
+    db.query(query, (error, results) => {
+        if (error) {
+            console.error(error);
+        }
+    });
 }
 
 
 function getQuestionResponses(payload, responseID) {
-  const definitions = payload.form_response.definition.fields;
-  const answers = payload.form_response.answers;
-  let questionRef = '';
-  let questionResponses = [];
-  const formattedAnswers = formatAnswers(answers)
-  for (let i = 0; i < definitions.length; i++) {
-    questionResponses.push([
-      definitions[i].ref,
-      definitions[i],
-      responseID,
-      { value: formattedAnswers[definitions[i].ref] }
-    ]);
-  }
-  return questionResponses;
+    const definitions = payload.form_response.definition.fields;
+    const answers = payload.form_response.answers;
+    let questionRef = '';
+    let questionResponses = [];
+    const formattedAnswers = formatAnswers(answers)
+    for (let i = 0; i < definitions.length; i++) {
+        questionResponses.push([
+            definitions[i].ref,
+            definitions[i],
+            responseID,
+            {
+                value: formattedAnswers[definitions[i].ref]
+            }
+        ]);
+    }
+    return questionResponses;
 }
 
 function formatAnswers(answers) {
-  let ret = {};
-  for (let i = 0; i < answers.length; i++) {
-    ret[answers[i].field.ref] = getVal(answers[i]);
-  }
-  return ret;
+    let ret = {};
+    for (let i = 0; i < answers.length; i++) {
+        ret[answers[i].field.ref] = getVal(answers[i]);
+    }
+    return ret;
 }
 
 exports.getFormResponsesFromSlug = function (res, slug) {
@@ -64,48 +67,51 @@ exports.getFormResponsesFromSlug = function (res, slug) {
 }
 
 function getFormResponses(res, formId) {
-    db.query(`SELECT definition, value, raw_response_id FROM rawresponse JOIN questionresponses ON rawresponse.id = questionresponses.raw_response_id WHERE form_id='${formId}'`, (error, results) => {
+    db.query(`SELECT definition, value, raw_response_id FROM reports JOIN questionresponses ON reports.id = questionresponses.raw_response_id WHERE form_id='${formId}'`, (error, results) => {
         const formattedResponses = formatResponses(results.rows);
         res.json(formattedResponses);
     })
 }
 
 function formatResponses(responses) {
-  let headers = {};
-  let items = {};
-  for (let i = 0; i < responses.length; i++) {
-    if (!headers[responses[i].definition.ref]) {
-      headers[responses[i].definition.ref] = responses[i].definition.title;
+    let headers = {};
+    let items = {};
+    for (let i = 0; i < responses.length; i++) {
+        if (!headers[responses[i].definition.ref]) {
+            headers[responses[i].definition.ref] = responses[i].definition.title;
+        }
+        if (!items[`${responses[i].raw_response_id}`]) {
+            items[`${responses[i].raw_response_id}`] = {};
+        }
+        //TODO - NTH - If val is an array, parse it to a nice looking string for the table
+        items[`${responses[i].raw_response_id}`][responses[i].definition.ref] = responses[i].value.value;
+        items[`${responses[i].raw_response_id}`].url = `/report/${responses[i].raw_response_id}`
     }
-    if (!items[`${responses[i].raw_response_id}`]) {
-      items[`${responses[i].raw_response_id}`] = {};
-    }
-    //TODO - NTH - If val is an array, parse it to a nice looking string for the table
-    items[`${responses[i].raw_response_id}`][responses[i].definition.ref] = responses[i].value.value;
-    items[`${responses[i].raw_response_id}`].url = `/report/${responses[i].raw_response_id}`
-  }
 
-  return {
-    headers: formatHeaders(headers),
-    items: formatItems(items)
-  };
+    return {
+        headers: formatHeaders(headers),
+        items: formatItems(items)
+    };
 }
 
 function formatHeaders(headers) {
-  let ret = [];
-  for (let [value, text] of Object.entries(headers)) {
-    ret.push({ value: value, text: text });
-  }
-  return ret;
+    let ret = [];
+    for (let [value, text] of Object.entries(headers)) {
+        ret.push({
+            value: value,
+            text: text
+        });
+    }
+    return ret;
 }
 
 function formatItems(items) {
-  let ret = [];
-  for (let [_, value] of Object.entries(items)) {
-    ret.push(value);
-  }
+    let ret = [];
+    for (let [_, value] of Object.entries(items)) {
+        ret.push(value);
+    }
 
-  return ret;
+    return ret;
 }
 
 

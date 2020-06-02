@@ -16,7 +16,7 @@ class RawResponse {
     }
 
     static get(req, res) {
-        db.query('SELECT response_json FROM rawresponse ORDER BY id ASC LIMIT 1', (error, results) => {
+        db.query('SELECT response_json FROM reports ORDER BY id ASC LIMIT 1', (error, results) => {
             if (error) {
                 throw error;
             }
@@ -27,7 +27,7 @@ class RawResponse {
     }
 
     static insertResponse(data) {
-        const query = 'INSERT INTO rawresponse(response_json) VALUES($1)'
+        const query = 'INSERT INTO reports (response_json) VALUES($1)'
         const values = [data]
         db.query(query, values, (error, results) => {
             if (error) {

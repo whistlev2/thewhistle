@@ -18,7 +18,7 @@
                 </v-card-text>
                 <v-card-actions>
                     <div class="flex-grow-1"></div>
-                    <v-btn color="blue darken-1" text v-on:click="closeModal">Close</v-btn>
+                    <v-btn color="blue darken-1" text v-on:click="closeModal">Cancel</v-btn>
                     <v-btn color="blue darken-1" text @click="updateAccess">Update Access</v-btn>
                 </v-card-actions>
             </v-card>
@@ -26,29 +26,29 @@
     </v-row>
 </template>
 <script>
-    export default {
-        methods: {
-            updateAccess() {
-                const postData = this.getPostData();
-                this.closeModal();
-                //TODO - Updates who has access to the report takes a list of user id's and updates access
-            },
+export default {
+    methods: {
+        updateAccess() {
+            const postData = this.getPostData();
+            this.closeModal();
+            //TODO - Updates who has access to the report takes a list of user id's and updates access
+        },
 
-            closeModal() {
-                this.$attrs.show = false;
-                this.$emit('close');
-            },
+        closeModal() {
+            this.$attrs.show = false;
+            this.$emit('close');
+        },
 
-            getPostData() {
-                let ret = [];
-                for (let i = 0; i < this.$attrs.users.length; i++) {
-                    ret.push({
-                        ref: this.$attrs.users[i].ref,
-                        access: this.$attrs.users[i].access
-                    })
-                }
-                return ret;
+        getPostData() {
+            let ret = [];
+            for (let i = 0; i < this.$attrs.users.length; i++) {
+                ret.push({
+                    ref: this.$attrs.users[i].ref,
+                    access: this.$attrs.users[i].access
+                })
             }
+            return ret;
         }
     }
+}
 </script>

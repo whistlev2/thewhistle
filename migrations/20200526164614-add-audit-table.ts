@@ -15,16 +15,16 @@ exports.setup = function (options: any, seedLink: any) {
 };
 
 exports.up = function (db: any, callback: any) {
-    db.createTable('questionresponses', {
+    db.createTable('audit', {
         id: {
             type: 'int',
             primaryKey: true,
             autoIncrement: true
         },
-        question_ref: 'string',
-        raw_response_id: 'int',
-        value: 'json',
-        definition: 'json'
+        report_id: 'int',
+        user_id: 'int',
+        time: 'datetime',
+        action: 'string'
     }, addReportForeignKey);
 
     function addReportForeignKey(err: any) {
@@ -32,8 +32,21 @@ exports.up = function (db: any, callback: any) {
             callback(err);
             return;
         }
-        db.addForeignKey('questionresponses', 'reports', 'raw_response_id', {
-            'raw_response_id': 'id'
+        db.addForeignKey('audit', 'reports', 'report_id', {
+            'report_id': 'id'
+        }, {
+            onDelete: 'CASCADE',
+            onUpdate: 'RESTRICT'
+        }, addUserForeignKey);
+    }
+
+    function addUserForeignKey(err: any) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        db.addForeignKey('audit', 'users', 'user_id', {
+            'user_id': 'id'
         }, {
             onDelete: 'CASCADE',
             onUpdate: 'RESTRICT'
@@ -44,7 +57,7 @@ exports.up = function (db: any, callback: any) {
 
 
 exports.down = function (db: any, callback: any) {
-    db.dropTable('questionresponses', callback);
+    db.dropTable('audit', callback);
 };
 
 exports._meta = {
