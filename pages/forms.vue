@@ -28,7 +28,8 @@ export default {
       },
       methods: {
           fetchData() {
-            const url = '/api/forms/user/' + this.$store.state.authUser.id;
+            const url = '/api/forms/user/' + this.$store.state.auth.user.id;
+            console.log('U R ME', url)
             axios.get(url).then((d) => {
               this.forms = d.data}
             )
