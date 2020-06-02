@@ -58,8 +58,6 @@ async function start() {
         await nuxt.ready()
     }
 
-    app.use('/api', api)
-
     // Give nuxt middleware to express
     app.use(nuxt.render)
 

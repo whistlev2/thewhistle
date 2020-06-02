@@ -23,7 +23,8 @@ export default {
         //TODO: Dynamically change mobile menu bar
         var path = this.$route.path
         //TODO: Today - change showPage
-        var showPage = this.$store.state.authUser || path.includes('survey') || path.includes('htmlform')
+        var showPage = true;
+        //var showPage = this.$store.state.authUser || path.includes('survey') || path.includes('htmlform')
         return {
             showPage: showPage,
             clipped: false,
