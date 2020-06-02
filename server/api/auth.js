@@ -30,6 +30,8 @@ router.post('/login', async (req, res) => {
             return;
         }
         //Logout after 1 week
+        console.log('ATOP', user)
+        console.log('KEE', process.env.JWT_SECRET_KEY);
         const token = await jwt.sign({ user: user }, process.env.JWT_SECRET_KEY, { expiresIn: "7d" });
         res.status(200);
         res.json({ token: token });
