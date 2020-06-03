@@ -45,6 +45,10 @@ exports.getUserForms = async function(userID) {
         console.log(orgForms)
         forms = forms.concat(orgForms);
     }
+    for (let k = 0; k < forms.length; k++) {
+        forms[k].title = forms[k].form_json.title;
+        delete forms.form_json;
+    }
     return forms;
 }
 

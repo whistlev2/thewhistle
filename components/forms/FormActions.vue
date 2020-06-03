@@ -3,7 +3,7 @@
         <v-btn :to="actualURL" style="background-color:#033549; color:white; margin-bottom: 10px;" text>View Form</v-btn>
         <v-btn v-if="this.$attrs.form.published" :to="actualURL" style="background-color:#033549; color:white; margin-bottom: 10px;" text>View Actual</v-btn>
         <v-btn :to="responsesURL" style="background-color:#033549; color:white; margin-bottom: 10px;" text>View Responses</v-btn>
-        <template v-if="this.$attrs.form.userRole == 'admin'">
+        <template v-if="canEdit">
             <v-btn :to="editURL" style="background-color:#033549; color:white; margin-bottom: 10px;" text>Edit</v-btn>
             <v-btn v-on:click="showPublishModal = true" style="background-color:#033549; color:white; margin-bottom: 10px;" text>Publish</v-btn>
             <v-btn v-on:click="showDeleteModal = true" style="background-color:#033549; color:white; margin-bottom: 10px;" text>Delete</v-btn>
@@ -42,6 +42,9 @@ export default {
         },
         editURL: function () {
             return `/edit-form/${this.$attrs.form.slug}`;
+        },
+        canEdit: function () {
+            return this.$attrs.form.role == 'admin' || this.$attrs.form.role == 'editor';
         }
     },
     methods: {

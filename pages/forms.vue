@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-card v-for="form in forms" :key="form.slug" style="margin-bottom: 30px;">
-            <v-card-title class="align-end fill-height">{{ form.title }}</v-card-title>
+            <v-card-title class="align-end fill-height">{{ form.organisation }} - {{ form.title }}</v-card-title>
             <v-card-actions>
                 <FormActions :form="form" />
             </v-card-actions>
@@ -20,19 +20,19 @@ export default {
     },
     data() {
         return {
-          forms: []
+            forms: []
         }
-      },
-      created() {
+    },
+    created() {
         this.fetchData();
-      },
-      methods: {
-          fetchData() {
+    },
+    methods: {
+        fetchData() {
             const url = '/api/forms/user/' + this.$store.state.auth.user.id;
             axios.get(url).then((d) => {
-              this.forms = d.data}
-            )
-          }
+                this.forms = d.data.forms
+            })
         }
+    }
 }
 </script>
