@@ -26,7 +26,38 @@ function extractTestSurvey(survey) {
 }
 
 exports.getUserForms = async function(userID) {
-    const results = await db.query('SELECT form_json')
+    let orgs = await db.query(`SELECT organisation_id, role FROM userorgs WHERE user_id='${userID}'`)
+    orgs = orgs.rows;
+    let forms = [];
+    let orgForms = [];
+    let role = '';
+    for (let i = 0; i < orgs.length; i++) {
+        console.log('*************************')
+        console.log(orgs[i].organisation_id);
+        if (orgs[i].role == 'admin') {
+            orgForms = await getOrgForms(orgs[i].organisation_id);
+            for (let j = 0; j < orgForms.length; j++) {
+                orgForms[j].role = 'admin';
+            }
+        } else {
+            orgForms = await getUserOrgForms(userID, orgs[i].organisation_id);
+        }
+        console.log(orgForms)
+        forms = forms.concat(orgForms);
+    }
+    return forms;
+}
+
+async function getOrgForms(organisationID) {
+    let orgs = await db.query(`SELECT slug, form_json, published, organisations.name AS organisation FROM subforms JOIN organisations ON organisations.id=subforms.organisation_id WHERE organisations.id='${organisationID}'`)
+    orgs = orgs.rows;
+    return orgs
+}
+
+async function getUserOrgForms(userID, organisationID) {
+    let orgs = await db.query(`SELECT slug, form_json, published, organisations.name AS organisation, userforms.user_role AS role FROM subforms JOIN organisations ON organisations.id=subforms.organisation_id JOIN userforms ON userforms.form_id=subforms.id WHERE organisations.id='${organisationID}' AND userforms.user_id='${userID}'`)
+    orgs = orgs.rows;
+    return orgs;
 }
 
 exports.getMyForms = function (uid, res) {
