@@ -1,20 +1,7 @@
 <template>
-    <div>
+    <span>
         
-        <div v-if="jump">
-            Default question jump:
-            <form action="/api/edit-form/update-question-jump" class="v-form">
-                <input type="hidden" name="formSlug" :value="$attrs.surveyID" />
-                <input type="hidden" name="question" :value="$attrs.question.ref" />
-                <select v-model="jump" name="jump" style="background-color:lightgray;">
-                    <option v-for="question in $attrs.jumpOptions" name="jump" :value="question.ref" :key="question.ref">{{ question.text }} ▼</option>
-                </select>
-                <v-btn type="submit">Update question jump</v-btn>
-            </form>
-        </div>
-        <v-btn action="addQuestionJump" v-else>Add question jump</v-btn>
-        <br><br>
-    </div>
+    </span>
 </template>
 <script>
 export default {
@@ -24,6 +11,7 @@ export default {
         }
     },
     methods: {
+        //TODO: Move to back-end
         getJump() {
             const logic = this.$attrs.question.logic;
             for (let i = 0; i < logic.length; i++) {
@@ -32,6 +20,19 @@ export default {
                 }
             }
             return null;
+        },
+        addQuestionJump() {
+
+        },
+        updateQuestionJump() {
+            /* <form action="/api/edit-form/update-question-jump" class="v-form">
+                <input type="hidden" name="formSlug" :value="$attrs.surveyID" />
+                <input type="hidden" name="question" :value="$attrs.question.ref" />
+                <select v-model="jump" name="jump" style="background-color:lightgray;">
+                    <option v-for="question in $attrs.jumpOptions" name="jump" :value="question.ref" :key="question.ref">{{ question.text }} ▼</option>
+                </select>
+                
+            </form> */
         }
     }
 }

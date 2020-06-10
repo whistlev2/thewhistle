@@ -23,5 +23,15 @@ router.get('/:slug', (req, res) => {
     Surveys.getFormFromSlug(req.params.slug, res);
 })
 
+router.get('/edit/:slug', async (req, res) => {
+    try {
+        const form = await Surveys.getEditFormJSON(req.params.slug);
+        res.json({ form: form });
+    } catch (err) {
+        console.error(err);
+        //TODO: Handle properly
+    }
+})
+
 
 module.exports = router

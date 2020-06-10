@@ -32,8 +32,6 @@ exports.getUserForms = async function(userID) {
     let orgForms = [];
     let role = '';
     for (let i = 0; i < orgs.length; i++) {
-        console.log('*************************')
-        console.log(orgs[i].organisation_id);
         if (orgs[i].role == 'admin') {
             orgForms = await getOrgForms(orgs[i].organisation_id);
             for (let j = 0; j < orgForms.length; j++) {
@@ -42,7 +40,6 @@ exports.getUserForms = async function(userID) {
         } else {
             orgForms = await getUserOrgForms(userID, orgs[i].organisation_id);
         }
-        console.log(orgForms)
         forms = forms.concat(orgForms);
     }
     for (let k = 0; k < forms.length; k++) {
@@ -65,12 +62,10 @@ async function getUserOrgForms(userID, organisationID) {
 }
 
 exports.getMyForms = function (uid, res) {
-    console.log("getMyForms", uid)
     db.query(`SELECT form_json, subforms.slug AS slug, user_role, published FROM subforms left join userforms on userforms.form_id=subforms.id WHERE user_id=${uid}`, (error, results) => {
         if (error) {
             res.json(error);
         }
-        console.log('ROWROW', results.rows);
         res.json(_.map(results.rows, function (res) {
             return {
                 title: res.form_json.title,
@@ -92,6 +87,16 @@ exports.getSurveyJSON = function (id, res) {
     });
 }
 
+exports.getEditFormJSON = async function(slug) {
+    try {
+        const results = await db.query(`SELECT form_json FROM subforms WHERE slug='${slug}'`);
+        const form = generateEditJSON(results.rows[0].form_json);
+        return form;
+    } catch (err) {
+        console.error(err);
+    }
+}
+
 exports.getTypeformJson = function (res) {
     typeform.getForm('ysuMcf', res);
 }
@@ -103,7 +108,6 @@ exports.getFormJSON = function (slug, res) {
         }
         const form = results.rows[0].form_json;
         const ret = rearrangeFormJson(form);
-        console.log(ret)
         res.json(ret);
     });
 }
@@ -119,24 +123,135 @@ exports.getTestFormJSON = function (slug, res) {
     });
 }
 
-function rearrangeFormJson(formJson) {
-    let formLogic = formJson.logic;
-    let ret = formJson.fields;
+function rearrangeFormJSON(formJSON) {
+    let formLogic = formJSON.logic;
+    let ret = formJSON.fields;
     let questionLogic = [];
     for (let i = 0; i < ret.length; i++) {
-        questionLogic = getQuestionLogic(formLogic, ret[i].ref);
+        questionLogic = extractQuestionLogic(formLogic, ret[i].ref);
         ret[i].logic = questionLogic ? questionLogic : [];
     }
     return ret;
 }
 
-function getQuestionLogic(formLogic, questionRef) {
+
+function getQuestionJump(formLogic, questionRef) {
+    for (let i = 0; i < formLogic.length; i++) {
+        if (formLogic[i].ref == questionRef) {
+            let actions = formLogic[i].actions;
+            for (let j = 0; j < actions.length; j++) {
+                if (actions[j].condition.op == 'always') {
+                    return actions[j].details.to.value;
+                }
+            }
+        }
+    }
+    return null;
+}
+
+function getJumpOptions(fields, questionRef) {
+    let passedRef = false;
+    let jumpOptions = [];
+    for (let i = 0; i < fields.length; i++) {
+        if (passedRef) {
+            jumpOptions.push(fields[i].ref);
+        } else if (fields[i].ref == questionRef) {
+            passedRef = true;
+        }   
+    }
+    return jumpOptions;
+}
+
+function getQuestionLogic(typeformJSON, questionRef) {
+    let logic = typeformJSON.logic;
+    for (let i = 0; i < logic.length; i++) {
+        if (logic[i].ref == questionRef) {
+            return logic[i].actions;
+        }
+    }
+    return [];
+}
+
+function getChoiceJump(questionLogic, choice) {
+    if (questionLogic) {
+        for (let i = 0; i < questionLogic.length; i++) {
+            if (questionLogic[i].condition.op == 'equal') {
+                const logicValue = questionLogic[i].condition.vars[1].value;
+                const choiceValue = choice.label;
+                if (logicValue == choiceValue) {
+                    return questionLogic[i].details.to.value;
+                }
+            } else if (questionLogic[i].condition.op == 'is') {
+                const logicValue = questionLogic[i].condition.vars[1].value;
+                const choiceValue = choice.ref;
+                if (logicValue == choiceValue) {
+                    return questionLogic[i].details.to.value;
+                }
+            }
+        }
+    }
+    return null;
+}
+
+function getQuestionChoices(typeformJSON, questionRef) {
+    let questionLogic = getQuestionLogic(typeformJSON, questionRef);
+    let fields = typeformJSON.fields;
+    let allJumps = [];
+    for (let i = 0; i < fields.length; i++) {
+        if (fields[i].ref == questionRef) {
+            if (fields[i].properties && fields[i].properties.choices) {
+                let choices = fields[i].properties.choices;
+                for (let j = 0; j < choices.length; j++) {
+                    choices[j].jump = getChoiceJump(questionLogic, choices[j])
+                    if (choices[j].jump) {
+                        allJumps.push(choices[j].jump);
+                    }
+                }
+                return {
+                    choices: choices,
+                    jumps: allJumps
+                };
+            }
+        }
+    }
+    return {
+        choices: null,
+        jumps: []
+    };
+}
+
+function generateEditJSON(typeformJSON) {
+    let formLogic = typeformJSON.logic;
+    let fields = typeformJSON.fields;
+    let question = {};
+    let editJSON = [];
+    let choices = {};
+    for (let i = 0; i < fields.length; i++) {
+        question = {};
+        question.ref = fields[i].ref;
+        question.title = fields[i].title;
+        question.type = fields[i].type;
+        question.jump = getQuestionJump(formLogic, fields[i].ref);
+        question.jumpOptions = getJumpOptions(fields, fields[i].ref);
+        choices = getQuestionChoices(typeformJSON, fields[i].ref);
+        question.choices = choices.choices;
+        if (question.jump) {
+            choices.jumps.push(question.jump);
+        }
+        question.jumps = [...new Set(choices.jumps)]
+        console.log('BROWN', question.jumps)
+        editJSON.push(question);
+    }
+    //console.log('ONLY', editJSON)
+    return editJSON;
+}
+
+function extractQuestionLogic(formLogic, questionRef) {
     if(!formLogic) {
-      return null
+        return null
     }
     for (let i = 0; i < formLogic.length; i++) {
         if (formLogic[i].ref == questionRef) {
-            let questionLogic = formLogic[i].actions;
             return formLogic[i].actions;
         }
     }
