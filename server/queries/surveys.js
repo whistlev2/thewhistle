@@ -239,7 +239,6 @@ function generateEditJSON(typeformJSON) {
             choices.jumps.push(question.jump);
         }
         question.jumps = [...new Set(choices.jumps)]
-        console.log('BROWN', question.jumps)
         editJSON.push(question);
     }
     //console.log('ONLY', editJSON)
