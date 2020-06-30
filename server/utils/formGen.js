@@ -31,7 +31,7 @@ exports.updateQuestion = async function(slug, questionRef, questionTitle) {
 
 exports.addQuestionBefore = async function(slug, adjacentQuestionRef, question) {
     let form = await Surveys.getJSONFromSlug(slug);
-    
+
     if (!form.logic) {
         form.logic = [];
     }
@@ -48,8 +48,11 @@ exports.addQuestionBefore = async function(slug, adjacentQuestionRef, question) 
 
 exports.addQuestionAfter = async function(slug, adjacentQuestionRef, question) {
     let form = await Surveys.getJSONFromSlug(slug);
-    //Change question jump to new question
-    //Set new questions jump to jump of old question
+
+    if (!form.logic) {
+        form.logic = [];
+    }
+
     form.logic = addQuestionAfterLogic(form.logic, adjacentQuestionRef, question.ref);
     let formattedQuestion = formatQuestion(question);
     let index = getQuestionPosition(form.fields, adjacentQuestionRef) + 1;
@@ -65,7 +68,39 @@ function addQuestionBeforeLogic(formLogic, oldQuestionRef, newQuestionRef) {
 }
 
 function addQuestionAfterLogic(formLogic, oldQuestionRef, newQuestionRef) {
+    //Change question jump to new question
+    //Set new question's jump to jump of old question
+    formLogic = addQuestionLogic(formLogic, oldQuestionRef);
 
+    let hasQuestionJump = false;
+
+    for (let i = 0; i < formLogic.length; i++) {
+        if (formLogic[i].ref == oldQuestionRef) {
+            for (let j = 0; j < formLogic[i].actions.length; j++) {
+                if (formLogic[i].actions[j].condition.op == 'always') {
+                    hasQuestionJump = true;
+
+                    formLogic.push({
+                        type: 'field',
+                        ref: newQuestionRef,
+                        actions: [
+                            generateAlwaysAction(formLogic[i].actions[j].details.to.value)
+                        ]
+                    });
+
+                    formLogic[i].actions[j].details.to.value = newQuestionRef;
+
+                    break;
+                }
+            }
+            
+            if (!hasQuestionJump) {
+                formLogic[i].actions.push(generateAlwaysAction(newQuestionRef));
+            }
+            break;
+        }
+    }
+    return formLogic;
 }
 
 function setQuestionJump(formLogic, fromQuestionRef, toQuestionRef) {
