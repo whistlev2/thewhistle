@@ -78,6 +78,8 @@ import RemoveQuestionModal from './RemoveQuestionModal.vue';
 import AddOptionModal from './AddOptionModal.vue';
 import RemoveOptionModal from './RemoveOptionModal.vue';
 
+import axios from 'axios';
+
 
 export default {
     components: {
@@ -109,8 +111,20 @@ export default {
         },
     },
     methods: {
+        emitToParent(form) {
+            this.$emit('questionChange', form);
+        },
+
         updateQuestionText() {
             console.log('Update question text');
+            let url = `/api/edit-form/${this.$attrs.surveyID}/update-question/${this.$attrs.question.ref}`;
+            let data = {
+                title: this.$attrs.question.title
+            };
+            axios.post(url, data).then((response) => {
+                this.emitToParent(response.data.form);  
+                //TODO: Handle errors
+            });
         },
 
         openAddBeforeQuestionModal() {
@@ -136,6 +150,16 @@ export default {
 
         addQuestion() {
             console.log('Add Q')
+            //TODO: Rename surveyID - it's actually the slug
+            let url = `/api/edit-form/${this.$attrs.surveyID}/add-question/${this.$attrs.question.ref}`;
+            let data = {
+                before: this.addBefore,
+                question: this.newQuestion
+            };
+            axios.post(url, data).then((response) => {
+                this.emitToParent(response.data.form);  
+                //TODO: Handle errors
+            });
         },
 
         openRemoveQuestionModal() {

@@ -7,6 +7,8 @@ const report = require('./report.js')
 const auth = require('./auth.js')
 const editForm = require('./editForm.js')
 
+const Surveys = require('../queries/surveys.js')
+
 const router = express.Router()
 // Set up routes
 

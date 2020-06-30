@@ -98,7 +98,7 @@ exports.getEditFormJSON = async function(slug) {
 }
 
 exports.getTypeformJson = function (res) {
-    typeform.getForm('ysuMcf', res);
+    typeform.getForm('vEz4p9wG', res);
 }
 
 exports.getFormJSON = function (slug, res) {
@@ -121,6 +121,15 @@ exports.getTestFormJSON = function (slug, res) {
         const ret = rearrangeFormJson(form);
         res.json(ret);
     });
+}
+
+exports.getJSONFromSlug = async function (slug) {
+    try {
+        const results = await db.query(`SELECT form_json FROM subforms WHERE slug='${slug}'`);
+        return results.rows[0].form_json;
+    } catch (err) {
+        console.error(err);
+    }
 }
 
 function rearrangeFormJSON(formJSON) {
@@ -164,11 +173,13 @@ function getJumpOptions(fields, questionRef) {
 
 function getQuestionLogic(typeformJSON, questionRef) {
     let logic = typeformJSON.logic;
-    for (let i = 0; i < logic.length; i++) {
-        if (logic[i].ref == questionRef) {
-            return logic[i].actions;
+    if (logic) {
+        for (let i = 0; i < logic.length; i++) {
+            if (logic[i].ref == questionRef) {
+                return logic[i].actions;
+            }
         }
-    }
+    }   
     return [];
 }
 
@@ -231,7 +242,7 @@ function generateEditJSON(typeformJSON) {
         question.ref = fields[i].ref;
         question.title = fields[i].title;
         question.type = fields[i].type;
-        question.jump = getQuestionJump(formLogic, fields[i].ref);
+        question.jump = formLogic ? getQuestionJump(formLogic, fields[i].ref) : null;
         question.jumpOptions = getJumpOptions(fields, fields[i].ref);
         choices = getQuestionChoices(typeformJSON, fields[i].ref);
         question.choices = choices.choices;
@@ -241,7 +252,6 @@ function generateEditJSON(typeformJSON) {
         question.jumps = [...new Set(choices.jumps)]
         editJSON.push(question);
     }
-    //console.log('ONLY', editJSON)
     return editJSON;
 }
 
@@ -296,6 +306,16 @@ exports.getFormFromSlug = function (slug, res) {
             id: form.typeform_id
         });
     });
+}
+
+exports.updateJSON = async function(slug, form) {
+    try {
+        await db.query(`UPDATE subforms SET form_json='${JSON.stringify(form)}' WHERE slug='${slug}'`);
+        const retForm = generateEditJSON(form);
+        return retForm;
+    } catch (err) {
+        console.error(err);
+    }
 }
 
 updateSurvey = function (slug, survey) {

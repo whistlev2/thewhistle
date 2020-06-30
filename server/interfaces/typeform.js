@@ -1,10 +1,7 @@
 // Interface to speak to Typeform
 // https://developer.typeform.com/
 
-const https = require('https')
 const request = require('request');
-
-const Subforms = require('../queries/subforms.js');
 
 const TYPEFORM_API_BASE_URL = "api.typeform.com"
 const ACCESS_TOKEN = "5o33hz2vjVsNbKCu8T4Zb2cYnNM6kWknvqnsfe5mX4Dn"
@@ -41,9 +38,8 @@ exports.updateForm = async function (formID, form) {
         body: body
     }, function (error, response) {
         if (error) {
-            console.log(error);
+            console.err(error);
         } else {
-            console.log(response);
             return response
         }
     })

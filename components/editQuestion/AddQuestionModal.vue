@@ -10,7 +10,7 @@
                         <v-row>
                             <v-form ref="form" v-model="valid">
                                 <v-col cols="12">
-                                    <v-text-field v-model="$attrs.newQuestion.text" :rules="notBlank" label="Question text" required></v-text-field>
+                                    <v-text-field v-model="$attrs.newQuestion.title" :rules="notBlank" label="Question text" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
                                     <v-select v-model="$attrs.newQuestion.type" :rules="notBlank"
