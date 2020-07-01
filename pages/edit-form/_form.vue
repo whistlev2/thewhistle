@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1>Edit Form</h1>
-        <EditQuestion v-for="question in form" :question="question" :surveyID="surveyID" :key="question.ref" v-on:questionChange="updateForm" />      
+        <EditQuestion v-for="question in form" :question="question" :slug="slug" :key="question.ref" v-on:questionChange="updateForm" />      
     </div>
 </template>
 
@@ -16,7 +16,7 @@ export default {
     asyncData(context) {
         return {
             form: context.form,
-            surveyID: context.surveyID
+            slug: context.slug
         }
     },
     

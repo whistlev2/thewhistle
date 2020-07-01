@@ -23,7 +23,7 @@ export default async function (context) {
 
     if (path.startsWith('/edit-form/') && params.hasOwnProperty('form')) {
         context.form = await Pages.loadEditForm(params.form);
-        context.surveyID = params.form;
+        context.slug = params.form;
     }
 
     // if (path.startsWith('/report/') && params.hasOwnProperty('report')) {

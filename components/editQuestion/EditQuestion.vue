@@ -115,16 +115,25 @@ export default {
             this.$emit('questionChange', form);
         },
 
-        updateQuestionText() {
-            console.log('Update question text');
-            let url = `/api/edit-form/${this.$attrs.surveyID}/update-question/${this.$attrs.question.ref}`;
-            let data = {
-                title: this.$attrs.question.title
-            };
-            axios.post(url, data).then((response) => {
-                this.emitToParent(response.data.form);  
-                //TODO: Handle errors
-            });
+        openAddOptionModal() {
+            this.showAddOptionModal = true;
+            console.log('Open add option')
+        },
+
+        closeAddOptionModal() {
+            this.showAddOptionModal = false;
+            console.log('Close add option')
+        },
+
+        openRemoveOptionModal(option) {
+            this.currentOption = option;
+            this.showRemoveOptionModal = true;
+            console.log('Open remove option')
+        },
+
+        closeRemoveOptionModal() {
+            this.showRemoveOptionModal = false;
+            console.log('Close remove option')
         },
 
         openAddBeforeQuestionModal() {
@@ -148,20 +157,6 @@ export default {
             console.log('Close add Q')
         },
 
-        addQuestion() {
-            console.log('Add Q')
-            //TODO: Rename surveyID - it's actually the slug
-            let url = `/api/edit-form/${this.$attrs.surveyID}/add-question/${this.$attrs.question.ref}`;
-            let data = {
-                before: this.addBefore,
-                question: this.newQuestion
-            };
-            axios.post(url, data).then((response) => {
-                this.emitToParent(response.data.form);  
-                //TODO: Handle errors
-            });
-        },
-
         openRemoveQuestionModal() {
             console.log('Open remove Q')
             this.showRemoveQuestionModal = true;
@@ -172,12 +167,41 @@ export default {
             this.showRemoveQuestionModal = false;
         },
 
+        updateQuestionText() {
+            console.log('Update question text');
+            let url = `/api/edit-form/${this.$attrs.slug}/update-question/${this.$attrs.question.ref}`;
+            let data = {
+                title: this.$attrs.question.title
+            };
+            axios.post(url, data).then((response) => {
+                this.emitToParent(response.data.form);  
+                //TODO: Handle errors
+            });
+        },
+        
+        addQuestion() {
+            console.log('Add Q')
+            let url = `/api/edit-form/${this.$attrs.slug}/add-question/${this.$attrs.question.ref}`;
+            let data = {
+                before: this.addBefore,
+                question: this.newQuestion
+            };
+            axios.post(url, data).then((response) => {
+                this.emitToParent(response.data.form);  
+                //TODO: Handle errors
+            });
+        },
+
         removeQuestion() {
             console.log('Remove Q')
         },
 
         updateQuestionJump() {
             console.log('Update question jump')
+        },
+
+        addOption() {
+            console.log('Add option')
         },
 
         updateOptionLabel() {
@@ -188,34 +212,9 @@ export default {
             console.log('Update option jump')
         },
 
-        openRemoveOptionModal(option) {
-            this.currentOption = option;
-            this.showRemoveOptionModal = true;
-            console.log('Open remove option')
-        },
-
-        closeRemoveOptionModal() {
-            this.showRemoveOptionModal = false;
-            console.log('Close remove option')
-        },
-
         removeOption() {
             console.log('Remove option')
-        },
-
-        openAddOptionModal() {
-            this.showAddOptionModal = true;
-            console.log('Open add option')
-        },
-
-        closeAddOptionModal() {
-            this.showAddOptionModal = false;
-            console.log('Close add option')
-        },
-
-        addOption() {
-            console.log('Add option')
-        } 
+        }
 
     }
 }
