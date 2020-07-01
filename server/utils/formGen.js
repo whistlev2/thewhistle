@@ -2,7 +2,7 @@ const Subforms = require('../queries/subforms.js');
 const Surveys = require('../queries/surveys.js');
 const Typeform = require('../interfaces/typeform.js');
 
-exports.updateOptionJump = async function(slug, question, choice, jumpQuestion, res) {
+/* exports.updateOptionJump = async function(slug, question, choice, jumpQuestion, res) {
     const testJSON = await Subforms.getTestJSON(slug);
     const testTypeformID = getTypeformID(testJSON);
     const updatedJSON = updateOptionJump(testJSON, question, choice, jumpQuestion);
@@ -15,116 +15,26 @@ exports.updateQuestionJump = async function(slug, question, jumpQuestion, res) {
     const testTypeformID = getTypeformID(testJSON);
     const updatedJSON = updateQuestionJump(testJSON, question, jumpQuestion);
     Typeform.updateForm(testTypeformID, slug, updatedJSON, res);
+} */
+
+async function updateForm(slug, form) {
+    let retForm = await Surveys.updateJSON(slug, form);
+    Typeform.updateForm(form.id, form);
+    return retForm;
 }
 
-exports.updateQuestionTitle = async function(slug, questionRef, questionTitle) {
-    let form = await Surveys.getJSONFromSlug(slug);
-    //TODO: Handle case that the question doesn't exist
-    for (let i = 0; i < form.fields.length; i++) {
-        if (form.fields[i].ref == questionRef) {
-            form.fields[i].title = questionTitle;
-            break;
+function changeQuestionRefs(actions, oldQuestionRef, newQuestionRef) {
+    for (let i = 0; i < actions.length; i++) {
+        if (actions[i].details.to.value == oldQuestionRef) {
+            actions[i].details.to.value = newQuestionRef
         }
     }
-    let retForm = await updateForm(slug, form);
-    return retForm;
+    return actions;
 }
 
-exports.addQuestionBefore = async function(slug, adjacentQuestionRef, question) {
-    let form = await Surveys.getJSONFromSlug(slug);
-
-    //TODO: Check question ref doesn't already exist
-
-    if (!form.logic) {
-        form.logic = [];
-    }
-
-    form.logic = addQuestionBeforeLogic(form.logic, adjacentQuestionRef, question.ref);
-
-    let formattedQuestion = formatQuestion(question);
-    let index = getQuestionPosition(form.fields, adjacentQuestionRef);
-    form.fields = insertQuestion(form.fields, formattedQuestion, index);
-
-    let retForm = await updateForm(slug, form);
-    return retForm;
-}
-
-exports.addQuestionAfter = async function(slug, adjacentQuestionRef, question) {
-    let form = await Surveys.getJSONFromSlug(slug);
-
-    //TODO: Check question ref doesn't already exist
-
-    if (!form.logic) {
-        form.logic = [];
-    }
-
-    form.logic = addQuestionAfterLogic(form.logic, adjacentQuestionRef, question.ref);
-    let formattedQuestion = formatQuestion(question);
-    let index = getQuestionPosition(form.fields, adjacentQuestionRef) + 1;
-    form.fields = insertQuestion(form.fields, formattedQuestion, index);
-    let retForm = await updateForm(slug, form);
-    return retForm;
-}
-
-function addQuestionBeforeLogic(formLogic, oldQuestionRef, newQuestionRef) {
-    formLogic = changeAllQuestionRefs(formLogic, oldQuestionRef, newQuestionRef);
-    formLogic = setQuestionJump(formLogic, newQuestionRef, oldQuestionRef);
-    return formLogic;
-}
-
-function addQuestionAfterLogic(formLogic, oldQuestionRef, newQuestionRef) {
-    //Change question jump to new question
-    //Set new question's jump to jump of old question
-    formLogic = addQuestionLogic(formLogic, oldQuestionRef);
-
-    let hasQuestionJump = false;
-
+function changeAllQuestionRefs(formLogic, oldQuestionRef, newQuestionRef) {
     for (let i = 0; i < formLogic.length; i++) {
-        if (formLogic[i].ref == oldQuestionRef) {
-            for (let j = 0; j < formLogic[i].actions.length; j++) {
-                if (formLogic[i].actions[j].condition.op == 'always') {
-                    hasQuestionJump = true;
-
-                    formLogic.push({
-                        type: 'field',
-                        ref: newQuestionRef,
-                        actions: [
-                            generateAlwaysAction(formLogic[i].actions[j].details.to.value)
-                        ]
-                    });
-
-                    formLogic[i].actions[j].details.to.value = newQuestionRef;
-
-                    break;
-                }
-            }
-            
-            if (!hasQuestionJump) {
-                formLogic[i].actions.push(generateAlwaysAction(newQuestionRef));
-            }
-            break;
-        }
-    }
-    return formLogic;
-}
-
-function setQuestionJump(formLogic, fromQuestionRef, toQuestionRef) {
-    formLogic = addQuestionLogic(formLogic, fromQuestionRef);
-    let updatedJump = false;
-    for (let i = 0; i < formLogic.length; i++) {
-        if (formLogic[i].ref == fromQuestionRef) {
-            for (let j = 0; j < formLogic[i].actions.length; j++) {
-                if (formLogic[i].actions[j].condition.op == 'always') {
-                    formLogic[i].actions[j].details.to.value = toQuestionRef;
-                    updatedJump = true;
-                    break;
-                }
-            }
-            if (!updatedJump) {
-                formLogic[i].actions.push(generateAlwaysAction(toQuestionRef));
-            }
-        }
-        break;
+        formLogic[i].actions = changeQuestionRefs(formLogic[i].actions, oldQuestionRef, newQuestionRef);
     }
     return formLogic;
 }
@@ -163,21 +73,31 @@ function generateAlwaysAction(toQuestionRef) {
     }
 }
 
-function formatQuestion(question) {
-    switch (question.type) {
-        case 'Short text':
-            return generateShortTextField(question);
-        case 'Long text':
-            return generateLongTextField(question);
-        case 'Multiple choice':
-            return generateMultipleChoiceField(question);
-        case 'Dropdown':
-            return generateDropdownField(question);
-        case 'Date':
-            return generateDateField(question);
-        case 'File upload':
-            return generateFileField(question);
+function setQuestionJump(formLogic, fromQuestionRef, toQuestionRef) {
+    formLogic = addQuestionLogic(formLogic, fromQuestionRef);
+    let updatedJump = false;
+    for (let i = 0; i < formLogic.length; i++) {
+        if (formLogic[i].ref == fromQuestionRef) {
+            for (let j = 0; j < formLogic[i].actions.length; j++) {
+                if (formLogic[i].actions[j].condition.op == 'always') {
+                    formLogic[i].actions[j].details.to.value = toQuestionRef;
+                    updatedJump = true;
+                    break;
+                }
+            }
+            if (!updatedJump) {
+                formLogic[i].actions.push(generateAlwaysAction(toQuestionRef));
+            }
+        }
+        break;
     }
+    return formLogic;
+}
+
+function addQuestionBeforeLogic(formLogic, oldQuestionRef, newQuestionRef) {
+    formLogic = changeAllQuestionRefs(formLogic, oldQuestionRef, newQuestionRef);
+    formLogic = setQuestionJump(formLogic, newQuestionRef, oldQuestionRef);
+    return formLogic;
 }
 
 function generateShortTextField(question) {
@@ -261,6 +181,23 @@ function generateFileField(question) {
     }
 }
 
+function formatQuestion(question) {
+    switch (question.type) {
+        case 'Short text':
+            return generateShortTextField(question);
+        case 'Long text':
+            return generateLongTextField(question);
+        case 'Multiple choice':
+            return generateMultipleChoiceField(question);
+        case 'Dropdown':
+            return generateDropdownField(question);
+        case 'Date':
+            return generateDateField(question);
+        case 'File upload':
+            return generateFileField(question);
+    }
+}
+
 function getQuestionPosition(formFields, questionRef) {
     for (let i = 0; i < formFields.length; i++) {
         if (formFields[i].ref == questionRef) {
@@ -270,32 +207,140 @@ function getQuestionPosition(formFields, questionRef) {
     return null;
 }
 
+function addQuestionAfterLogic(formLogic, oldQuestionRef, newQuestionRef) {
+    //Change question jump to new question
+    //Set new question's jump to jump of old question
+    formLogic = addQuestionLogic(formLogic, oldQuestionRef);
+
+    let hasQuestionJump = false;
+
+    for (let i = 0; i < formLogic.length; i++) {
+        if (formLogic[i].ref == oldQuestionRef) {
+            for (let j = 0; j < formLogic[i].actions.length; j++) {
+                if (formLogic[i].actions[j].condition.op == 'always') {
+                    hasQuestionJump = true;
+
+                    formLogic.push({
+                        type: 'field',
+                        ref: newQuestionRef,
+                        actions: [
+                            generateAlwaysAction(formLogic[i].actions[j].details.to.value)
+                        ]
+                    });
+
+                    formLogic[i].actions[j].details.to.value = newQuestionRef;
+
+                    break;
+                }
+            }
+            
+            if (!hasQuestionJump) {
+                formLogic[i].actions.push(generateAlwaysAction(newQuestionRef));
+            }
+            break;
+        }
+    }
+    return formLogic;
+}
+
 function insertQuestion(formFields, question, index) {
     formFields.splice(index, 0, question)
     return formFields;
 }
 
-function changeAllQuestionRefs(formLogic, oldQuestionRef, newQuestionRef) {
-    for (let i = 0; i < formLogic.length; i++) {
-        formLogic[i].actions = changeQuestionRefs(formLogic[i].actions, oldQuestionRef, newQuestionRef);
-    }
-    return formLogic;
-}
-
-function changeQuestionRefs(actions, oldQuestionRef, newQuestionRef) {
-    for (let i = 0; i < actions.length; i++) {
-        if (actions[i].details.to.value == oldQuestionRef) {
-            actions[i].details.to.value = newQuestionRef
+exports.updateQuestionTitle = async function(slug, questionRef, questionTitle) {
+    let form = await Surveys.getJSONFromSlug(slug);
+    //TODO: Handle case that the question doesn't exist
+    for (let i = 0; i < form.fields.length; i++) {
+        if (form.fields[i].ref == questionRef) {
+            form.fields[i].title = questionTitle;
+            break;
         }
     }
-    return actions;
-}
-
-async function updateForm(slug, form) {
-    let retForm = await Surveys.updateJSON(slug, form);
-    Typeform.updateForm(form.id, form);
+    let retForm = await updateForm(slug, form);
     return retForm;
 }
+
+exports.addQuestionBefore = async function(slug, adjacentQuestionRef, question) {
+    let form = await Surveys.getJSONFromSlug(slug);
+
+    //TODO: Check question ref doesn't already exist
+
+    if (!form.logic) {
+        form.logic = [];
+    }
+
+    form.logic = addQuestionBeforeLogic(form.logic, adjacentQuestionRef, question.ref);
+
+    let formattedQuestion = formatQuestion(question);
+    let index = getQuestionPosition(form.fields, adjacentQuestionRef);
+    form.fields = insertQuestion(form.fields, formattedQuestion, index);
+
+    let retForm = await updateForm(slug, form);
+    return retForm;
+}
+
+exports.addQuestionAfter = async function(slug, adjacentQuestionRef, question) {
+    let form = await Surveys.getJSONFromSlug(slug);
+
+    //TODO: Check question ref doesn't already exist
+
+    if (!form.logic) {
+        form.logic = [];
+    }
+
+    form.logic = addQuestionAfterLogic(form.logic, adjacentQuestionRef, question.ref);
+    let formattedQuestion = formatQuestion(question);
+    let index = getQuestionPosition(form.fields, adjacentQuestionRef) + 1;
+    form.fields = insertQuestion(form.fields, formattedQuestion, index);
+    let retForm = await updateForm(slug, form);
+    return retForm;
+}
+
+exports.deleteQuestion = async function (slug, questionRef) {
+
+}
+
+exports.updateQuestionJump = async function (slug, questionRef, jump) {
+
+}
+
+exports.addOption = async function (slug, questionRef, option) {
+
+}
+
+exports.updateOptionLabel = async function (slug, questionRef, optionRef, label) {
+
+}
+
+exports.updateOptionJump = async function (slug, questionRef, optionRef, jump) {
+
+}
+
+exports.deleteOption = async function (slug, questionRef, choiceRef) {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function updateOptionJump(testJSON, question, choice, jumpQuestion) {
     let ret = updatedJSON;
