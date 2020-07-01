@@ -131,9 +131,9 @@ function generateMultipleChoiceField(question) {
         },
         properties: {
             randomize: false,
-            allow_multiple_selection: question.multipleSelection,
-            allow_other_choice: false,
-            vertical_alignment: true
+            allow_multiple_selection: question.multipleSelection, // eslint-disable-line
+            allow_other_choice: false, // eslint-disable-line
+            vertical_alignment: true // eslint-disable-line
         },
         choices: [],
         type: 'multiple_choice'
@@ -148,7 +148,7 @@ function generateDropdownField(question) {
             required: false
         },
         properties: {
-            alphabetical_order: false,
+            alphabetical_order: false, // eslint-disable-line
             choices: []
         },
         type: 'dropdown'
