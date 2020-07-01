@@ -16,7 +16,7 @@
             <v-card-actions>
                 <v-btn x-large outlined v-on:click="openAddBeforeQuestionModal" class="blueBtn">Add before</v-btn>
                 <v-btn x-large outlined v-on:click="openAddAfterQuestionModal" class="blueBtn">Add after</v-btn>
-                <v-btn x-large outlined v-on:click="openRemoveQuestionModal" class="blueBtn">Remove question</v-btn>
+                <v-btn x-large outlined v-on:click="openDeleteQuestionModal" class="blueBtn">Delete question</v-btn>
                     
                 <v-select dense outlined v-model="$attrs.question.jump" label="Default question jump:" :items="$attrs.question.jumpOptions" v-on:change="updateQuestionJump" style="padding-left: 10px; padding-top: 30px;" />
 
@@ -43,7 +43,7 @@
                                         label="Choice jump" v-on:change="updateOptionJump(choice)" item-text="label" item-value="ref" />
                                 </v-col>
                                 <v-col cols="6" md="2">
-                                    <v-btn x-large outlined v-on:click="openRemoveOptionModal(choice)" class="blueBtn">Remove choice</v-btn>
+                                    <v-btn x-large outlined v-on:click="openDeleteOptionModal(choice)" class="blueBtn">Remove choice</v-btn>
                                 </v-col>
                             </v-row>
                             <v-row>
@@ -59,9 +59,9 @@
             </v-expand-transition>
         </v-card>
         <AddQuestionModal :show="showAddQuestionModal" @close="closeAddQuestionModal" @submit="addQuestion" :newQuestion="newQuestion" />
-        <RemoveQuestionModal :show="showRemoveQuestionModal" @close="closeRemoveQuestionModal" @submit="removeQuestion" :questionText="$attrs.question.title" />
+        <DeleteQuestionModal :show="showDeleteQuestionModal" @close="closeDeleteQuestionModal" @submit="deleteQuestion" :questionText="$attrs.question.title" />
         <AddOptionModal :show="showAddOptionModal" @close="closeAddOptionModal" @submit="addOption" :newOption="newOption" />
-        <RemoveOptionModal :show="showRemoveOptionModal" @close="closeRemoveOptionModal" @submit="removeOption" :option="deleteOption" />
+        <DeleteOptionModal :show="showDeleteOptionModal" @close="closeDeleteOptionModal" @submit="deleteOption" :option="optionToDelete" />
     </div>
 </template>
 <style scoped>
@@ -74,9 +74,9 @@
 // import { Component, Vue } from 'vue-property-decorator'
 
 import AddQuestionModal from './AddQuestionModal.vue';
-import RemoveQuestionModal from './RemoveQuestionModal.vue';
+import DeleteQuestionModal from './DeleteQuestionModal.vue';
 import AddOptionModal from './AddOptionModal.vue';
-import RemoveOptionModal from './RemoveOptionModal.vue';
+import DeleteOptionModal from './DeleteOptionModal.vue';
 
 import axios from 'axios';
 
@@ -84,21 +84,21 @@ import axios from 'axios';
 export default {
     components: {
         AddQuestionModal,
-        RemoveQuestionModal,
+        DeleteQuestionModal,
         AddOptionModal,
-        RemoveOptionModal
+        DeleteOptionModal
     },
     data() {
         return {
             showOptions: false,
             addBefore: false,
             showAddQuestionModal: false,
-            showRemoveQuestionModal: false,
+            showDeleteQuestionModal: false,
             showAddOptionModal: false,
-            showRemoveOptionModal: false,
+            showDeleteOptionModal: false,
             newQuestion: {},
             newOption: {},
-            deleteOption: {}
+            optionToDelete: {}
         }
     },
     computed: {
@@ -125,14 +125,14 @@ export default {
             console.log('Close add option')
         },
 
-        openRemoveOptionModal(option) {
-            this.deleteOption = option;
-            this.showRemoveOptionModal = true;
+        openDeleteOptionModal(option) {
+            this.optionToDelete = option;
+            this.showDeleteOptionModal = true;
             console.log('Open remove option')
         },
 
-        closeRemoveOptionModal() {
-            this.showRemoveOptionModal = false;
+        closeDeleteOptionModal() {
+            this.showDeleteOptionModal = false;
             console.log('Close remove option')
         },
 
@@ -157,14 +157,14 @@ export default {
             console.log('Close add Q')
         },
 
-        openRemoveQuestionModal() {
+        openDeleteQuestionModal() {
             console.log('Open remove Q')
-            this.showRemoveQuestionModal = true;
+            this.showDeleteQuestionModal = true;
         },
 
-        closeRemoveQuestionModal() {
+        closeDeleteQuestionModal() {
             console.log('Close remove Q');
-            this.showRemoveQuestionModal = false;
+            this.showDeleteQuestionModal = false;
         },
 
         updateQuestionText() {
@@ -192,7 +192,7 @@ export default {
             });
         },
 
-        removeQuestion() {
+        deleteQuestion() {
             console.log('Remove Q')
             let url = `/api/edit-form/${this.$attrs.slug}/delete-question/${this.$attrs.question.ref}`;
             axios.delete(url).then((response) => {
@@ -249,7 +249,7 @@ export default {
             });
         },
 
-        removeOption(choiceRef) {
+        deleteOption(choiceRef) {
             console.log('Remove option')
             let url = `/api/edit-form/${this.$attrs.slug}/delete-option/${this.$attrs.question.ref}/${choiceRef}`;
 

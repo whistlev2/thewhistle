@@ -248,6 +248,39 @@ function insertQuestion(formFields, question, index) {
     return formFields;
 }
 
+function deleteQuestionFromFields(formFields, questionRef) {
+    for (let i = 0; i < formFields.length; i++) {
+        if (formFields[i].ref == questionRef) {
+            formFields.splice(i, 1);
+            break;
+        }
+    }
+
+    return formFields;
+}
+
+function deleteQuestionFromActions(actions, questionRef) {
+    for (let i = actions.length - 1; i >= 0; i--) {
+        if (actions[i].details.to.value == questionRef) {
+            actions.splice(i, 1);
+        }
+    }
+
+    return actions;
+}
+
+function deleteQuestionFromLogic(formLogic, questionRef) {
+    for (let i = formLogic.length - 1; i >= 0; i--) {
+        if (formLogic[i].ref == questionRef) {
+            formLogic.splice(i, 1);
+        } else {
+            formLogic = deleteQuestionFromActions(formLogic[i], questionRef);
+        }
+    }
+
+    return formLogic;
+}
+
 exports.updateQuestionTitle = async function(slug, questionRef, questionTitle) {
     let form = await Surveys.getJSONFromSlug(slug);
     //TODO: Handle case that the question doesn't exist
@@ -298,11 +331,22 @@ exports.addQuestionAfter = async function(slug, adjacentQuestionRef, question) {
 }
 
 exports.deleteQuestion = async function (slug, questionRef) {
+    let form = await Surveys.getJSONFromSlug(slug);
 
+    //TODO: Check if question exists
+
+    form.fields = deleteQuestionFromFields(form.fields, questionRef);
+
+    if (form.logic) {
+        form.logic = deleteQuestionFromLogic(form.logic, questionRef);
+    }
+
+    let retForm = await updateForm(slug, form);
+    return retForm;
 }
 
 exports.updateQuestionJump = async function (slug, questionRef, jump) {
-
+    
 }
 
 exports.addOption = async function (slug, questionRef, option) {
