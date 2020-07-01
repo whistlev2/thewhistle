@@ -36,11 +36,11 @@
                             <v-row v-for="choice in $attrs.question.choices" :key="choice.ref">
                                 <v-col cols="12" md="6">
                                     <v-text-field outlined v-model="choice.label"
-                                        v-on:change="updateOptionLabel"></v-text-field>
+                                        v-on:change="updateOptionLabel(choice)"></v-text-field>
                                 </v-col>
                                 <v-col cols="6" md="4">
                                     <v-select dense outlined v-model="choice.jump" :items="$attrs.question.jumpOptions"
-                                        label="Choice jump" v-on:change="updateOptionJump" item-text="label" item-value="ref" />
+                                        label="Choice jump" v-on:change="updateOptionJump(choice)" item-text="label" item-value="ref" />
                                 </v-col>
                                 <v-col cols="6" md="2">
                                     <v-btn x-large outlined v-on:click="openRemoveOptionModal(choice)" class="blueBtn">Remove choice</v-btn>
@@ -61,7 +61,7 @@
         <AddQuestionModal :show="showAddQuestionModal" @close="closeAddQuestionModal" @submit="addQuestion" :newQuestion="newQuestion" />
         <RemoveQuestionModal :show="showRemoveQuestionModal" @close="closeRemoveQuestionModal" @submit="removeQuestion" :questionText="$attrs.question.title" />
         <AddOptionModal :show="showAddOptionModal" @close="closeAddOptionModal" @submit="addOption" :newOption="newOption" />
-        <RemoveOptionModal :show="showRemoveOptionModal" @close="closeRemoveOptionModal" @submit="removeOption" :option="currentOption" />
+        <RemoveOptionModal :show="showRemoveOptionModal" @close="closeRemoveOptionModal" @submit="removeOption" :option="deleteOption" />
     </div>
 </template>
 <style scoped>
@@ -98,7 +98,7 @@ export default {
             showRemoveOptionModal: false,
             newQuestion: {},
             newOption: {},
-            currentOption: {}
+            deleteOption: {}
         }
     },
     computed: {
@@ -126,7 +126,7 @@ export default {
         },
 
         openRemoveOptionModal(option) {
-            this.currentOption = option;
+            this.deleteOption = option;
             this.showRemoveOptionModal = true;
             console.log('Open remove option')
         },
@@ -169,11 +169,11 @@ export default {
 
         updateQuestionText() {
             console.log('Update question text');
-            let url = `/api/edit-form/${this.$attrs.slug}/update-question/${this.$attrs.question.ref}`;
+            let url = `/api/edit-form/${this.$attrs.slug}/update-question-title/${this.$attrs.question.ref}`;
             let data = {
                 title: this.$attrs.question.title
             };
-            axios.post(url, data).then((response) => {
+            axios.patch(url, data).then((response) => {
                 this.emitToParent(response.data.form);  
                 //TODO: Handle errors
             });
@@ -194,26 +194,69 @@ export default {
 
         removeQuestion() {
             console.log('Remove Q')
+            let url = `/api/edit-form/${this.$attrs.slug}/delete-question/${this.$attrs.question.ref}`;
+            axios.delete(url).then((response) => {
+                this.emitToParent(response.data.form);  
+                //TODO: Handle errors
+            });
         },
 
         updateQuestionJump() {
             console.log('Update question jump')
+            let url = `/api/edit-form/${this.$attrs.slug}/update-question-jump/${this.$attrs.question.ref}`;
+            let data = {
+                jump: this.$attrs.question.jump
+            };
+            axios.patch(url, data).then((response) => {
+                this.emitToParent(response.data.form);  
+                //TODO: Handle errors
+            });
         },
 
         addOption() {
             console.log('Add option')
+            let url = `/api/edit-form/${this.$attrs.slug}/add-option/${this.$attrs.question.ref}`;
+            let data = {
+                option: this.newOption
+            };
+            axios.post(url, data).then((response) => {
+                this.emitToParent(response.data.form);  
+                //TODO: Handle errors
+            });
         },
 
-        updateOptionLabel() {
+        updateOptionLabel(choice) {
             console.log('Update option label')
+            let url = `/api/edit-form/${this.$attrs.slug}/update-option-label/${this.$attrs.question.ref}/${choice.ref}`;
+            let data = {
+                label: choice.label
+            };
+            axios.patch(url, data).then((response) => {
+                this.emitToParent(response.data.form);  
+                //TODO: Handle errors
+            });
         },
 
-        updateOptionJump() {
+        updateOptionJump(choice) {
             console.log('Update option jump')
+            let url = `/api/edit-form/${this.$attrs.slug}/update-option-jump/${this.$attrs.question.ref}/${choice.ref}`;
+            let data = {
+                jump: choice.jump
+            };
+            axios.patch(url, data).then((response) => {
+                this.emitToParent(response.data.form);  
+                //TODO: Handle errors
+            });
         },
 
-        removeOption() {
+        removeOption(choiceRef) {
             console.log('Remove option')
+            let url = `/api/edit-form/${this.$attrs.slug}/delete-option/${this.$attrs.question.ref}/${choiceRef}`;
+
+            axios.delete(url).then((response) => {
+                this.emitToParent(response.data.form);  
+                //TODO: Handle errors
+            });
         }
 
     }

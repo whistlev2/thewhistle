@@ -17,8 +17,9 @@ exports.updateQuestionJump = async function(slug, question, jumpQuestion, res) {
     Typeform.updateForm(testTypeformID, slug, updatedJSON, res);
 }
 
-exports.updateQuestion = async function(slug, questionRef, questionTitle) {
+exports.updateQuestionTitle = async function(slug, questionRef, questionTitle) {
     let form = await Surveys.getJSONFromSlug(slug);
+    //TODO: Handle case that the question doesn't exist
     for (let i = 0; i < form.fields.length; i++) {
         if (form.fields[i].ref == questionRef) {
             form.fields[i].title = questionTitle;
@@ -31,6 +32,8 @@ exports.updateQuestion = async function(slug, questionRef, questionTitle) {
 
 exports.addQuestionBefore = async function(slug, adjacentQuestionRef, question) {
     let form = await Surveys.getJSONFromSlug(slug);
+
+    //TODO: Check question ref doesn't already exist
 
     if (!form.logic) {
         form.logic = [];
@@ -48,6 +51,8 @@ exports.addQuestionBefore = async function(slug, adjacentQuestionRef, question) 
 
 exports.addQuestionAfter = async function(slug, adjacentQuestionRef, question) {
     let form = await Surveys.getJSONFromSlug(slug);
+
+    //TODO: Check question ref doesn't already exist
 
     if (!form.logic) {
         form.logic = [];

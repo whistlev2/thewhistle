@@ -32,7 +32,7 @@ export default {
         },
         submit() {
             this.closeModal();
-            this.$emit('submit');
+            this.$emit('submit', this.$attrs.option.ref);
         }
     }
 }
