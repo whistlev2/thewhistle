@@ -14,8 +14,6 @@ router.patch('/:slug/update-question-jump/:questionRef', updateQuestionJump);
 
 router.post('/:slug/add-option/:questionRef', addOption);
 
-router.patch('/:slug/update-option-label/:questionRef/:choiceRef', updateOptionLabel);
-
 router.patch('/:slug/update-option-jump/:questionRef/:choiceRef', updateOptionJump);
 
 router.delete('/:slug/delete-option/:questionRef/:choiceRef', deleteOption);
@@ -79,19 +77,6 @@ async function updateQuestionJump(req, res) {
 async function addOption(req, res) {
     try {
         const form = await FormGen.addOption(req.params.slug, req.params.questionRef, req.body.option);
-        res.json({
-            form: form
-        });
-    } catch (err) {
-        console.error(err);
-        res.status(500);
-        //TODO: Handle errors properly
-    }
-}
-
-async function updateOptionLabel(req, res) {
-    try {
-        const form = await FormGen.updateOptionLabel(req.params.slug, req.params.questionRef, req.params.choiceRef, req.body.label);
         res.json({
             form: form
         });

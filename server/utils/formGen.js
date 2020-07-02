@@ -398,10 +398,6 @@ exports.addOption = async function (slug, questionRef, option) {
     return retForm;
 }
 
-exports.updateOptionLabel = async function (slug, questionRef, optionRef, label) {
-
-}
-
 exports.updateOptionJump = async function (slug, questionRef, optionRef, jump) {
 
 }

@@ -34,15 +34,14 @@
                         <v-container>
                             <v-row v-for="choice in $attrs.question.choices" :key="choice.ref">
                                 <v-col cols="12" md="6">
-                                    <v-text-field outlined v-model="choice.label"
-                                        v-on:change="updateOptionLabel(choice)"></v-text-field>
+                                    <v-text-field outlined v-model="choice.label" disabled></v-text-field>
                                 </v-col>
                                 <v-col cols="6" md="4">
                                     <v-select dense outlined v-model="choice.jump" :items="$attrs.question.jumpOptions"
                                         label="Option jump" v-on:change="updateOptionJump(choice)" item-text="label" item-value="ref" />
                                 </v-col>
                                 <v-col cols="6" md="2">
-                                    <v-btn x-large outlined v-on:click="openDeleteOptionModal(choice)" class="blueBtn">Remove choice</v-btn>
+                                    <v-btn x-large outlined v-on:click="openDeleteOptionModal(choice)" class="blueBtn">Remove option</v-btn>
                                 </v-col>
                             </v-row>
                             <v-row>
@@ -215,18 +214,6 @@ export default {
                 option: this.newOption.text
             };
             axios.post(url, data).then((response) => {
-                this.emitToParent(response.data.form);  
-                //TODO: Handle errors
-            });
-        },
-
-        updateOptionLabel(choice) {
-            console.log('Update option label')
-            let url = `/api/edit-form/${this.$attrs.slug}/update-option-label/${this.$attrs.question.ref}/${choice.ref}`;
-            let data = {
-                label: choice.label
-            };
-            axios.patch(url, data).then((response) => {
                 this.emitToParent(response.data.form);  
                 //TODO: Handle errors
             });
