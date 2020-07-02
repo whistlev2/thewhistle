@@ -123,9 +123,9 @@ function generateMultipleChoiceField(question) {
             randomize: false,
             allow_multiple_selection: question.multipleSelection, // eslint-disable-line
             allow_other_choice: false, // eslint-disable-line
-            vertical_alignment: true // eslint-disable-line
+            vertical_alignment: true, // eslint-disable-line
+            choices: [],
         },
-        choices: [],
         type: 'multiple_choice'
     }
 }
@@ -462,20 +462,22 @@ exports.updateOptionJump = async function (slug, questionRef, optionRef, jump) {
 }
 
 exports.deleteOption = async function (slug, questionRef, choiceRef) {
+    let form = await Surveys.getJSONFromSlug(slug);
 
-}
+    //TODO: Check question and option exist
 
-
-function updateQuestionJump(formJSON, question, jumpQuestion) {
-    for (let i = 0; i < formJSON.logic.length; i++) {
-        if (formJSON.logic[i].ref == question) {
-            for (let j = 0; j < formJSON.logic[i].actions.length; j++) {
-                if (formJSON.logic[i].actions[j].condition.op == 'always') {
-                    formJSON.logic[i].actions[j].details.to.value = jumpQuestion;
-                    return formJSON;
+    for (let i = 0; i < form.fields.length; i++) {
+        if (form.fields[i].ref == questionRef) {
+            for (let j = 0; j < form.fields[i].properties.choices.length; j++) {
+                if (form.fields[i].properties.choices[j].ref == choiceRef) {
+                    form.fields[i].properties.choices.splice(j, 1);
+                    break;
                 }
             }
+            break;
         }
     }
-    return formJSON;
+
+    let retForm = await updateForm(slug, form);
+    return retForm;
 }
