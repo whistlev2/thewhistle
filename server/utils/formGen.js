@@ -278,6 +278,31 @@ function generateNewChoice(choice) {
     }
 }
 
+function generateIsAction(questionRef, optionRef, jump) {
+    return {
+        action: 'jump',
+        details: {
+            to: {
+                type: 'field',
+                value: jump
+            }
+        },
+        condition: {
+            op: 'is',
+            vars: [
+                {
+                    type: 'field',
+                    value: questionRef
+                },
+                {
+                    type: 'choice',
+                    value: optionRef
+                }
+            ]
+        }
+    }
+}
+
 exports.updateQuestionTitle = async function(slug, questionRef, questionTitle) {
     let form = await Surveys.getJSONFromSlug(slug);
     //TODO: Handle case that the question doesn't exist
@@ -410,9 +435,30 @@ exports.updateOptionJump = async function (slug, questionRef, optionRef, jump) {
     let updated = false;
     for (let i = 0; i < form.logic.length; i++) {
         if (form.logic[i].ref == questionRef) {
-            for
+            for (let j = 0; j < form.logic[i].actions.length; j++) {
+                if (form.logic[i].actions[j].condition.op == 'is'
+                    && form.logic[i].actions[j].condition.vars[1].value == optionRef) {
+                    form.logic[i].actions[j].details.to.value = jump;
+                    updated = true;
+                    break;
+                }
+            }
+            if (!updated) {
+                form.logic[i].actions.push(generateIsAction(questionRef, optionRef, jump));
+                updated = true;
+            }
+            break;
         }
     }
+
+    if (!updated) {
+        let questionLogic = generateQuestionLogic(questionRef);
+        questionLogic.actions.push(generateIsAction(optionRef, jump));
+        form.logic.push(questionLogic);
+    }
+
+    let retForm = await updateForm(slug, form);
+    return retForm;
 }
 
 exports.deleteOption = async function (slug, questionRef, choiceRef) {
