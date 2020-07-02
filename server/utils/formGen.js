@@ -130,7 +130,7 @@ function generateMultipleChoiceField(question) {
     }
 }
 
-function generateDropdownField(question) {
+/* function generateDropdownField(question) {
     return {
         ref: question.ref,
         title: question.title,
@@ -143,7 +143,7 @@ function generateDropdownField(question) {
         },
         type: 'dropdown'
     }
-}
+} */
 
 function generateDateField(question) {
     return {
@@ -179,8 +179,8 @@ function formatQuestion(question) {
             return generateLongTextField(question);
         case 'Multiple choice':
             return generateMultipleChoiceField(question);
-        case 'Dropdown':
-            return generateDropdownField(question);
+        /* case 'Dropdown':
+            return generateDropdownField(question); */
         case 'Date':
             return generateDateField(question);
         case 'File upload':
@@ -399,7 +399,20 @@ exports.addOption = async function (slug, questionRef, option) {
 }
 
 exports.updateOptionJump = async function (slug, questionRef, optionRef, jump) {
+    let form = await Surveys.getJSONFromSlug(slug);
 
+    //TODO: Check questions and jump exist
+
+    if (!form.logic) {
+        form.logic = [];
+    }
+
+    let updated = false;
+    for (let i = 0; i < form.logic.length; i++) {
+        if (form.logic[i].ref == questionRef) {
+            for
+        }
+    }
 }
 
 exports.deleteOption = async function (slug, questionRef, choiceRef) {

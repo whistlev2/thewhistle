@@ -14,7 +14,7 @@
                                 </v-col>
                                 <v-col cols="12">
                                     <v-select v-model="$attrs.newQuestion.type" :rules="notBlank"
-                                        :items="['Short text', 'Long text', 'Multiple choice', 'Dropdown', 'Date', 'File upload']"
+                                        :items="['Short text', 'Long text', 'Multiple choice', 'Date', 'File upload']"
                                         label="Question type" required></v-select>
                                 </v-col>
                                 <v-col cols="12" v-if="$attrs.newQuestion.type=='Multiple choice'">

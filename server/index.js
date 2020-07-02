@@ -77,18 +77,8 @@ async function start() {
     responses.storeResponse(payload); */
 }
 
-// TODO - move Form editing endpoints to seperate file
-app.get('/update-field', (req, res) => {
-    surveys.updateField(req, res)
-})
+// TODO - move these / delete altogether?
 
-app.get('/update-choice', (req, res) => {
-    surveys.updateSurveyChoice(req, res)
-})
-
-app.get('/update-dropdown-choice', (req, res) => {
-    surveys.updateDropdownChoice(req, res)
-})
 
 app.get('/surveyjson/:id', (req, res) => {
     const id = req.params.id;
