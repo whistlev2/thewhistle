@@ -23,14 +23,13 @@
 
                 <v-spacer></v-spacer>
 
-                <v-btn v-if="$attrs.question.choices" icon @click="showOptions = !showOptions">
-                    <v-icon>{{ showOptions ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+                <v-btn v-if="multipleChoice" text @click="showOptions = !showOptions">
+                    Show options <v-icon>{{ showOptions ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
                 </v-btn>
             </v-card-actions>
 
-            <v-expand-transition v-if="$attrs.question.choices">
+            <v-expand-transition v-if="multipleChoice">
                 <div v-show="showOptions">
-                    
                     <template>
                         <v-container>
                             <v-row v-for="choice in $attrs.question.choices" :key="choice.ref">
@@ -40,7 +39,7 @@
                                 </v-col>
                                 <v-col cols="6" md="4">
                                     <v-select dense outlined v-model="choice.jump" :items="$attrs.question.jumpOptions"
-                                        label="Choice jump" v-on:change="updateOptionJump(choice)" item-text="label" item-value="ref" />
+                                        label="Option jump" v-on:change="updateOptionJump(choice)" item-text="label" item-value="ref" />
                                 </v-col>
                                 <v-col cols="6" md="2">
                                     <v-btn x-large outlined v-on:click="openDeleteOptionModal(choice)" class="blueBtn">Remove choice</v-btn>
@@ -102,12 +101,8 @@ export default {
         }
     },
     computed: {
-        hasChoices: function () {
-            if (this.$attrs.question) {
-                return this.$attrs.question.choices ? true : false;
-            } else {
-                return false;
-            }
+        multipleChoice: function () {
+            return this.$attrs.question.type == 'dropdown' || this.$attrs.question.type == 'multiple_choice';
         },
     },
     methods: {
@@ -217,7 +212,7 @@ export default {
             console.log('Add option')
             let url = `/api/edit-form/${this.$attrs.slug}/add-option/${this.$attrs.question.ref}`;
             let data = {
-                option: this.newOption
+                option: this.newOption.text
             };
             axios.post(url, data).then((response) => {
                 this.emitToParent(response.data.form);  
