@@ -39,6 +39,14 @@ function changeAllQuestionRefs(formLogic, oldQuestionRef, newQuestionRef) {
     return formLogic;
 }
 
+function generateQuestionLogic(questionRef) {
+    return {
+        type: 'field',
+        ref: questionRef,
+        actions: []
+    };
+}
+
 function addQuestionLogic(formLogic, questionRef) {
     let hasLogic = false;
     for (let i = 0; i < formLogic.length; i++) {
@@ -48,11 +56,7 @@ function addQuestionLogic(formLogic, questionRef) {
         }
     }
     if (!hasLogic) {
-        formLogic.push({
-            type: 'field',
-            ref: questionRef,
-            actions: []
-        });
+        formLogic.push(generateQuestionLogic(questionRef));
     }
     return formLogic;
 }
@@ -346,7 +350,41 @@ exports.deleteQuestion = async function (slug, questionRef) {
 }
 
 exports.updateQuestionJump = async function (slug, questionRef, jump) {
-    
+    let form = await Surveys.getJSONFromSlug(slug);
+
+    //TODO: Check if both questions exist
+
+    if (!form.logic) {
+        form.logic = [];
+    }
+
+    let updated = false;
+    for (let i = 0; i < form.logic.length; i++) {
+        if (form.logic[i].ref == questionRef) {
+            for (let j = 0; j < form.logic[i].actions.length; j++) {
+                if (form.logic[i].actions[j].condition.op == 'always') {
+                    form.logic[i].actions[j].details.to.value = jump;
+                    updated = true;
+                    break;
+                }
+            }
+            if (!updated) {
+                form.logic[i].push(generateAlwaysAction(jump));
+                updated = true;
+            }
+            break;
+        }
+    }
+
+    if (!updated) {
+        let questionLogic = generateQuestionLogic(questionRef);
+        questionLogic.actions.push(generateAlwaysAction(jump));
+        form.logic.push(questionLogic);
+        updated = true;
+    }
+
+    let retForm = await updateForm(slug, form);
+    return retForm;
 }
 
 exports.addOption = async function (slug, questionRef, option) {

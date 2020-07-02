@@ -10,15 +10,15 @@ router.post('/:slug/add-question/:questionRef', addQuestion)
 
 router.delete('/:slug/delete-question/:questionRef', deleteQuestion)
 
-router.patch('/api/edit-form/:slug/update-question-jump/:questionRef', updateQuestionJump);
+router.patch('/:slug/update-question-jump/:questionRef', updateQuestionJump);
 
-router.post('/api/edit-form/:slug/add-option/:questionRef', addOption);
+router.post('/:slug/add-option/:questionRef', addOption);
 
-router.patch('/api/edit-form/:slug/update-option-label/:questionRef/:choiceRef', updateOptionLabel);
+router.patch('/:slug/update-option-label/:questionRef/:choiceRef', updateOptionLabel);
 
-router.patch('/api/edit-form/:slug/update-option-jump/:questionRef/:choiceRef', updateOptionJump);
+router.patch('/:slug/update-option-jump/:questionRef/:choiceRef', updateOptionJump);
 
-router.delete('/api/edit-form/:slug/delete-option/:questionRef/:choiceRef', deleteOption);
+router.delete('/:slug/delete-option/:questionRef/:choiceRef', deleteOption);
 
 
 async function updateQuestionTitle(req, res) {
