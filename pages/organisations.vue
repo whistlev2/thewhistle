@@ -14,7 +14,6 @@ export default {
     components: {
         CreateOrganisationModal
     },
-    middleware: ['jwt_auth'],
 
     data() {
         //TODO: today - change authUser accesses

@@ -19,6 +19,7 @@ export default {
 
     methods: {
         login(loginInfo) {
+            console.log('Front end about to login')
             this.$auth.loginWith('local', {
                 data: loginInfo
             })

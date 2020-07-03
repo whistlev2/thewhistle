@@ -110,7 +110,6 @@ exports.authenticateUser = async function (email, password) {
     }
 
     const match = await bcrypt.compare(password, user.password)
-    
     user.password = null;
     return match ? user : null;
 }

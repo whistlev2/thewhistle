@@ -6,12 +6,7 @@ const jwt = require('jsonwebtoken');
 const router = express.Router()
 
 
-async function checkCookie(cookie) {
-    let validToken = cookie.startsWith('Bearer ');
-    if (!validToken) {
-        return false;
-    }
-    const token = cookie.substr(7);
+async function checkToken(token) {
     try {
         const payload = await jwt.verify(token, process.env.JWT_SECRET_KEY);
         return payload.user;
@@ -30,9 +25,8 @@ router.post('/login', async (req, res) => {
             return;
         }
         //Logout after 1 week
-        console.log('ATOP', user)
-        console.log('KEE', process.env.JWT_SECRET_KEY);
         const token = await jwt.sign({ user: user }, process.env.JWT_SECRET_KEY, { expiresIn: "7d" });
+
         res.status(200);
         res.json({ token: token });
     } catch (err) {
@@ -50,11 +44,17 @@ router.post('/logout', (req, res) => {
 
 router.get('/user', async (req, res) => {    
     const tokenCookie = req.cookies['auth._token.local'];
-    const validatedUser = await checkCookie(tokenCookie);
-    if (!validatedUser) {
-        res.status(401).json({ msg: "Unauthorised"})
-    } else {
+    let validToken = tokenCookie.startsWith('Bearer ');
+    if (!validToken) {
+        return false;
+    }
+    const token = tokenCookie.substr(7);
+    const validatedUser = await checkToken(token);
+    if (validatedUser) {
+        validatedUser.token = token;
         res.status(200).json({user: validatedUser})
+    } else {
+        res.status(401).json({ msg: "Unauthorised"})
     }
 })
 

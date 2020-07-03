@@ -3,6 +3,14 @@ import axios from 'axios'
 import Pages from './pages.ts'
 
 import Lowtech from './lowtech';
+import { verify } from 'crypto';
+
+const jwt = require('jsonwebtoken');
+
+
+function requiresVerification(path) {
+    return path != '/login';
+}
 
 export default async function (context) {
     var params = context.route.params;
@@ -16,6 +24,24 @@ export default async function (context) {
     // if (path == '/users') {
     //     context.users = await Pages.loadUsers();
     // }
+
+    if (requiresVerification(path)) {
+        console.log('Verifying')
+        try {
+            console.log('About to check')
+            const payload = await jwt.verify(context.store.$auth.user.token, process.env.JWT_SECRET_KEY);
+            console.log('Checked out')
+            if (!payload.user) {
+                console.log('Redirecting 1')
+                context.redirect('/login');
+            }
+        } catch {
+            console.log('Redirecting 2')
+            context.redirect('/login');
+        }
+        console.log('Checking out')
+    }
+    console.log('Carrying on')
 
     if (path.startsWith('/reports') && params.hasOwnProperty('form')) {
         context.reports = await Pages.loadReports(params.form);
