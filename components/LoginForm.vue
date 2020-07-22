@@ -1,17 +1,12 @@
 <template>
-  <v-form v-model="valid" lazy-validation>
+    <v-form v-model="valid" lazy-validation>
 
-    <v-text-field v-model="loginInfo.email" 
-                  label="Email" 
-                  :rules="[ validEmail ]" />
+        <v-text-field v-model="loginInfo.email" label="Email" :rules="[ validEmail ]" />
 
-    <v-text-field v-model="loginInfo.password"
-                  label="Password"
-                  type="password" 
-                  :rules="[ validPassword ]" />
+        <v-text-field v-model="loginInfo.password" label="Password" type="password" :rules="[ validPassword ]" />
 
-    <v-btn @click="login(loginInfo)" :disabled="!valid">Login</v-btn>
-  </v-form>
+        <v-btn @click="login(loginInfo)" :disabled="!valid">Login</v-btn>
+    </v-form>
 </template>
 
 <script>

@@ -9,6 +9,8 @@ const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const dotenv = require('dotenv');
 
+
+const routeAuth = require('../middleware/routeAuth.js')
 const api = require('./api/index.js')
 
 const surveys = require('../server/queries/surveys.js');
@@ -39,6 +41,8 @@ async function start() {
         }
     }))
 
+    app.use(routeAuth)
+
     app.use('/api', api)
 
     // Init Nuxt.js
@@ -60,7 +64,6 @@ async function start() {
 
     // Give nuxt middleware to express
     app.use(nuxt.render)
-
 
     // Listen the server
     app.listen(process.env.PORT || 3000)

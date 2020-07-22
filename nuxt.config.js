@@ -10,7 +10,7 @@ module.exports = {
     },
     mode: 'universal',
     router: {
-        middleware: ['load']
+        middleware: ['load', 'auth']
     },
     serverMiddleware: [],
     /*

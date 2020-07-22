@@ -1,5 +1,5 @@
 var _ = require('underscore');
-var fs = require('fs');
+var fs = require('file-system');
 const typeform = require('../interfaces/typeform.js')
 
 const surveyUtils = require('../utils/survey.js')

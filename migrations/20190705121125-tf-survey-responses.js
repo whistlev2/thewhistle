@@ -3,7 +3,7 @@
 var dbm;
 var type;
 var seed;
-var fs = require('fs');
+var fs = require('file-system');
 var path = require('path');
 var Promise;
 
