@@ -12,21 +12,20 @@
                 <v-btn to="/users" text>Users</v-btn>
                 <!-- TODO - Add user logic -->
                 <!-- TODO - L - Add edit own details and logout in dropdown -->
-                <v-btn @click="logout" text>Logout</v-btn>
+                <v-btn v-if="user.loggedIn" @click="logout" text>Logout</v-btn>
             </v-toolbar-items>
         </v-toolbar>
     </v-card>
 </template>
 
 <script>
-import axios from 'axios';
+
+import { mapGetters } from 'vuex';
+
 export default {
-    methods: {
-        logout() {
-            axios.post('api/auth/logout').then(() =>
-                this.$router.push('/login')
-            );
-        },
-    }
+    props: ['logout'],
+    computed: mapGetters({
+        user: 'user/get'
+    })
 }
 </script>

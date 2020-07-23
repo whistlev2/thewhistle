@@ -1,6 +1,6 @@
 <template>
     <v-app light>
-        <MenuBar />
+        <MenuBar logout="logout" />
         <v-main>
             <v-container>
               <nuxt />
@@ -13,6 +13,9 @@
 <script>
 import MenuBar from '../components/MenuBar.vue'
 import MobileMenuBar from '../components/MobileMenuBar.vue'
+
+import axios from 'axios';
+
 export default {
     components: {
         MenuBar,
@@ -37,6 +40,19 @@ export default {
     mounted() {
         window.onresize = () => {
             this.windowWidth = window.innerWidth
+        }
+    },
+    methods: {
+        logout() {
+            console.log('LOGGING OUT YEEEE')
+            axios.post('api/auth/logout').then(() => {
+                console.log('SSSSSS')
+                this.$store.commit('user/clear')
+                this.$router.push('/login');
+            }).catch(() => {
+                console.log('NOT LOGGED OUT')
+                //TODO: Handle this
+            });
         }
     }
 }

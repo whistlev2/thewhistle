@@ -23,7 +23,7 @@ export default {
         login(loginInfo) {
             axios.post('api/auth/login', loginInfo).then(() => {
                 this.$store.commit('user/set', {
-                    firstName: 'DEFINITELY NOT LOUIS AGAIN',
+                    firstName: 'BETTY',
                     surname: 'Test',
                     email: 'lmcs@test.test'
                 })
