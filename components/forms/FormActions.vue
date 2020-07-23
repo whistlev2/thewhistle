@@ -1,18 +1,24 @@
 <template>
     <div>
-        <v-btn :to="actualURL" style="background-color:#033549; color:white; margin-bottom: 10px;" text>View Form</v-btn>
-        <v-btn v-if="this.$attrs.form.published" :to="actualURL" style="background-color:#033549; color:white; margin-bottom: 10px;" text>View Actual</v-btn>
-        <v-btn :to="responsesURL" style="background-color:#033549; color:white; margin-bottom: 10px;" text>View Responses</v-btn>
+        <v-btn :to="actualURL" class="blueBtn" text>View Form</v-btn>
+        <v-btn v-if="this.$attrs.form.published" :to="actualURL" class="blueBtn" text>View Actual</v-btn>
+        <v-btn :to="responsesURL" class="blueBtn" text>View Responses</v-btn>
         <template v-if="canEdit">
-            <v-btn :to="editURL" style="background-color:#033549; color:white; margin-bottom: 10px;" text>Edit</v-btn>
-            <v-btn v-on:click="showPublishModal = true" style="background-color:#033549; color:white; margin-bottom: 10px;" text>Publish</v-btn>
-            <v-btn v-on:click="showDeleteModal = true" style="background-color:#033549; color:white; margin-bottom: 10px;" text>Delete</v-btn>
+            <v-btn :to="editURL" class="blueBtn" text>Edit</v-btn>
+            <v-btn v-on:click="showPublishModal = true" class="blueBtn" text>Publish</v-btn>
+            <v-btn v-on:click="showDeleteModal = true" class="blueBtn" text>Delete</v-btn>
             <FormPublishModal :show="showPublishModal" @close="closePublishModal" :formSlug="this.$attrs.form.slug" :formTitle="this.$attrs.form.title" />
             <FormDeleteModal :show="showDeleteModal" @close="closeDeleteModal" :formSlug="this.$attrs.form.slug" :formTitle="this.$attrs.form.title" />
         </template>
     </div>
 </template>
-
+<style scoped>
+.blueBtn {
+    background-color: #50addb;
+    color: white;
+    margin-bottom: 10px;
+}
+</style>
 <script>
 
 import FormPublishModal from './FormPublishModal.vue';
