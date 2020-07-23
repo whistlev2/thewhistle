@@ -21,12 +21,9 @@ export default {
 
     methods: {
         login(loginInfo) {
-            axios.post('api/auth/login', loginInfo).then(() => {
-                this.$store.commit('user/set', {
-                    firstName: 'BETTY',
-                    surname: 'Test',
-                    email: 'lmcs@test.test'
-                })
+            axios.post('api/auth/login', loginInfo).then((response) => {
+                console.log('DAA', response.data);
+                this.$store.commit('user/set', response.data)
                 this.$router.push('/');
             }).catch(() => {
                 console.log('NOT LOGGED IN')

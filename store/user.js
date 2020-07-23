@@ -1,15 +1,19 @@
 export const state = () => ({
+    id: null,
     firstName: null,
     surname: null,
     email: null,
+    role: null,
     loggedIn: false
 })
 
 export const mutations = {
     set(state, user) {
-        state.firstName = user.firstName;
+        state.id = user.id;
+        state.firstName = user.first_name;
         state.surname = user.surname;
         state.email = user.email;
+        state.role = user.role
         state.loggedIn = true;
     },
 
