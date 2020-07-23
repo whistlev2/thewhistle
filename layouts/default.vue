@@ -1,6 +1,6 @@
 <template>
     <v-app light>
-        <MenuBar logout="logout" />
+        <MenuBar :logout="logout" />
         <v-main>
             <v-container>
               <nuxt />
@@ -44,13 +44,10 @@ export default {
     },
     methods: {
         logout() {
-            console.log('LOGGING OUT YEEEE')
             axios.post('api/auth/logout').then(() => {
-                console.log('SSSSSS')
                 this.$store.commit('user/clear')
                 this.$router.push('/login');
             }).catch(() => {
-                console.log('NOT LOGGED OUT')
                 //TODO: Handle this
             });
         }

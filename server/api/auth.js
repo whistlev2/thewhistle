@@ -18,11 +18,8 @@ async function checkToken(token) {
 
 router.post('/login', async (req, res) => {
     try {
-        console.log('LOGGING IN')
         const user = await Auth.authenticateUser(req.body.email, req.body.password);
-        console.log('GOT USER')
         if (!user) {
-            console.log('NO USER')
             res.status(401)
             res.send('Incorrect email/password')
             return;
@@ -30,21 +27,16 @@ router.post('/login', async (req, res) => {
         //Logout after 1 week
         const token = await jwt.sign({ user: user }, process.env.JWT_SECRET_KEY, { expiresIn: "7d" });
         req.session.token = token;
-        console.log('GOT TOKEN')
         res.redirect('/');
     } catch (err) {
-        console.log('STOPPING LOGIN')
         res.status(401)
         res.send('Could not authorise you, please try again.')
     }
 })
 
 router.post('/logout', (req, res) => {   
-    console.log('LOGLOGOUT')
-    console.log('TOK', req.session.token);
     delete req.session.token;
-    console.log('TIK')
-    res.redirect('/login')
+    res.redirect('/')
 })
 
 router.get('/user', async (req, res) => {

@@ -102,18 +102,13 @@ exports.deserializeUser = function (id, done) {
 } */
 
 exports.authenticateUser = async function (email, password) {
-    console.log('AUTH ENT')
-    console.log('EMAIL', email)
     const results = await db.query(`SELECT * FROM users WHERE email='${email}'`)
     const user = results.rows[0];
-    console.log('USER', user)
     
     if (!user) {
         return null;
     }
-    console.log('COMPARE', password, user.password)
     const match = await bcrypt.compare(password, user.password)
-    console.log('MATCH', match)
     user.password = null;
     return match ? user : null;
 }

@@ -23,7 +23,6 @@ export const mutations = {
 
 export const getters = {
     get(state) {
-        console.log('NOW GETTING USER', state);
         return state
     }
 }
