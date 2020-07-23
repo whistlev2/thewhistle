@@ -25,13 +25,18 @@ async function verify(req, res, next) {
         try {
             const payload = await jwt.verify(req.session.token, process.env.JWT_SECRET_KEY);
             if (!payload.user) {
-                res.status(401);
+                res.redirect('/login');
+                res.send();
+            } else {
+                next();
             }
         } catch {
-            res.status(401);
+            res.redirect('/login')
         }
+    } else {
+        next();
     }
-    next();
+    
 }
 
 module.exports = verify;

@@ -40,7 +40,7 @@ async function start() {
             maxAge: 60000
         }
     }))
-
+    
     app.use(routeAuth)
 
     app.use('/api', api)

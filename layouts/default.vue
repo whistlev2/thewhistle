@@ -1,6 +1,7 @@
 <template>
     <v-app light>
-        <MenuBar :logout="logout" />
+        <MenuBar v-if="user.loggedIn" :logout="logout" />
+        <!-- Make not logged in menu bar and implement mobile menu -->
         <v-main>
             <v-container>
               <nuxt />
@@ -14,6 +15,7 @@
 import MenuBar from '../components/MenuBar.vue'
 import MobileMenuBar from '../components/MobileMenuBar.vue'
 
+import { mapGetters } from 'vuex';
 import axios from 'axios';
 
 export default {
@@ -51,6 +53,9 @@ export default {
                 //TODO: Handle this
             });
         }
-    }
+    },
+    computed: mapGetters({
+        user: 'user/get'
+    })
 }
 </script>

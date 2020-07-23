@@ -12,7 +12,7 @@
                 <v-btn to="/users" text>Users</v-btn>
                 <!-- TODO - Add user logic -->
                 <!-- TODO - L - Add edit own details and logout in dropdown -->
-                <v-btn v-if="user.loggedIn" @click="logout" text>Logout</v-btn>
+                <v-btn @click="logout" text>Logout</v-btn>
             </v-toolbar-items>
         </v-toolbar>
     </v-card>
@@ -20,12 +20,7 @@
 
 <script>
 
-import { mapGetters } from 'vuex';
-
 export default {
     props: ['logout'],
-    computed: mapGetters({
-        user: 'user/get'
-    })
 }
 </script>
