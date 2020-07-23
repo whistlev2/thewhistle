@@ -1,31 +1,48 @@
 <template>
     <div>
+        <v-btn v-on:click="showCreateFormModal = true" class="blueBtn" text>Create Form</v-btn>
         <v-card v-for="form in forms" :key="form.slug" style="margin-bottom: 30px;">
             <v-card-title class="align-end fill-height">{{ form.organisation }} - {{ form.title }}</v-card-title>
             <v-card-actions>
                 <FormActions :form="form" />
             </v-card-actions>
         </v-card>
+        <CreateFormModal :show="showCreateFormModal" :newForm="newForm" @close="closeCreateFormModal" @submit="createForm" />
     </div>
 </template>
-
+<style scoped>
+.blueBtn {
+    background-color: #50addb;
+    color: white;
+    margin-bottom: 10px;
+}
+</style>
 <script>
 
 import FormActions from '../components/forms/FormActions.vue';
+import CreateFormModal from '../components/forms/CreateFormModal.vue'
 import axios from 'axios'
 import { mapGetters } from 'vuex';
 
 export default {
     components: {
+        CreateFormModal,
         FormActions
     },
     data() {
         return {
+            showCreateFormModal: false,
+            newForm: {
+                org: '',
+                title: '',
+                description: ''
+            },
             forms: []
         }
     },
     created() {
         this.fetchData();
+        //TODO: Move to async data?
     },
     methods: {
         fetchData() {
@@ -33,7 +50,16 @@ export default {
             axios.get(url).then((d) => {
                 this.forms = d.data.forms
             })
+        },
+
+        closeCreateFormModal() {
+            this.showCreateFormModal = false;
+        },
+
+        createForm() {
+            //TODO: Create form and router.push to new form url on success
         }
+
     },
 
     computed: mapGetters({
