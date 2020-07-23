@@ -3,8 +3,7 @@
         <MenuBar />
         <v-content>
             <v-container>
-              <nuxt v-if="showPage" />
-              <login-form v-else></login-form>
+              <nuxt />
             </v-container>
         </v-content>
         <v-navigation-drawer v-model="rightDrawer" :right="right" temporary fixed>
@@ -22,11 +21,7 @@ export default {
     data() {
         //TODO: Dynamically change mobile menu bar
         var path = this.$route.path
-        //TODO: Today - change showPage
-        var showPage = true;
-        //var showPage = this.$store.state.authUser || path.includes('survey') || path.includes('htmlform')
         return {
-            showPage: showPage,
             clipped: false,
             drawer: false,
             fixed: false,

@@ -11,7 +11,6 @@
         "test": "jest",
         "prettier": "pretty-quick",
         "typeform-webhook": "ngrok http 3000",
-        "dev": "cross-env NODE_ENV=development nodemon server/index.js --watch server",
         "build": "nuxt build",
         "generate": "nuxt generate"
     },
