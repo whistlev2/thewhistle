@@ -18,9 +18,11 @@ export const mutations = {
     },
 
     clear(state) {
+        delete state.id;
         delete state.firstName;
         delete state.surname;
         delete state.email;
+        delete state.role;
         state.loggedIn = false;
     }
 }
