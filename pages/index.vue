@@ -1,36 +1,34 @@
 <!-- TODO - default to forms page or organisations (depending on user) -->
 <template>
-  <v-layout
-    column
-    justify-center
-    align-center
-  >
-    <v-flex
-      xs12
-      sm8
-      md6
-    >
-      <div class="text-xs-center">
+    <v-layout column justify-center align-center>
+        <v-flex xs12 sm8 md6>
+            <div class="text-xs-center">
 
-      </div>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Whistle
-        </v-card-title>
-        <v-card-text>
-          <h3>Amplifying Witness Voices</h3>
-          <p>Wherever they are, with whatever technology they have at hand</p>
-          <p>The Whistle is an academic start-up based at the University of Cambridge. We develop digital tools to connect witnesses of human rights violations to advocacy organizations</p>
-        </v-card-text>
-      </v-card>
-    </v-flex>
-  </v-layout>
+            </div>
+            <v-card>
+                <v-card-title class="headline">
+                    Welcome to the Whistle {{ user.firstName }}
+                </v-card-title>
+                <v-card-text>
+                    <h3>Amplifying Witness Voices</h3>
+                    <p>Wherever they are, with whatever technology they have at hand</p>
+                    <p>The Whistle is an academic start-up based at the University of Cambridge. We develop digital
+                        tools to connect witnesses of human rights violations to advocacy organizations</p>
+                </v-card-text>
+            </v-card>
+        </v-flex>
+    </v-layout>
 </template>
 
 <script>
 
+import { mapGetters } from 'vuex';
+
 export default {
-  components: {
-  }
+    computed: mapGetters({
+        user: 'user/get'
+    }),
+    components: {
+    }
 }
 </script>

@@ -1,11 +1,11 @@
 <template>
     <v-app light>
         <MenuBar />
-        <v-content>
+        <v-main>
             <v-container>
               <nuxt />
             </v-container>
-        </v-content>
+        </v-main>
         <v-navigation-drawer v-model="rightDrawer" :right="right" temporary fixed>
         </v-navigation-drawer>
     </v-app>

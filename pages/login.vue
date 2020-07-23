@@ -7,6 +7,8 @@
 <script>
 
 import LoginForm from '../components/LoginForm.vue';
+import axios from 'axios';
+import { mapMutations } from 'vuex'
 
 export default {
     components: {
@@ -19,10 +21,17 @@ export default {
 
     methods: {
         login(loginInfo) {
-            console.log('Front end about to login')
-            this.$auth.loginWith('local', {
-                data: loginInfo
-            })
+            axios.post('api/auth/login', loginInfo).then(() => {
+                this.$store.commit('user/set', {
+                    firstName: 'DEFINITELY NOT LOUIS AGAIN',
+                    surname: 'Test',
+                    email: 'lmcs@test.test'
+                })
+                this.$router.push('/');
+            }).catch(() => {
+                console.log('NOT LOGGED IN')
+                //TODO: Handle this
+            });
         }
     }
 

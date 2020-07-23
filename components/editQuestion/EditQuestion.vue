@@ -111,12 +111,10 @@ export default {
 
         openAddOptionModal() {
             this.showAddOptionModal = true;
-            console.log('Open add option')
         },
 
         closeAddOptionModal() {
             this.showAddOptionModal = false;
-            console.log('Close add option')
         },
 
         openDeleteOptionModal(option) {

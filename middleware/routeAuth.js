@@ -1,8 +1,11 @@
 const jwt = require('jsonwebtoken');
-const { pathExistsSync } = require('fs-extra');
 
 function requiresVerification(path) {
     if (path == '/login') {
+        return false;
+    } else if (path == '/api/auth/logout') {
+        return false;
+    } else if (path == '/api/auth/login') {
         return false;
     } else if (path == '/favicon.ico') {
         return false;
@@ -19,22 +22,15 @@ function requiresVerification(path) {
 async function verify(req, res, next) {
     //TODO: Make login flow work better
     if (requiresVerification(req.originalUrl)) {
-        console.log(req.originalUrl, 'Verifying')
         try {
-            console.log(req.originalUrl, 'About to check')
-            const payload = await jwt.verify(context.store.$auth.user.token, process.env.JWT_SECRET_KEY);
-            console.log(req.originalUrl, 'Checked out')
+            const payload = await jwt.verify(req.session.token, process.env.JWT_SECRET_KEY);
             if (!payload.user) {
-                console.log(req.originalUrl, 'Redirecting 1')
-                res.redirect('/login');
+                res.status(401);
             }
         } catch {
-            console.log(req.originalUrl, 'Redirecting 2')
-            res.redirect('/login');
+            res.status(401);
         }
-        console.log('Checking out')
     }
-    console.log('Carrying on')
     next();
 }
 
