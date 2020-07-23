@@ -206,7 +206,6 @@ export default {
                 user: this.$auth.user.id,
                 assigned: this.report.metadata.assignedTo
             };
-            console.log('ASSIGN');
             axios.post(url, data).then((response) => {
                 this.report.audit = response.data.audit
                 //TODO: Handle errors

@@ -117,7 +117,6 @@ function formatItems(items) {
 
 
 function getVal(answer) {
-    //console.log(answer);
     switch (answer.type) {
         case 'boolean':
             return answer.boolean ? 'Yes' : 'No';

@@ -27,7 +27,6 @@ export default {
     methods: {
         updateLocation() {
             this.closeModal();
-            console.log('UPDATING1', this.editingLocation)
             this.$emit('update-location', this.editingLocation);
         },
 

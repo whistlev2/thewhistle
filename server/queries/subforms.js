@@ -3,7 +3,6 @@ const db = require('../db.ts')
 exports.updateTestJSON = function (slug, form, res) {
     db.query(`UPDATE subforms SET form_json='${form}' WHERE slug='${slug}'`, (error, results) => {
         if (error) {
-            console.log(error);
             throw error;
         }
         res.redirect(`/edit-form/${slug}`);

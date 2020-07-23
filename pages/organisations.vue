@@ -10,6 +10,8 @@
 
 import CreateOrganisationModal from '../components/organisations/CreateOrganisationModal.vue';
 
+import { mapGetters } from 'vuex';
+
 export default {
     components: {
         CreateOrganisationModal
@@ -17,7 +19,7 @@ export default {
 
     data() {
         //TODO: today - change authUser accesses
-        const name = this.$store.state.authUser ? this.$store.state.authUser.name : "Not logged in"
+        const name = this.user.firstName;
         const headers = [{
             text: 'Organisation',
             value: 'ref1'
@@ -44,7 +46,11 @@ export default {
         closeCreateModal() {
             this.showCreateModal = false;
         }
-    }
+    },
+
+    computed: mapGetters({
+        user: 'user/get'
+    })
 
 }
 </script>

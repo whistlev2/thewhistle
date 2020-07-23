@@ -321,7 +321,6 @@ exports.updateJSON = async function(slug, form) {
 updateSurvey = function (slug, survey) {
     db.query(`UPDATE subforms SET form_json='${JSON.stringify(survey)}' WHERE slug='${slug}'`, (error, results) => {
         if (error) {
-            console.log(error);
             throw error;
         }
 

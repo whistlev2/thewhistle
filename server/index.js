@@ -52,7 +52,6 @@ async function start() {
         host,
         port
     } = nuxt.options.server
-    // console.log(nuxt.options.server)
 
     // Build only in dev mode
     if (config.dev) {

@@ -120,47 +120,38 @@ export default {
         openDeleteOptionModal(option) {
             this.optionToDelete = option;
             this.showDeleteOptionModal = true;
-            console.log('Open remove option')
         },
 
         closeDeleteOptionModal() {
             this.showDeleteOptionModal = false;
-            console.log('Close remove option')
         },
 
         openAddBeforeQuestionModal() {
-            console.log('Open before')
             this.openAddQuestionModal(true);
         },
 
         openAddAfterQuestionModal() {
-            console.log('Open after')
             this.openAddQuestionModal(false);
         },
 
         openAddQuestionModal(addBefore) {
             this.addBefore = addBefore;
             this.showAddQuestionModal = true;
-            console.log('Open add Q')
         },
 
         closeAddQuestionModal() {
             this.showAddQuestionModal = false;
-            console.log('Close add Q')
         },
 
         openDeleteQuestionModal() {
-            console.log('Open remove Q')
             this.showDeleteQuestionModal = true;
         },
 
         closeDeleteQuestionModal() {
-            console.log('Close remove Q');
             this.showDeleteQuestionModal = false;
         },
 
         updateQuestionText() {
-            console.log('Update question text');
             let url = `/api/edit-form/${this.$attrs.slug}/update-question-title/${this.$attrs.question.ref}`;
             let data = {
                 title: this.$attrs.question.title
@@ -172,7 +163,6 @@ export default {
         },
         
         addQuestion() {
-            console.log('Add Q')
             let url = `/api/edit-form/${this.$attrs.slug}/add-question/${this.$attrs.question.ref}`;
             let data = {
                 before: this.addBefore,
@@ -185,7 +175,6 @@ export default {
         },
 
         deleteQuestion() {
-            console.log('Remove Q')
             let url = `/api/edit-form/${this.$attrs.slug}/delete-question/${this.$attrs.question.ref}`;
             axios.delete(url).then((response) => {
                 this.emitToParent(response.data.form);  
@@ -194,7 +183,6 @@ export default {
         },
 
         updateQuestionJump() {
-            console.log('Update question jump')
             let url = `/api/edit-form/${this.$attrs.slug}/update-question-jump/${this.$attrs.question.ref}`;
             let data = {
                 jump: this.$attrs.question.jump
@@ -206,7 +194,6 @@ export default {
         },
 
         addOption() {
-            console.log('Add option')
             let url = `/api/edit-form/${this.$attrs.slug}/add-option/${this.$attrs.question.ref}`;
             let data = {
                 option: this.newOption.text
@@ -218,7 +205,6 @@ export default {
         },
 
         updateOptionJump(choice) {
-            console.log('Update option jump')
             let url = `/api/edit-form/${this.$attrs.slug}/update-option-jump/${this.$attrs.question.ref}/${choice.ref}`;
             let data = {
                 jump: choice.jump
@@ -230,7 +216,6 @@ export default {
         },
 
         deleteOption(choiceRef) {
-            console.log('Remove option')
             let url = `/api/edit-form/${this.$attrs.slug}/delete-option/${this.$attrs.question.ref}/${choiceRef}`;
 
             axios.delete(url).then((response) => {

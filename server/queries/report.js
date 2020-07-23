@@ -36,7 +36,6 @@ exports.getMetadata = async function (reportID) {
         delete metadata.assigned_to;
         return metadata;
     } catch (err) {
-        console.log('CLAP FOR ', err)
         //TODO: Handle errors properly
     }
 }
@@ -146,7 +145,6 @@ exports.updateStatus = async function (report, user, status) {
         const ret = exports.getAudit(report);
         return ret;
     } catch (err) {
-        console.log('STATUS ERROR', err)
     }
 }
 
@@ -162,7 +160,6 @@ exports.updateLocation = async function (report, user, location) {
         const ret = exports.getAudit(report);
         return ret;
     } catch (err) {
-        console.log('STATUS ERROR', err)
     }
 }
 
@@ -178,7 +175,6 @@ exports.updateTags = async function (report, user, tags) {
         const ret = exports.getAudit(report);
         return ret;
     } catch (err) {
-        console.log('STATUS ERROR', err)
     }
 }
 
@@ -194,13 +190,11 @@ exports.updateActive = async function (report, user, active) {
         const ret = exports.getAudit(report);
         return ret;
     } catch (err) {
-        console.log('STATUS ERROR', err)
     }
 }
 
 exports.addNote = async function (report, user, comment) {
     try {
-        console.log('USER', user)
         await db.query(`INSERT INTO notes(report_id, user_id, time, comment) VALUES (${report}, ${user}, to_timestamp(${Date.now()} / 1000.0), '${comment}')`);
         const audit = {
             report: report,
@@ -214,7 +208,6 @@ exports.addNote = async function (report, user, comment) {
         }
         return ret;
     } catch (err) {
-        console.log('STATUS ERROR', err)
     }
 }
 
@@ -222,6 +215,5 @@ async function addAudit(audit) {
     try {
         await db.query(`INSERT INTO AUDIT(report_id, user_id, time, action) VALUES (${audit.report}, ${audit.user}, to_timestamp(${Date.now()} / 1000.0), '${audit.action}')`);
     } catch (err) {
-        console.log('AUDIT ERROR', err);
     }
 }
