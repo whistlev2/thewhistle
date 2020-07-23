@@ -13,6 +13,7 @@
 
 import FormActions from '../components/forms/FormActions.vue';
 import axios from 'axios'
+import { mapGetters } from 'vuex';
 
 export default {
     components: {
@@ -28,11 +29,15 @@ export default {
     },
     methods: {
         fetchData() {
-            const url = '/api/forms/user/' + this.$store.state.auth.user.id;
+            const url = '/api/forms/user/' + this.user.id;
             axios.get(url).then((d) => {
                 this.forms = d.data.forms
             })
         }
-    }
+    },
+
+    computed: mapGetters({
+        user: 'user/get'
+    })
 }
 </script>
