@@ -22,8 +22,7 @@ exports.up = function (db: any, callback: any) {
                 primaryKey: true,
                 autoIncrement: true
             },
-            form_id: 'string',
-            response_json: 'json',
+            form: 'int',
             date: 'datetime',
             assigned_to: 'int',
             status: 'string',
@@ -41,6 +40,19 @@ exports.up = function (db: any, callback: any) {
         }
         db.addForeignKey('reports', 'users', 'assigned_to', {
             'assigned_to': 'id'
+        }, {
+            onDelete: 'CASCADE',
+            onUpdate: 'RESTRICT'
+        }, addFormForeignKey);
+    }
+
+    function addFormForeignKey(err: any) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        db.addForeignKey('reports', 'forms', 'form', {
+            'form': 'id'
         }, {
             onDelete: 'CASCADE',
             onUpdate: 'RESTRICT'

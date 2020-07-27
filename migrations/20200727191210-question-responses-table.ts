@@ -21,10 +21,11 @@ exports.up = function (db: any, callback: any) {
             primaryKey: true,
             autoIncrement: true
         },
+        report: 'int',
+        section: 'int',
         question_ref: 'string',
-        raw_response_id: 'int',
+        definition: 'json',
         value: 'json',
-        definition: 'json'
     }, addReportForeignKey);
 
     function addReportForeignKey(err: any) {
@@ -32,8 +33,21 @@ exports.up = function (db: any, callback: any) {
             callback(err);
             return;
         }
-        db.addForeignKey('questionresponses', 'reports', 'raw_response_id', {
-            'raw_response_id': 'id'
+        db.addForeignKey('questionresponses', 'reports', 'report', {
+            'report': 'id'
+        }, {
+            onDelete: 'CASCADE',
+            onUpdate: 'RESTRICT'
+        }, addSectionForeignKey);
+    }
+
+    function addSectionForeignKey(err: any) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        db.addForeignKey('questionresponses', 'formsections', 'section', {
+            'section': 'id'
         }, {
             onDelete: 'CASCADE',
             onUpdate: 'RESTRICT'

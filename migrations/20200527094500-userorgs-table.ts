@@ -15,8 +15,8 @@ exports.setup = function (options: any, seedLink: any) {
 };
 
 exports.up = function (db: any, callback: any) {
-    db.removeColumn('users', 'organisation_id', createUserorgsTable);
-    //createUserorgsTable(null)
+    //db.removeColumn('users', 'organisation_id', createUserorgsTable);
+    createUserorgsTable(null)
     function createUserorgsTable(err: any) {
         if (err) {
             callback(err);
