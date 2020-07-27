@@ -4,7 +4,8 @@ export const state = () => ({
     surname: null,
     email: null,
     role: null,
-    loggedIn: false
+    loggedIn: false,
+    orgs: []
 })
 
 export const mutations = {
@@ -13,7 +14,8 @@ export const mutations = {
         state.firstName = user.first_name;
         state.surname = user.surname;
         state.email = user.email;
-        state.role = user.role
+        state.role = user.role;
+        state.orgs = user.orgs;
         state.loggedIn = true;
     },
 
@@ -23,6 +25,7 @@ export const mutations = {
         delete state.surname;
         delete state.email;
         delete state.role;
+        delete state.orgs;
         state.loggedIn = false;
     }
 }
@@ -30,5 +33,16 @@ export const mutations = {
 export const getters = {
     get(state) {
         return state
+    },
+
+    getNewFormOrgs(state) {
+        let ret = [];
+        const orgs = state.orgs;
+        for (let i = 0; i < orgs.length; i++) {
+            if (orgs[i].active && (orgs[i].role == 'admin' || orgs[i].role == 'editor')) {
+                ret.push(orgs[i]);
+            }
+        }
+        return ret;
     }
 }

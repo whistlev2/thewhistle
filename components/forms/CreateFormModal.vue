@@ -10,16 +10,21 @@
                         <v-row>
                             <v-form ref="form" v-model="valid">
                                 <v-col cols="12">
-                                    <v-text-field v-model="$attrs.newForm.title" :rules="notBlank" label="Question text" required></v-text-field>
+                                    <v-text-field v-model="$attrs.newForm.title" :rules="notBlank" label="Form Title" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field v-model="$attrs.newForm.description" :rules="notBlank" label="Question text" required></v-text-field>
+                                    <v-text-field v-model="$attrs.newForm.description" :rules="notBlank" label="Form Description" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
                                     <!-- TODO: Give options from user's orgs -->
                                     <v-select v-model="$attrs.newForm.org" :rules="notBlank"
-                                        :items="['Short text', 'Long text', 'Multiple choice', 'Date', 'File upload']"
-                                        label="Organisation" required></v-select>
+                                        :items="orgs" label="Organisation" item-text="name" item-value="id" required></v-select>
+                                </v-col>
+                                <v-col cols="12">
+                                    <v-radio-group v-model="$attrs.newForm.web" row>
+                                        <v-radio label="Web Form" :value="true"></v-radio>
+                                        <v-radio label="SMS Form" :value="false"></v-radio>
+                                    </v-radio-group>
                                 </v-col>
                             </v-form>
                         </v-row>
@@ -41,6 +46,7 @@
 }
 </style>
 <script>
+import { mapGetters } from 'vuex';
 export default {
     data() {
         return {
@@ -57,6 +63,9 @@ export default {
             this.closeModal();
             this.$emit('submit');
         }
-    }
+    },
+    computed: mapGetters({
+        orgs: 'user/getNewFormOrgs'
+    })
 }
 </script>

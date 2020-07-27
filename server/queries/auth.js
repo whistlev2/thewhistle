@@ -101,10 +101,17 @@ exports.deserializeUser = function (id, done) {
     });
 } */
 
+async function getUserOrgs(userID) {
+    const results = await db.query(`SELECT organisations.id, organisations.name, organisations.active, userorgs.role FROM organisations JOIN userorgs ON organisations.id=userorgs.organisation_id WHERE userorgs.user_id=${userID}`)
+    return results.rows;
+}
+
 exports.authenticateUser = async function (email, password) {
     const results = await db.query(`SELECT * FROM users WHERE email='${email}'`)
     const user = results.rows[0];
-    
+
+    user.orgs = await getUserOrgs(user.id);
+    console.log(user.orgs);
     if (!user) {
         return null;
     }
