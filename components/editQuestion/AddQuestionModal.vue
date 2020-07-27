@@ -10,11 +10,11 @@
                         <v-row>
                             <v-form ref="form" v-model="valid">
                                 <v-col cols="12">
-                                    <v-text-field v-model="$attrs.newQuestion.title" :rules="notBlank" label="Question text" required></v-text-field>
+                                    <v-text-field v-model="$attrs.newQuestion.title" :rules="notBlank" label="Text" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
                                     <v-select v-model="$attrs.newQuestion.type" :rules="notBlank"
-                                        :items="['Short text', 'Long text', 'Multiple choice', 'Date', 'File upload']"
+                                        :items="['Statement', 'Agreement', 'Short text', 'Long text', 'Multiple choice', 'Date', 'File upload']"
                                         label="Question type" required></v-select>
                                 </v-col>
                                 <v-col cols="12" v-if="$attrs.newQuestion.type=='Multiple choice'">
@@ -22,7 +22,7 @@
                                         label="Allow user to select multiple options"></v-switch>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field v-model="$attrs.newQuestion.ref" :rules="notBlank" label="Question reference"
+                                    <v-text-field v-model="$attrs.newQuestion.ref" :rules="notBlank" label="Reference"
                                         hint="E.g. for 'How old are you?', reference might be 'User age'."
                                         :persistent-hint="true" required></v-text-field>
                                 </v-col>

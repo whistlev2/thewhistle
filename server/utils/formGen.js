@@ -90,6 +90,37 @@ function addQuestionBeforeLogic(formLogic, oldQuestionRef, newQuestionRef) {
     return formLogic;
 }
 
+function generateStatement(question) {
+    return {
+        ref: question.ref,
+        title: question.title,
+        properties: {
+            button_text: "Continue",
+            hide_marks: false
+        },
+        type: "statement"
+    }
+}
+
+function generateInitialStatement(statement) {
+    return generateStatement({
+        ref: 'Opening text',
+        title: statement
+    })
+}
+
+function generateAgreement(question) {
+    return {
+        ref: question.ref,
+        title: question.title,
+        properties: {},
+        validations: {
+            "required": false
+        },
+        type: "legal"
+    }
+}
+
 function generateShortTextField(question) {
     return {
         ref: question.ref,
@@ -173,6 +204,10 @@ function generateFileField(question) {
 
 function formatQuestion(question) {
     switch (question.type) {
+        case 'Statement':
+            return generateStatement(question);
+        case 'Agreement':
+            return generateAgreement(question);
         case 'Short text':
             return generateShortTextField(question);
         case 'Long text':
