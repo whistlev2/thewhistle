@@ -44,3 +44,15 @@ exports.updateForm = async function (formID, form) {
         }
     })
 }
+
+exports.createForm = async function (form) {
+    const url = `https://${TYPEFORM_API_BASE_URL}/forms`;
+    const body = JSON.stringify(form);
+    let response = await request.post({
+        url: url,
+        headers: headers,
+        body: body
+    });
+    //TODO: Handle errors
+    return response;
+}

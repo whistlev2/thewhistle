@@ -338,6 +338,26 @@ function generateIsAction(questionRef, optionRef, jump) {
     }
 }
 
+exports.createForm = async function (slug, title, description, org, web) {
+    try {
+        let form = generateNewFormJSON(title);
+        form = addFormOpening(form, description);
+        //TODO: Edit db definitions
+        //Form table - org, title, description, slug, web?, first_section, published
+        //FormSection table - type, json, test_json, on_complete, test_on_complete
+        //Typeform table - form_section, typeform_id, test_typeform_id
+        const formID = await Surveys.insertForm(form, org, web);
+        if (web) {
+            const typeformID = await Typeform.createForm(form);
+            const testTypeformID = await Typeform.createForm(form);
+            await Surveys.insertTypeform(formID, typeformID, testTypeformID)
+        }
+    } catch (err) {
+        console.error(err)
+        //TODO: Handle errors properly
+    }
+}
+
 exports.updateQuestionTitle = async function(slug, questionRef, questionTitle) {
     let form = await Surveys.getJSONFromSlug(slug);
     //TODO: Handle case that the question doesn't exist

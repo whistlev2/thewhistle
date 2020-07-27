@@ -4,6 +4,8 @@ const express = require('express');
 
 const router = express.Router()
 
+router.post('/:slug/create', createForm);
+
 router.patch('/:slug/update-question-title/:questionRef', updateQuestionTitle);
 
 router.post('/:slug/add-question/:questionRef', addQuestion)
@@ -18,6 +20,14 @@ router.patch('/:slug/update-option-jump/:questionRef/:choiceRef', updateOptionJu
 
 router.delete('/:slug/delete-option/:questionRef/:choiceRef', deleteOption);
 
+async function createForm(req, res) {
+    try {
+        await FormGen.createForm(req.params.slug, req.body.title, req.body.description, req.body.org, req.body.web)
+        res.status(201) //Created
+    } catch (err) {
+        console.error(err)
+    }
+}
 
 async function updateQuestionTitle(req, res) {
     try {
