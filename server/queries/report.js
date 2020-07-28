@@ -3,7 +3,8 @@ const users = require('./users.js')
 
 exports.getResponses = async function (id) {
     try {
-        const responses = await db.query(`SELECT * FROM questionresponses where raw_response_id=${id}`)
+        //TODO: Check ID change still works
+        const responses = await db.query(`SELECT * FROM questionresponses where id=${id}`)
         return responses.rows;
     } catch (err) {
         throw err;

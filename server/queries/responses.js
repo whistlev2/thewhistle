@@ -23,6 +23,7 @@ function storeRawResponse(payload) {
     });
 }
 
+//TODO: Remove if not needed
 function storeQuestionResponses(payload, responseID) {
     const questionResponses = getQuestionResponses(payload, responseID);
     const query = pgFormat('INSERT INTO questionresponses(question_ref, definition, raw_response_id, value) VALUES %L', questionResponses);
@@ -76,6 +77,7 @@ function getFormResponses(res, formId) {
     })
 }
 
+//TODO: Remove if not needed
 function formatResponses(responses) {
     let headers = {};
     let items = {};
