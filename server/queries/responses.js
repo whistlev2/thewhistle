@@ -3,11 +3,12 @@ var pgFormat = require('pg-format');
 
 const db = require('../db.ts')
 
-
+//TODO: Remove if not needed
 exports.storeResponse = function (payload) {
     storeRawResponse(payload);
 }
 
+//TODO: Remove if not needed
 function storeRawResponse(payload) {
     const form_id = payload.form_response.form_id;
     const date = payload.form_response.submitted_at;
@@ -147,6 +148,7 @@ function getVal(answer) {
     }
 }
 
+//TODO: Remove if not needed
 function formatResponse(response) {
     var definition = response.response_json.form_response.definition
     var responseAnswers = response.response_json.form_response.answers

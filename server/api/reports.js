@@ -3,6 +3,7 @@ const responses = require('../queries/responses.js')
 
 const router = express.Router()
 
+//TODO: Remove if not needed
 router.post('/webhook', (req, res) => {
     responses.storeResponse(req.body)
     // req.on('data', chunk => {

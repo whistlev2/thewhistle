@@ -98,7 +98,7 @@ exports.getUserOptions = async function (reportID) {
 
 exports.getReportOptions = async function (reportID) {
     try {
-        let reportOptions = await db.query(`SELECT allreports.status, allreports.tags FROM reports allreports JOIN reports onereport ON onereport.form_id=allreports.form_id WHERE onereport.id=${parseInt(reportID)}`);
+        let reportOptions = await db.query(`SELECT allreports.status, allreports.tags FROM reports allreports JOIN reports onereport ON onereport.form=allreports.form WHERE onereport.id=${parseInt(reportID)}`);
         reportOptions = reportOptions.rows;
         const statuses = [];
         const tags = [];
