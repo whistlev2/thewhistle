@@ -3,7 +3,7 @@
 var dbm;
 var type;
 var seed;
-
+//TODO: Change to typescript
 /**
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
@@ -24,6 +24,7 @@ exports.up = function (db, callback) {
                 primaryKey: true,
                 autoIncrement: true
             },
+            form: 'int',
             type: 'string',
             json: 'json',
             test_json: 'json',
@@ -52,7 +53,20 @@ exports.up = function (db, callback) {
             created: {type: 'timestamp', notNull: true, defaultValue: 'NOW'},
             edited: {type: 'timestamp', notNull: true, defaultValue: 'NOW'},
             first_section: 'int'
-        }, addFormOrgForeignKey);
+        }, addFormForeignKey);
+    }
+
+    function addFormForeignKey(err) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        db.addForeignKey('formsections', 'forms', 'form', {
+            'form': 'id'
+        }, {
+            onDelete: 'CASCADE',
+            onUpdate: 'RESTRICT'
+        }, createTypeforms);
     }
 
     function addFormOrgForeignKey(err) {

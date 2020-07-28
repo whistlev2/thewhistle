@@ -15,7 +15,8 @@ export default {
 
     asyncData(context) {
         return {
-            form: context.form,
+            //TODO: Edit to allow for multiple sections (currently only shows first section)
+            form: context.form[0],
             slug: context.slug
         }
     },

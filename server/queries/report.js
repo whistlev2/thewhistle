@@ -13,7 +13,7 @@ exports.getResponses = async function (id) {
 
 exports.getFormSlug = async function (reportID) {
     try {
-        const slugs = await db.query(`SELECT slug FROM subforms JOIN reports ON reports.form_id=subforms.typeform_id WHERE reports.id=${parseInt(reportID)}`);
+        const slugs = await db.query(`SELECT slug FROM forms JOIN reports ON reports.form=forms.id WHERE reports.id=${parseInt(reportID)}`)
         return slugs.rows[0].slug;
     } catch (err) {
         //TODO: Handle errors properly
@@ -88,7 +88,7 @@ exports.getFiles = async function (reportID) {
 
 exports.getUserOptions = async function (reportID) {
     try {
-        let userOptions = await db.query(`SELECT users.id, CONCAT(users.first_name, ' ', users.surname) AS name FROM users JOIN userorgs ON users.id=userorgs.user_id JOIN subforms ON subforms.organisation_id=userorgs.organisation_id JOIN reports ON reports.form_id = subforms.typeform_id WHERE reports.id=${parseInt(reportID)}`);
+        let userOptions = await db.query(`SELECT users.id, CONCAT(users.first_name, ' ', users.surname) AS name FROM users JOIN userorgs ON users.id=userorgs.user_id JOIN forms ON forms.organisation=userorgs.organisation_id JOIN reports ON reports.form=forms.id WHERE reports.id=${parseInt(reportID)}`);
         userOptions = userOptions.rows;
         return userOptions;
     } catch (err) {

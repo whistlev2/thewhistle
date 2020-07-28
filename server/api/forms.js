@@ -11,10 +11,12 @@ router.get('/user/:userID', async (req, res) => {
     res.json({ forms: forms });
 })
 
+//TODO: Delete if not needed
 router.get('/json/:slug', (req, res) => {
     Surveys.getFormJSON(req.params.slug, res);
 })
 
+//TODO: Delete if not needed
 router.get('/test-json/:slug', (req, res) => {
     Surveys.getTestFormJSON(req.params.slug, res);
 })

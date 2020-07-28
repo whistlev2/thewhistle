@@ -80,13 +80,12 @@ async function start() {
 }
 
 // TODO - move these / delete altogether?
-
-
 app.get('/surveyjson/:id', (req, res) => {
     const id = req.params.id;
     surveys.getSurveyJSON(id, res)
 })
 
+//TODO: Delete if not needed
 app.get('/formjson/:id', (req, res) => {
     surveys.getFormJSON(req.params.id, res)
 })

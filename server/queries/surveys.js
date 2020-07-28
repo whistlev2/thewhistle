@@ -50,17 +50,18 @@ exports.getUserForms = async function(userID) {
 }
 
 async function getOrgForms(organisationID) {
-    let orgs = await db.query(`SELECT slug, form_json, published, organisations.name AS organisation FROM subforms JOIN organisations ON organisations.id=subforms.organisation_id WHERE organisations.id='${organisationID}'`)
+    let orgs = await db.query(`SELECT slug, title, published, organisations.name AS organisation FROM forms JOIN organisations ON organisations.id=forms.organisation WHERE organisations.id='${organisationID}'`)
     orgs = orgs.rows;
     return orgs
 }
 
 async function getUserOrgForms(userID, organisationID) {
-    let orgs = await db.query(`SELECT slug, form_json, published, organisations.name AS organisation, userforms.user_role AS role FROM subforms JOIN organisations ON organisations.id=subforms.organisation_id JOIN userforms ON userforms.form_id=subforms.id WHERE organisations.id='${organisationID}' AND userforms.user_id='${userID}'`)
+    let orgs = await db.query(`SELECT slug, title, published, organisations.name AS organisation, userforms.user_role AS role FROM forms JOIN organisations ON organisations.id=forms.organisation JOIN userforms ON userforms.form_id=forms.id WHERE organisations.id='${organisationID}' AND userforms.user_id='${userID}'`)
     orgs = orgs.rows;
     return orgs;
 }
 
+//TODO: Remove if not used
 exports.getMyForms = function (uid, res) {
     db.query(`SELECT form_json, subforms.slug AS slug, user_role, published FROM subforms left join userforms on userforms.form_id=subforms.id WHERE user_id=${uid}`, (error, results) => {
         if (error) {
@@ -77,7 +78,7 @@ exports.getMyForms = function (uid, res) {
     });
 }
 
-
+//TODO: Delete if not needed
 exports.getSurveyJSON = function (id, res) {
     db.query(`SELECT form_json FROM subforms WHERE typeform_id='${id}'`, (error, results) => {
         if (error) {
@@ -87,11 +88,16 @@ exports.getSurveyJSON = function (id, res) {
     });
 }
 
+
 exports.getEditFormJSON = async function(slug) {
     try {
-        const results = await db.query(`SELECT form_json FROM subforms WHERE slug='${slug}'`);
-        const form = generateEditJSON(results.rows[0].form_json);
-        return form;
+        const results = await db.query(`SELECT test_json FROM formsections JOIN forms ON forms.id=formsections.form WHERE forms.slug='${slug}'`);
+        const formDefinitions = results.rows;
+        let ret = [];
+        for (let i = 0; i < formDefinitions.length; i++) {
+            ret.push(generateEditJSON(formDefinitions[i].test_json))
+        }
+        return ret;
     } catch (err) {
         console.error(err);
     }
@@ -101,6 +107,7 @@ exports.getTypeformJson = function (res) {
     typeform.getForm('vEz4p9wG', res);
 }
 
+//TODO: Delete if not needed
 exports.getFormJSON = function (slug, res) {
     db.query(`SELECT form_json FROM subforms WHERE slug='${ slug }'`, (error, results) => {
         if (error) {
@@ -112,6 +119,7 @@ exports.getFormJSON = function (slug, res) {
     });
 }
 
+//TODO: Delete if not needed
 exports.getTestFormJSON = function (slug, res) {
     db.query(`SELECT test_form_json FROM subforms WHERE slug='${ slug }'`, (error, results) => {
         if (error) {
@@ -125,7 +133,8 @@ exports.getTestFormJSON = function (slug, res) {
 
 exports.getJSONFromSlug = async function (slug) {
     try {
-        const results = await db.query(`SELECT form_json FROM subforms WHERE slug='${slug}'`);
+        //TODO: Update so it works for multiple sections
+        const results = await db.query(`SELECT test_json FROM formsections JOIN forms ON forms.id=formsections.form WHERE form.slug='${slug}'`);
         return results.rows[0].form_json;
     } catch (err) {
         console.error(err);
@@ -232,6 +241,7 @@ function getQuestionChoices(typeformJSON, questionRef) {
 }
 
 function generateEditJSON(typeformJSON) {
+    //TODO: Handle all section types
     let formLogic = typeformJSON.logic;
     let fields = typeformJSON.fields;
     let question = {};
@@ -267,6 +277,7 @@ function extractQuestionLogic(formLogic, questionRef) {
     return null;
 }
 
+//TODO: Delete if not needed
 function editSurvey(req, res, updateFunction) {
     const slug = req.query.surveyID
 
@@ -283,34 +294,39 @@ function editSurvey(req, res, updateFunction) {
     });
 }
 
+//TODO: Delete if not needed
 exports.updateField = function (req, res) {
     editSurvey(req, res, surveyUtils.updateField);
 }
 
+//TODO: Delete if not needed
 exports.updateSurveyChoice = function (req, res) {
     editSurvey(req, res, surveyUtils.updateChoice);
 }
 
+//TODO: Delete if not needed
 exports.updateDropdownChoice = function (req, res) {
     editSurvey(req, res, surveyUtils.updateDropdownChoice);
 }
 
 exports.getFormFromSlug = function (slug, res) {
-    db.query(`SELECT typeform_id, form_json FROM subforms WHERE slug='${ slug }'`, (error, results) => {
+    //TODO: Make work for multiple sections
+    db.query(`SELECT forms.title AS name, typeforms.test_typeform_id AS id FROM forms JOIN formsections ON formsections.id=forms.first_section JOIN typeforms ON typeforms.form_section=formsections.id WHERE forms.slug='${ slug }'`, (error, results) => {
         if (error) {
             throw error;
         }
         const form = results.rows[0];
         res.json({
-            name: form.form_json.title,
-            id: form.typeform_id
+            name: form.name,
+            id: form.id
         });
     });
 }
 
 exports.updateJSON = async function(slug, form) {
+    //TODO: Make work for multiple sections
     try {
-        await db.query(`UPDATE subforms SET form_json='${JSON.stringify(form)}' WHERE slug='${slug}'`);
+        await db.query(`UPDATE formsections SET test_json='${JSON.stringify(form)}' JOIN forms ON forms.first_section=formsections.id WHERE forms.slug='${slug}'`);
         const retForm = generateEditJSON(form);
         return retForm;
     } catch (err) {
@@ -318,6 +334,7 @@ exports.updateJSON = async function(slug, form) {
     }
 }
 
+//TODO: Delete if not needed
 updateSurvey = function (slug, survey) {
     db.query(`UPDATE subforms SET form_json='${JSON.stringify(survey)}' WHERE slug='${slug}'`, (error, results) => {
         if (error) {

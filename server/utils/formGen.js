@@ -1,3 +1,4 @@
+//TODO: Delete if not needed
 const Subforms = require('../queries/subforms.js');
 const Surveys = require('../queries/surveys.js');
 const Typeform = require('../interfaces/typeform.js');

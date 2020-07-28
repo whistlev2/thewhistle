@@ -61,12 +61,14 @@ function formatAnswers(answers) {
 }
 
 exports.getFormResponsesFromSlug = function (res, slug) {
+    //TODO: Edit this or delete if redundant
     db.query(`SELECT typeform_id FROM subforms WHERE slug='${slug}'`, (error, results) => {
         getFormResponses(res, results.rows[0].typeform_id);
     })
 }
 
 function getFormResponses(res, formId) {
+    //TODO: Edit this or delete if redundant
     db.query(`SELECT definition, value, raw_response_id FROM reports JOIN questionresponses ON reports.id = questionresponses.raw_response_id WHERE form_id='${formId}'`, (error, results) => {
         const formattedResponses = formatResponses(results.rows);
         res.json(formattedResponses);

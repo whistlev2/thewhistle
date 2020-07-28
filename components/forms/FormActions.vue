@@ -43,7 +43,8 @@ export default {
             return `/survey/${this.$attrs.form.slug}`;
         },
         responsesURL: function () {
-            //TODO - NTH - mkase sure slug is well behaved Parse query params
+            //TODO - NTH - make sure slug is well behaved Parse query params
+            //TODO: Make this work
             return `/reports/${this.$attrs.form.slug}`;
         },
         editURL: function () {
