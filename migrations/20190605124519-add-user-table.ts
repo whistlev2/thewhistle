@@ -24,24 +24,8 @@ exports.up = function (db: any, callback: any) {
         first_name: 'string',
         surname: 'string',
         email: 'string',
-        password: 'string',
-        role: 'string',
-        organisation_id: 'int'
-    }, addForeignKey);
-
-    function addForeignKey(err: any) {
-        if (err) {
-            callback(err);
-            return;
-        }
-        db.addForeignKey('users', 'organisations', 'organisation_id', {
-            'organisation_id': 'id'
-        }, {
-            onDelete: 'CASCADE',
-            onUpdate: 'RESTRICT'
-        }, callback);
-    }
-
+        password: 'string'
+    }, callback);
 };
 
 exports.down = function (db: any, callback: any) {
