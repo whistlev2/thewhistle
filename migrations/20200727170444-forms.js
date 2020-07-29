@@ -127,11 +127,14 @@ exports.up = function (db, callback) {
 };
 
 exports.down = function (db, callback) {
-    db.dropTable('typeforms', () => {
-        db.dropTable('forms', () => {
-            db.dropTable('formsections', callback);
+    db.removeColumn('formsections', 'form', () => {
+        db.dropTable('typeforms', () => {
+            db.dropTable('forms', () => {
+                db.dropTable('formsections', callback);
+            })
         })
-    })
+    });
+    
 };
 
 exports._meta = {
