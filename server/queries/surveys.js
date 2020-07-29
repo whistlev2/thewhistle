@@ -50,13 +50,13 @@ exports.getUserForms = async function(userID) {
 }
 
 async function getOrgForms(organisationID) {
-    let orgs = await db.query(`SELECT slug, title, published, organisations.name AS organisation FROM forms JOIN organisations ON organisations.id=forms.organisation WHERE organisations.id='${organisationID}'`)
+    let orgs = await db.query(`SELECT forms.slug, title, published, organisations.name AS organisation FROM forms JOIN organisations ON organisations.id=forms.organisation WHERE organisations.id='${organisationID}'`)
     orgs = orgs.rows;
     return orgs
 }
 
 async function getUserOrgForms(userID, organisationID) {
-    let orgs = await db.query(`SELECT slug, title, published, organisations.name AS organisation, userforms.user_role AS role FROM forms JOIN organisations ON organisations.id=forms.organisation JOIN userforms ON userforms.form_id=forms.id WHERE organisations.id='${organisationID}' AND userforms.user_id='${userID}'`)
+    let orgs = await db.query(`SELECT forms.slug, title, published, organisations.name AS organisation, userforms.user_role AS role FROM forms JOIN organisations ON organisations.id=forms.organisation JOIN userforms ON userforms.form_id=forms.id WHERE organisations.id='${organisationID}' AND userforms.user_id='${userID}'`)
     orgs = orgs.rows;
     return orgs;
 }
