@@ -1,6 +1,7 @@
 <template>
     <div>
         <h1>Edit Form</h1>
+        <!-- Add First Question button if no questions -->
         <EditQuestion v-for="question in form" :question="question" :slug="slug" :key="question.ref" v-on:questionChange="updateForm" />      
     </div>
 </template>

@@ -10,10 +10,15 @@
                         <v-row>
                             <v-form ref="form" v-model="valid">
                                 <v-col cols="12">
-                                    <v-text-field v-model="$attrs.newForm.title" :rules="notBlank" label="Form Title" required></v-text-field>
+                                    <v-text-field v-model="$attrs.newForm.title" :rules="notBlank" label="Title" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field v-model="$attrs.newForm.description" :rules="notBlank" label="Form Description" required></v-text-field>
+                                    <v-text-field v-model="$attrs.newForm.description" :rules="notBlank" label="Description" required></v-text-field>
+                                </v-col>
+                                <v-col cols="12">
+                                    <!-- TODO: Validation on slug -->
+                                    <v-text-field v-model="$attrs.newForm.slug" :rules="notBlank" label="Slug" 
+                                    hint="Unique reference for the URL" :persistent-hint="true" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
                                     <!-- TODO: Give options from user's orgs -->

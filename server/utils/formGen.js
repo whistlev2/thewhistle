@@ -103,13 +103,6 @@ function generateStatement(question) {
     }
 }
 
-function generateInitialStatement(statement) {
-    return generateStatement({
-        ref: 'Opening text',
-        title: statement
-    })
-}
-
 function generateAgreement(question) {
     return {
         ref: question.ref,
@@ -339,19 +332,55 @@ function generateIsAction(questionRef, optionRef, jump) {
     }
 }
 
+function generateNewFormJSON(title) {
+    return {
+        title: title,
+        workspace: {
+            href: "https://api.typeform.com/workspaces/iY5G9Y"
+        },
+        settings: {
+            language: "en",
+            progress_bar: "percentage",
+            meta: {
+                allow_indexing: false
+            },
+            is_public: true,
+            show_progress_bar: true,
+            show_typeform_branding: true,
+        },
+        fields: [],
+        logic: [],
+        thankyou_screens: [
+            {
+                ref: "default_tys",
+                title: "Done! Your information was sent perfectly.",
+                properties: {
+                    show_button: false,
+                    share_icons: false
+                }
+            }
+        ]
+    }
+}
+
 exports.createForm = async function (slug, title, description, org, web) {
     try {
-        let form = generateNewFormJSON(title);
-        form = addFormOpening(form, description);
-        //TODO: Edit db definitions
-        //Form table - org, title, description, slug, web?, first_section, published
-        //FormSection table - type, json, test_json, on_complete, test_on_complete
-        //Typeform table - form_section, typeform_id, test_typeform_id
-        const formID = await Surveys.insertForm(form, org, web);
+        let formJSON = generateNewFormJSON(title);
+        let form = {
+            json: formJSON,
+            slug: slug,
+            title: title,
+            description: description,
+            org: org,
+            web: web
+        }
+        const sectionID = await Surveys.insertForm(form);
         if (web) {
-            const typeformID = await Typeform.createForm(form);
-            const testTypeformID = await Typeform.createForm(form);
-            await Surveys.insertTypeform(formID, typeformID, testTypeformID)
+            const typeformID = Typeform.createForm(formJSON);
+            const testTypeformID = Typeform.createForm(formJSON);
+            Promise.all([ typeformID, testTypeformID ]).then( data => {
+                Surveys.insertTypeform(sectionID, data[0], data[1]);
+            });
         }
     } catch (err) {
         console.error(err)

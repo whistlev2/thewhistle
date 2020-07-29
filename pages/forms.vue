@@ -35,6 +35,7 @@ export default {
             newForm: {
                 org: '',
                 title: '',
+                slug: '',
                 description: '',
                 web: true
             },
@@ -59,6 +60,17 @@ export default {
 
         createForm() {
             //TODO: Create form and router.push to new form url on success
+            let url = `/api/edit-form/${this.newForm.slug}/create`;
+            let data = {
+                org: this.newForm.org,
+                title: this.newForm.title,
+                description: this.newForm.description,
+                web: this.newForm.web
+            };
+            axios.post(url, data).then((response) => {
+                this.$router.push(`/edit-form/${this.newForm.slug}`)
+                //TODO: Handle errors
+            });
         }
 
     },

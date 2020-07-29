@@ -43,6 +43,7 @@ exports.getUserForms = async function(userID) {
         forms = forms.concat(orgForms);
     }
     for (let k = 0; k < forms.length; k++) {
+        //TODO: Sort 'cannot read property title of undefined' error
         forms[k].title = forms[k].form_json.title;
         delete forms.form_json;
     }
@@ -344,4 +345,31 @@ updateSurvey = function (slug, survey) {
         const typeFormResponse = typeform.updateForm(survey.id, survey);        
     });
 
+}
+
+exports.insertForm = async function (form, callback) {
+    try {
+        let query = 'INSERT INTO forms(organisation, title, description, slug, web) VALUES($1, $2, $3, $4, $5) RETURNING id'
+        let values = [form.org, form.title, form.description, form.slug, form.web];
+        let results = await db.query(query, values);
+        const formID = results.rows[0].id;
+        //TODO: Add on completes
+        //TODO: Make type dynamic
+        query = 'INSERT INTO formsections (form, type, json, test_json) VALUES ($1, $2, $3, $4) RETURNING id';
+        values = [formID, 'typeform', JSON.stringify(form.json), JSON.stringify(form.json)];
+        results = await db.query(query, values);
+        const sectionID = results.rows[0].id;
+        await db.query(`UPDATE forms SET first_section=${sectionID} WHERE id=${formID}`);
+        return sectionID;
+    } catch (err) {
+        //TODO: Handle errors properly
+        console.log(err)
+    }
+}
+
+exports.insertTypeform = async function (sectionID, typeformID, testTypeformID) {
+    //TODO: Handle errors
+    let query = 'INSERT INTO typeforms(form_section, typeform_id, test_typeform_id) VALUES ($1, $2, $3)';
+    let values = [sectionID, typeformID, testTypeformID];
+    await db.query(query, values);
 }

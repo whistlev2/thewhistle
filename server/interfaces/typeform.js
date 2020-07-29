@@ -2,6 +2,8 @@
 // https://developer.typeform.com/
 
 const request = require('request');
+const axios = require('axios');
+
 
 const TYPEFORM_API_BASE_URL = "api.typeform.com"
 const ACCESS_TOKEN = "5o33hz2vjVsNbKCu8T4Zb2cYnNM6kWknvqnsfe5mX4Dn"
@@ -46,13 +48,17 @@ exports.updateForm = async function (formID, form) {
 }
 
 exports.createForm = async function (form) {
-    const url = `https://${TYPEFORM_API_BASE_URL}/forms`;
-    const body = JSON.stringify(form);
-    let response = await request.post({
-        url: url,
-        headers: headers,
-        body: body
-    });
-    //TODO: Handle errors
-    return response;
+    try {
+        const url = `https://${TYPEFORM_API_BASE_URL}/forms`;
+        let response = await axios({
+            method: 'post',
+            url: url,
+            headers: headers,
+            data: form
+        })
+        return response.data.id;
+    } catch (err) {
+        //TODO: Handle errors properly
+        console.log(err);
+    }
 }

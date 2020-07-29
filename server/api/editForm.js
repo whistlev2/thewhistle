@@ -22,9 +22,12 @@ router.delete('/:slug/delete-option/:questionRef/:choiceRef', deleteOption);
 
 async function createForm(req, res) {
     try {
+        //TODO: Input validations
         await FormGen.createForm(req.params.slug, req.body.title, req.body.description, req.body.org, req.body.web)
         res.status(201) //Created
+        res.send()
     } catch (err) {
+        //TODO: Handle errors properly
         console.error(err)
     }
 }
