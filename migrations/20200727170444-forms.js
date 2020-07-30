@@ -76,36 +76,6 @@ exports.up = function (db, callback) {
         }, {
             onDelete: 'CASCADE',
             onUpdate: 'RESTRICT'
-        }, createTypeforms);
-    }
-
-    function createTypeforms(err) {
-        if (err) {
-            callback(err);
-            return;
-        }
-        db.createTable('typeforms', {
-            id: {
-                type: 'int',
-                primaryKey: true,
-                autoIncrement: true
-            },
-            form_section: 'int',
-            typeform_id: 'string',
-            test_typeform_id: 'string'
-        }, addTypeformForeignKey);
-    }
-
-    function addTypeformForeignKey(err) {
-        if (err) {
-            callback(err);
-            return;
-        }
-        db.addForeignKey('typeforms', 'formsections', 'form_section', {
-            'form_section': 'id'
-        }, {
-            onDelete: 'CASCADE',
-            onUpdate: 'RESTRICT'
         }, createFormSectionLogic);
     }
 
@@ -137,10 +107,8 @@ exports.up = function (db, callback) {
 
 exports.down = function (db, callback) {
     db.removeColumn('formsections', 'form', () => {
-        db.dropTable('typeforms', () => {
-            db.dropTable('forms', () => {
-                db.dropTable('formsections', callback);
-            })
+        db.dropTable('forms', () => {
+            db.dropTable('formsections', callback);
         })
     });
     
