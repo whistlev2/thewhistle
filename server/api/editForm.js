@@ -8,6 +8,8 @@ router.post('/:slug/create', createForm);
 
 router.patch('/:slug/update-question-title/:questionRef', updateQuestionTitle);
 
+router.post('/:slug/add-first-question', addFirstQuestion)
+
 router.post('/:slug/add-question/:questionRef', addQuestion)
 
 router.delete('/:slug/delete-question/:questionRef', deleteQuestion)
@@ -35,6 +37,20 @@ async function createForm(req, res) {
 async function updateQuestionTitle(req, res) {
     try {
         const form = await FormGen.updateQuestionTitle(req.params.slug, req.params.questionRef, req.body.title);
+        res.json({
+            form: form
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500);
+        //TODO: Handle errors properly
+    }
+}
+
+async function addFirstQuestion(req, res) {
+    try {
+        console.log('HEE', req.params.slug)
+        const form = FormGen.addFirstQuestion(req.params.slug, req.body.question);
         res.json({
             form: form
         });

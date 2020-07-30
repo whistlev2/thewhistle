@@ -401,6 +401,25 @@ exports.updateQuestionTitle = async function(slug, questionRef, questionTitle) {
     return retForm;
 }
 
+exports.addFirstQuestion = async function(slug, question) {
+    console.log('FIRST Q', slug, question)
+    let form = await Surveys.getJSONFromSlug(slug);
+    console.log('FORMY', form)
+    //TODO: Check question ref doesn't already exist
+
+    if (!form.logic) {
+        form.logic = [];
+    }
+
+    let formattedQuestion = formatQuestion(question);
+    console.log('QY', formattedQuestion)
+    form.fields = [ formattedQuestion ];
+
+    let retForm = await updateForm(slug, form);
+    console.log('RETY', retForm)
+    return retForm;
+}
+
 exports.addQuestionBefore = async function(slug, adjacentQuestionRef, question) {
     let form = await Surveys.getJSONFromSlug(slug);
 

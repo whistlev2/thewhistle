@@ -44,7 +44,7 @@ export default {
             const postData = {
                 email: this.email,
                 password: this.password,
-                organisation_id: this.orgId
+                organisation: this.orgId
             }
             this.$store.dispatch('register', postData)
             this.closeModal();

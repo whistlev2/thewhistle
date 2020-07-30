@@ -36,7 +36,7 @@ exports.createNewUser = function (email, password, firstName, surname, organisat
 }
 
 function addUserOrgs(userID, organisations) {
-    const query = 'INSERT INTO userorgs(user_id, organisation_id) VALUES($1, $2)';
+    const query = 'INSERT INTO userorgs(user, organisation) VALUES($1, $2)';
     for (let i = 0; i < organisations.length; i++) {
         let values = [userID, organisations[i]];
         db.query(query, values, (error, results) => {
@@ -75,7 +75,7 @@ function saveNewPassword(id, newPassword) {
 }
 
 exports.deserializeUser = function (id, done) {
-    db.query(`SELECT * FROM users JOIN organisations ON organisations.id = users.organisation_id WHERE users.id='${id}'`, (error, results) => {
+    db.query(`SELECT * FROM users JOIN organisations ON organisations.id = users.organisation WHERE users.id='${id}'`, (error, results) => {
         if (error) {
             done(error)
         }
@@ -102,7 +102,7 @@ exports.deserializeUser = function (id, done) {
 } */
 
 async function getUserOrgs(userID) {
-    const results = await db.query(`SELECT organisations.id, organisations.name, organisations.active, userorgs.role FROM organisations JOIN userorgs ON organisations.id=userorgs.organisation_id WHERE userorgs.user_id=${userID}`)
+    const results = await db.query(`SELECT organisations.id, organisations.name, organisations.active, userorgs.role FROM organisations JOIN userorgs ON organisations.id=userorgs.organisation WHERE userorgs.user=${userID}`)
     return results.rows;
 }
 

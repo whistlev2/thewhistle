@@ -1,6 +1,8 @@
 <template>
     <div>
         <h1>Edit Form</h1>
+        <!-- TODO: Put form title and description in -->
+        <!-- TODO: Add multiple sections -->
         <template v-if="form.length == 0">
             <v-btn x-large outlined v-on:click="openAddQuestionModal" class="blueBtn">Add first question</v-btn>
             <AddQuestionModal :show="showAddQuestionModal" @close="closeAddQuestionModal" @submit="addQuestion" :newQuestion="newQuestion" />
@@ -19,7 +21,9 @@
 <script>
 // TODO - L - Form editing
 import EditQuestion from '../../components/editQuestion/EditQuestion.vue'
-import AddQuestionModal from './AddQuestionModal.vue';
+import AddQuestionModal from '../../components/editQuestion/AddQuestionModal.vue';
+
+import axios from 'axios';
 
 export default {
     components: {
@@ -44,9 +48,8 @@ export default {
 
     methods: {
         addQuestion() {
-            let url = `/api/edit-form/${this.$attrs.slug}/add-first-question`;
+            let url = `/api/edit-form/${this.slug}/add-first-question`;
             let data = {
-                before: this.addBefore,
                 question: this.newQuestion
             };
             axios.post(url, data).then((response) => {
@@ -59,12 +62,12 @@ export default {
             this.form = form;
         },
 
-        openAddOptionModal() {
-            this.showAddOptionModal = true;
+        openAddQuestionModal() {
+            this.showAddQuestionModal = true;
         },
 
-        closeAddOptionModal() {
-            this.showAddOptionModal = false;
+        closeAddQuestionModal() {
+            this.showAddQuestionModal = false;
         }
     }
 

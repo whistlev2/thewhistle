@@ -43,7 +43,7 @@ exports.getMetadata = async function (reportID) {
 
 exports.getNotes = async function (reportID) {
     try {
-        let notes = await db.query(`SELECT notes.time, notes.comment, CONCAT(users.first_name, ' ', users.surname) AS user FROM notes JOIN users ON notes.user_id=users.id  WHERE notes.report_id=${parseInt(reportID)}`);
+        let notes = await db.query(`SELECT notes.time, notes.comment, CONCAT(users.first_name, ' ', users.surname) AS user FROM notes JOIN users ON notes.user=users.id  WHERE notes.report=${parseInt(reportID)}`);
         notes = notes.rows;
         for (let i = 0; i < notes.length; i++) {
             let date = new Date(notes[i].time);
@@ -57,7 +57,7 @@ exports.getNotes = async function (reportID) {
 
 exports.getAudit = async function (reportID) {
     try {
-        let audit = await db.query(`SELECT audit.time, audit.action, CONCAT(users.first_name, ' ', users.surname) AS user FROM audit JOIN users ON audit.user_id=users.id  WHERE audit.report_id=${parseInt(reportID)}`);
+        let audit = await db.query(`SELECT audit.time, audit.action, CONCAT(users.first_name, ' ', users.surname) AS user FROM audit JOIN users ON audit.user=users.id  WHERE audit.report=${parseInt(reportID)}`);
         audit = audit.rows;
         for (let i = 0; i < audit.length; i++) {
             let date = new Date(audit[i].time);
@@ -89,7 +89,7 @@ exports.getFiles = async function (reportID) {
 
 exports.getUserOptions = async function (reportID) {
     try {
-        let userOptions = await db.query(`SELECT users.id, CONCAT(users.first_name, ' ', users.surname) AS name FROM users JOIN userorgs ON users.id=userorgs.user_id JOIN forms ON forms.organisation=userorgs.organisation_id JOIN reports ON reports.form=forms.id WHERE reports.id=${parseInt(reportID)}`);
+        let userOptions = await db.query(`SELECT users.id, CONCAT(users.first_name, ' ', users.surname) AS name FROM users JOIN userorgs ON users.id=userorgs.user JOIN forms ON forms.organisation=userorgs.organisation JOIN reports ON reports.form=forms.id WHERE reports.id=${parseInt(reportID)}`);
         userOptions = userOptions.rows;
         return userOptions;
     } catch (err) {
@@ -196,7 +196,7 @@ exports.updateActive = async function (report, user, active) {
 
 exports.addNote = async function (report, user, comment) {
     try {
-        await db.query(`INSERT INTO notes(report_id, user_id, time, comment) VALUES (${report}, ${user}, to_timestamp(${Date.now()} / 1000.0), '${comment}')`);
+        await db.query(`INSERT INTO notes(report, user, time, comment) VALUES (${report}, ${user}, to_timestamp(${Date.now()} / 1000.0), '${comment}')`);
         const audit = {
             report: report,
             user: user,
@@ -214,7 +214,7 @@ exports.addNote = async function (report, user, comment) {
 
 async function addAudit(audit) {
     try {
-        await db.query(`INSERT INTO AUDIT(report_id, user_id, time, action) VALUES (${audit.report}, ${audit.user}, to_timestamp(${Date.now()} / 1000.0), '${audit.action}')`);
+        await db.query(`INSERT INTO AUDIT(report, user, time, action) VALUES (${audit.report}, ${audit.user}, to_timestamp(${Date.now()} / 1000.0), '${audit.action}')`);
     } catch (err) {
     }
 }

@@ -26,19 +26,19 @@ function extractTestSurvey(survey) {
 }
 
 exports.getUserForms = async function(userID) {
-    let orgs = await db.query(`SELECT organisation_id, role FROM userorgs WHERE user_id='${userID}'`)
+    let orgs = await db.query(`SELECT organisation, role FROM userorgs WHERE user='${userID}'`)
     orgs = orgs.rows;
     let forms = [];
     let orgForms = [];
     let role = '';
     for (let i = 0; i < orgs.length; i++) {
         if (orgs[i].role == 'admin') {
-            orgForms = await getOrgForms(orgs[i].organisation_id);
+            orgForms = await getOrgForms(orgs[i].organisation);
             for (let j = 0; j < orgForms.length; j++) {
                 orgForms[j].role = 'admin';
             }
         } else {
-            orgForms = await getUserOrgForms(userID, orgs[i].organisation_id);
+            orgForms = await getUserOrgForms(userID, orgs[i].organisation);
         }
         forms = forms.concat(orgForms);
     }
@@ -57,14 +57,14 @@ async function getOrgForms(organisationID) {
 }
 
 async function getUserOrgForms(userID, organisationID) {
-    let orgs = await db.query(`SELECT forms.slug, title, published, organisations.name AS organisation, userforms.user_role AS role FROM forms JOIN organisations ON organisations.id=forms.organisation JOIN userforms ON userforms.form_id=forms.id WHERE organisations.id='${organisationID}' AND userforms.user_id='${userID}'`)
+    let orgs = await db.query(`SELECT forms.slug, title, published, organisations.name AS organisation, userforms.user_role AS role FROM forms JOIN organisations ON organisations.id=forms.organisation JOIN userforms ON userforms.form=forms.id WHERE organisations.id='${organisationID}' AND userforms.user='${userID}'`)
     orgs = orgs.rows;
     return orgs;
 }
 
 //TODO: Remove if not used
 exports.getMyForms = function (uid, res) {
-    db.query(`SELECT form_json, subforms.slug AS slug, user_role, published FROM subforms left join userforms on userforms.form_id=subforms.id WHERE user_id=${uid}`, (error, results) => {
+    db.query(`SELECT form_json, subforms.slug AS slug, user_role, published FROM subforms left join userforms on userforms.form_id=subforms.id WHERE user=${uid}`, (error, results) => {
         if (error) {
             res.json(error);
         }
@@ -135,8 +135,8 @@ exports.getTestFormJSON = function (slug, res) {
 exports.getJSONFromSlug = async function (slug) {
     try {
         //TODO: Update so it works for multiple sections
-        const results = await db.query(`SELECT test_json FROM formsections JOIN forms ON forms.id=formsections.form WHERE form.slug='${slug}'`);
-        return results.rows[0].form_json;
+        const results = await db.query(`SELECT test_json FROM formsections JOIN forms ON forms.id=formsections.form WHERE forms.slug='${slug}'`);
+        return results.rows[0].test_json;
     } catch (err) {
         console.error(err);
     }
@@ -327,6 +327,9 @@ exports.getFormFromSlug = function (slug, res) {
 exports.updateJSON = async function(slug, form) {
     //TODO: Make work for multiple sections
     try {
+        //TODO: Remove cyclic keys in db
+        //TODO: Add FormSectionLogic table with forms foreign key and array of formsections (in json with other logic)
+        //TODO: Remove other logic fields
         await db.query(`UPDATE formsections SET test_json='${JSON.stringify(form)}' JOIN forms ON forms.first_section=formsections.id WHERE forms.slug='${slug}'`);
         const retForm = generateEditJSON(form);
         return retForm;

@@ -9,7 +9,7 @@ exports.getUsers = function (res) {
 }
 
 exports.getOrgUsers = function (res, orgId) {
-    db.query(`SELECT * FROM users where organisation_id=${orgId}`, (error, results) => {
+    db.query(`SELECT * FROM users where organisation=${orgId}`, (error, results) => {
         res.json(results.rows)
     })
 }
