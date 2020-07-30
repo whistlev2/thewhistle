@@ -15,23 +15,7 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = function (db, callback) {
-    createFormSections();
-
-    function createFormSections() {
-        db.createTable('formsections', {
-            id: {
-                type: 'int',
-                primaryKey: true,
-                autoIncrement: true
-            },
-            form: 'int',
-            type: 'string',
-            json: 'json',
-            test_json: 'json',
-            on_complete: 'json',
-            test_on_complete: 'json'
-        }, createForms);
-    }
+    createForms();
 
     function createForms(err) {
         if (err) {
@@ -52,7 +36,20 @@ exports.up = function (db, callback) {
             published: {type: 'boolean', defaultValue: false},
             created: {type: 'timestamp', notNull: true, defaultValue: 'NOW'},
             edited: {type: 'timestamp', notNull: true, defaultValue: 'NOW'},
-            first_section: 'int'
+        }, createFormSections);
+    }
+
+    function createFormSections() {
+        db.createTable('formsections', {
+            id: {
+                type: 'int',
+                primaryKey: true,
+                autoIncrement: true
+            },
+            form: 'int',
+            type: 'string',
+            json: 'json',
+            test_json: 'json'
         }, addFormForeignKey);
     }
 
@@ -66,7 +63,7 @@ exports.up = function (db, callback) {
         }, {
             onDelete: 'CASCADE',
             onUpdate: 'RESTRICT'
-        }, createTypeforms);
+        }, addFormOrgForeignKey);
     }
 
     function addFormOrgForeignKey(err) {
@@ -76,19 +73,6 @@ exports.up = function (db, callback) {
         }
         db.addForeignKey('forms', 'organisations', 'organisation', {
             'organisation': 'id'
-        }, {
-            onDelete: 'CASCADE',
-            onUpdate: 'RESTRICT'
-        }, addFormSectionForeignKey);
-    }
-
-    function addFormSectionForeignKey(err) {
-        if (err) {
-            callback(err);
-            return;
-        }
-        db.addForeignKey('forms', 'formsections', 'first_section', {
-            'first_section': 'id'
         }, {
             onDelete: 'CASCADE',
             onUpdate: 'RESTRICT'
@@ -119,6 +103,31 @@ exports.up = function (db, callback) {
         }
         db.addForeignKey('typeforms', 'formsections', 'form_section', {
             'form_section': 'id'
+        }, {
+            onDelete: 'CASCADE',
+            onUpdate: 'RESTRICT'
+        }, createFormSectionLogic);
+    }
+
+    function createFormSectionLogic() {
+        db.createTable('formsectionlogic', {
+            id: {
+                type: 'int',
+                primaryKey: true,
+                autoIncrement: true
+            },
+            form: 'int',
+            logic: 'json'
+        }, addFormLogicForeignKey);
+    }
+
+    function addFormLogicForeignKey(err) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        db.addForeignKey('formsectionlogic', 'forms', 'form', {
+            'form': 'id'
         }, {
             onDelete: 'CASCADE',
             onUpdate: 'RESTRICT'

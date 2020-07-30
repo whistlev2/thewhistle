@@ -21,8 +21,8 @@ exports.up = function (db: any, callback: any) {
             primaryKey: true,
             autoIncrement: true
         },
-        user_id: 'int',
-        form_id: 'int',
+        user: 'int',
+        form: 'int',
         user_role: 'string',
         created_at: {
             type: 'timestamp',
@@ -36,8 +36,8 @@ exports.up = function (db: any, callback: any) {
             callback(err);
             return;
         }
-        db.addForeignKey('userforms', 'users', 'user_id', {
-            'user_id': 'id'
+        db.addForeignKey('userforms', 'users', 'user', {
+            'user': 'id'
         }, {
             onDelete: 'CASCADE',
             onUpdate: 'RESTRICT'
@@ -49,8 +49,8 @@ exports.up = function (db: any, callback: any) {
             callback(err);
             return;
         }
-        db.addForeignKey('userforms', 'forms', 'form_id', {
-            'form_id': 'id'
+        db.addForeignKey('userforms', 'forms', 'form', {
+            'form': 'id'
         }, {
             onDelete: 'CASCADE',
             onUpdate: 'RESTRICT'

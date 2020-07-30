@@ -25,6 +25,7 @@ exports.up = function(db: any, callback: any) {
 };
 
 exports.down = function(db: any, callback: any) {
+  //TODO: Backup data on down
   db.dropTable('organisations', callback);
 };
 

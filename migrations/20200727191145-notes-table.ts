@@ -21,8 +21,8 @@ exports.up = function (db: any, callback: any) {
             primaryKey: true,
             autoIncrement: true
         },
-        report_id: 'int',
-        user_id: 'int',
+        report: 'int',
+        user: 'int',
         time: 'datetime',
         comment: 'string'
     }, addReportForeignKey);
@@ -32,8 +32,8 @@ exports.up = function (db: any, callback: any) {
             callback(err);
             return;
         }
-        db.addForeignKey('notes', 'reports', 'report_id', {
-            'report_id': 'id'
+        db.addForeignKey('notes', 'reports', 'report', {
+            'report': 'id'
         }, {
             onDelete: 'CASCADE',
             onUpdate: 'RESTRICT'
@@ -45,8 +45,8 @@ exports.up = function (db: any, callback: any) {
             callback(err);
             return;
         }
-        db.addForeignKey('notes', 'users', 'user_id', {
-            'user_id': 'id'
+        db.addForeignKey('notes', 'users', 'user', {
+            'user': 'id'
         }, {
             onDelete: 'CASCADE',
             onUpdate: 'RESTRICT'

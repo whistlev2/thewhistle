@@ -15,7 +15,7 @@ exports.setup = function (options: any, seedLink: any) {
 };
 
 exports.up = function (db: any, callback: any) {
-    //db.removeColumn('users', 'organisation_id', createUserorgsTable);
+    //db.removeColumn('users', 'organisation', createUserorgsTable);
     createUserorgsTable(null)
     function createUserorgsTable(err: any) {
         if (err) {
@@ -29,8 +29,8 @@ exports.up = function (db: any, callback: any) {
                     primaryKey: true,
                     autoIncrement: true
                 },
-                user_id: 'int',
-                organisation_id: 'int',
+                user: 'int',
+                organisation: 'int',
                 role: 'string'
             },
             addUserForeignKey
@@ -42,8 +42,8 @@ exports.up = function (db: any, callback: any) {
             callback(err);
             return;
         }
-        db.addForeignKey('userorgs', 'users', 'user_id', {
-            'user_id': 'id'
+        db.addForeignKey('userorgs', 'users', 'user', {
+            'user': 'id'
         }, {
             onDelete: 'CASCADE',
             onUpdate: 'RESTRICT'
@@ -55,8 +55,8 @@ exports.up = function (db: any, callback: any) {
             callback(err);
             return;
         }
-        db.addForeignKey('userorgs', 'organisations', 'organisation_id', {
-            'organisation_id': 'id'
+        db.addForeignKey('userorgs', 'organisations', 'organisation', {
+            'organisation': 'id'
         }, {
             onDelete: 'CASCADE',
             onUpdate: 'RESTRICT'
