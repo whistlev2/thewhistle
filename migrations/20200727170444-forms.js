@@ -106,12 +106,11 @@ exports.up = function (db, callback) {
 };
 
 exports.down = function (db, callback) {
-    db.removeColumn('formsections', 'form', () => {
-        db.dropTable('forms', () => {
-            db.dropTable('formsections', callback);
+    db.dropTable('formsectionlogic', () => {
+        db.dropTable('formsections', () => {
+            db.dropTable('forms', callback)
         })
-    });
-    
+    })
 };
 
 exports._meta = {
