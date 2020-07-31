@@ -108,9 +108,9 @@ exports.up = function (db, callback) {
 exports.down = function (db, callback) {
     db.dropTable('formsectionlogic', () => {
         db.dropTable('formsections', () => {
-            db.dropTable('forms', callback)
-        })
-    })
+            db.dropTable('forms', callback);
+        });
+    });
 };
 
 exports._meta = {
