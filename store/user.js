@@ -3,7 +3,6 @@ export const state = () => ({
     firstName: null,
     surname: null,
     email: null,
-    role: null,
     loggedIn: false,
     orgs: []
 })
@@ -14,7 +13,6 @@ export const mutations = {
         state.firstName = user.first_name;
         state.surname = user.surname;
         state.email = user.email;
-        state.role = user.role;
         state.orgs = user.orgs;
         state.loggedIn = true;
     },
@@ -24,7 +22,6 @@ export const mutations = {
         delete state.firstName;
         delete state.surname;
         delete state.email;
-        delete state.role;
         delete state.orgs;
         state.loggedIn = false;
     }

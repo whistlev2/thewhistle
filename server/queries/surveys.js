@@ -1,6 +1,6 @@
 var _ = require('underscore');
 var fs = require('file-system');
-const typeform = require('../interfaces/typeform.js')
+const Typeform = require('../interfaces/typeform.js')
 
 const surveyUtils = require('../utils/survey.js')
 
@@ -365,9 +365,9 @@ updateSurvey = function (slug, survey) {
 
 }
 
-async function generateTypeformSectionLogic(sectionID) {
-    const typeform = Typeform.createForm(formJSON);
-
+async function generateTypeformSectionLogic(form, sectionID) {
+    const typeform = await Typeform.createForm(form.json);
+    console.log('GOT TYPEFORM')
     //TODO: Add section logic
     return {
         sections: [
@@ -406,10 +406,12 @@ async function insertIntoFormSectionLogic(form, sectionID) {
     let testLogic = {};
     switch (form.type) {
         case 'typeform':
-            logic = generateTypeformSectionLogic(sectionID);
-            testLogic = generateTypeformSectionLogic(sectionID);
+            console.log('TYPEFORM CASE')
+            logic = await generateTypeformSectionLogic(form, sectionID);
+            testLogic = await generateTypeformSectionLogic(form, sectionID);
             break;
     }
+    console.log('LOGIC?', logic);
     const query = 'INSERT INTO formsectionlogic (form, logic, test_logic) VALUES ($1, $2, $3)';
     const values = [form.id, logic, testLogic];
     await db.query(query, values);
