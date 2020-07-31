@@ -6,21 +6,21 @@ const router = express.Router()
 
 router.post('/:slug/create', createForm);
 
-router.patch('/:slug/update-question-title/:questionRef', updateQuestionTitle);
+router.patch('/:sectionID/update-question-title/:questionRef', updateQuestionTitle);
 
-router.post('/:slug/add-first-question', addFirstQuestion)
+router.post('/:sectionID/add-first-question', addFirstQuestion)
 
-router.post('/:slug/add-question/:questionRef', addQuestion)
+router.post('/:sectionID/add-question/:questionRef', addQuestion)
 
-router.delete('/:slug/delete-question/:questionRef', deleteQuestion)
+router.delete('/:sectionID/delete-question/:questionRef', deleteQuestion)
 
-router.patch('/:slug/update-question-jump/:questionRef', updateQuestionJump);
+router.patch('/:sectionID/update-question-jump/:questionRef', updateQuestionJump);
 
-router.post('/:slug/add-option/:questionRef', addOption);
+router.post('/:sectionID/add-option/:questionRef', addOption);
 
-router.patch('/:slug/update-option-jump/:questionRef/:choiceRef', updateOptionJump);
+router.patch('/:sectionID/update-option-jump/:questionRef/:choiceRef', updateOptionJump);
 
-router.delete('/:slug/delete-option/:questionRef/:choiceRef', deleteOption);
+router.delete('/:sectionID/delete-option/:questionRef/:choiceRef', deleteOption);
 
 async function createForm(req, res) {
     try {
@@ -36,7 +36,7 @@ async function createForm(req, res) {
 
 async function updateQuestionTitle(req, res) {
     try {
-        const form = await FormGen.updateQuestionTitle(req.params.slug, req.params.questionRef, req.body.title);
+        const form = await FormGen.updateQuestionTitle(req.params.sectionID, req.params.questionRef, req.body.title);
         res.json({
             form: form
         });
@@ -49,8 +49,8 @@ async function updateQuestionTitle(req, res) {
 
 async function addFirstQuestion(req, res) {
     try {
-        console.log('HEE', req.params.slug)
-        const form = FormGen.addFirstQuestion(req.params.slug, req.body.question);
+        console.log('HEE', req.params.sectionID)
+        const form = FormGen.addFirstQuestion(req.params.sectionID, req.body.question);
         res.json({
             form: form
         });
@@ -64,8 +64,8 @@ async function addFirstQuestion(req, res) {
 async function addQuestion(req, res) {
     try {
         const form = req.body.before ?
-            await FormGen.addQuestionBefore(req.params.slug, req.params.questionRef, req.body.question) :
-            await FormGen.addQuestionAfter(req.params.slug, req.params.questionRef, req.body.question);
+            await FormGen.addQuestionBefore(req.params.sectionID, req.params.questionRef, req.body.question) :
+            await FormGen.addQuestionAfter(req.params.sectionID, req.params.questionRef, req.body.question);
         
         res.json({
             form: form
@@ -79,7 +79,7 @@ async function addQuestion(req, res) {
 
 async function deleteQuestion(req, res) {
     try {
-        const form = await FormGen.deleteQuestion(req.params.slug, req.params.questionRef);
+        const form = await FormGen.deleteQuestion(req.params.sectionID, req.params.questionRef);
         res.json({
             form: form
         });
@@ -92,7 +92,7 @@ async function deleteQuestion(req, res) {
 
 async function updateQuestionJump(req, res) {
     try {
-        const form = await FormGen.updateQuestionJump(req.params.slug, req.params.questionRef, req.body.jump);
+        const form = await FormGen.updateQuestionJump(req.params.sectionID, req.params.questionRef, req.body.jump);
         res.json({
             form: form
         });
@@ -105,7 +105,7 @@ async function updateQuestionJump(req, res) {
 
 async function addOption(req, res) {
     try {
-        const form = await FormGen.addOption(req.params.slug, req.params.questionRef, req.body.option);
+        const form = await FormGen.addOption(req.params.sectionID, req.params.questionRef, req.body.option);
         res.json({
             form: form
         });
@@ -118,7 +118,7 @@ async function addOption(req, res) {
 
 async function updateOptionJump(req, res) {
     try {
-        const form = await FormGen.updateOptionJump(req.params.slug, req.params.questionRef, req.params.choiceRef, req.body.jump);
+        const form = await FormGen.updateOptionJump(req.params.sectionID, req.params.questionRef, req.params.choiceRef, req.body.jump);
         res.json({
             form: form
         });
@@ -131,7 +131,7 @@ async function updateOptionJump(req, res) {
 
 async function deleteOption(req, res) {
     try {
-        const form = await FormGen.deleteOption(req.params.slug, req.params.questionRef, req.params.choiceRef);
+        const form = await FormGen.deleteOption(req.params.sectionID, req.params.questionRef, req.params.choiceRef);
         res.json({
             form: form
         });

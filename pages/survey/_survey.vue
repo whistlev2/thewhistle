@@ -1,8 +1,9 @@
 <template>
     <div>
-        <h1>{{ form.name }}</h1>
+        <h1>{{ form.title }}</h1>
         <no-ssr style="height: 100%">
-            <survey :id="form.id"></survey>
+            <!-- TODO: Make work for multiple sections -->
+            <survey :id="form.sections[0].typeform.id"></survey>
         </no-ssr>
     </div>
 </template>

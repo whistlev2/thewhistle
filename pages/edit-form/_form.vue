@@ -1,13 +1,13 @@
 <template>
     <div>
-        <h1>Edit Form</h1>
-        <!-- TODO: Put form title and description in -->
+        <h1>{{ title }}</h1>
+        {{ description }}
         <!-- TODO: Add multiple sections -->
-        <template v-if="form.length == 0">
+        <template v-if="editJSON.length == 0">
             <v-btn x-large outlined v-on:click="openAddQuestionModal" class="blueBtn">Add first question</v-btn>
             <AddQuestionModal :show="showAddQuestionModal" @close="closeAddQuestionModal" @submit="addQuestion" :newQuestion="newQuestion" />
         </template>
-        <EditQuestion v-for="question in form" :question="question" :slug="slug" :key="question.ref" v-on:questionChange="updateForm" />      
+        <EditQuestion v-for="question in editJSON" :sectionID="sectionID" :question="question" :key="question.ref" v-on:questionChange="updateEditJSON" />      
     </div>
 </template>
 
@@ -34,8 +34,10 @@ export default {
     asyncData(context) {
         return {
             //TODO: Edit to allow for multiple sections (currently only shows first section)
-            form: context.form[0],
-            slug: context.slug
+            title: context.form.title,
+            description: context.form.title,
+            editJSON: context.form.sectionLogic[0].editJSON,
+            sectionID: context.form.sectionLogic[0].sectionID
         }
     },
     
@@ -48,18 +50,18 @@ export default {
 
     methods: {
         addQuestion() {
-            let url = `/api/edit-form/${this.slug}/add-first-question`;
+            let url = `/api/edit-form/${this.sectionID}/add-first-question`;
             let data = {
                 question: this.newQuestion
             };
             axios.post(url, data).then((response) => {
-                this.updateForm(response.data.form);  
+                this.updateEditLogic(response.data.form);  
                 //TODO: Handle errors
             });
         },
 
-        updateForm(form) {
-            this.form = form;
+        updateEditLogic(editLogic) {
+            this.editLogic = editLogic;
         },
 
         openAddQuestionModal() {

@@ -4,8 +4,8 @@ const Surveys = require('../queries/surveys.js');
 const Typeform = require('../interfaces/typeform.js');
 
 
-async function updateForm(slug, form) {
-    let retForm = await Surveys.updateJSON(slug, form);
+async function updateForm(sectionID, form) {
+    let retForm = await Surveys.updateJSON(sectionID, form);
     Typeform.updateForm(form.id, form);
     return retForm;
 }
@@ -366,30 +366,25 @@ function generateNewFormJSON(title) {
 exports.createForm = async function (slug, title, description, org, web) {
     try {
         let formJSON = generateNewFormJSON(title);
+        //TODO: Make type dynamic
         let form = {
             json: formJSON,
             slug: slug,
             title: title,
             description: description,
             org: org,
-            web: web
+            web: web,
+            type: 'typeform'
         }
-        const sectionID = await Surveys.insertForm(form);
-        if (web) {
-            const typeformID = Typeform.createForm(formJSON);
-            const testTypeformID = Typeform.createForm(formJSON);
-            Promise.all([ typeformID, testTypeformID ]).then( data => {
-                Surveys.insertTypeform(sectionID, data[0], data[1]);
-            });
-        }
+        await Surveys.insertForm(form);
     } catch (err) {
         console.error(err)
         //TODO: Handle errors properly
     }
 }
 
-exports.updateQuestionTitle = async function(slug, questionRef, questionTitle) {
-    let form = await Surveys.getJSONFromSlug(slug);
+exports.updateQuestionTitle = async function(sectionID, questionRef, questionTitle) {
+    let form = await Surveys.getSectionJSON(sectionID);
     //TODO: Handle case that the question doesn't exist
     for (let i = 0; i < form.fields.length; i++) {
         if (form.fields[i].ref == questionRef) {
@@ -397,13 +392,13 @@ exports.updateQuestionTitle = async function(slug, questionRef, questionTitle) {
             break;
         }
     }
-    let retForm = await updateForm(slug, form);
+    let retForm = await updateForm(sectionID, form);
     return retForm;
 }
 
-exports.addFirstQuestion = async function(slug, question) {
-    console.log('FIRST Q', slug, question)
-    let form = await Surveys.getJSONFromSlug(slug);
+exports.addFirstQuestion = async function(sectionID, question) {
+    console.log('FIRST Q', sectionID, question)
+    let form = await Surveys.getSectionJSON(sectionID);
     console.log('FORMY', form)
     //TODO: Check question ref doesn't already exist
 
@@ -415,13 +410,13 @@ exports.addFirstQuestion = async function(slug, question) {
     console.log('QY', formattedQuestion)
     form.fields = [ formattedQuestion ];
 
-    let retForm = await updateForm(slug, form);
+    let retForm = await updateForm(sectionID, form);
     console.log('RETY', retForm)
     return retForm;
 }
 
-exports.addQuestionBefore = async function(slug, adjacentQuestionRef, question) {
-    let form = await Surveys.getJSONFromSlug(slug);
+exports.addQuestionBefore = async function(sectionID, adjacentQuestionRef, question) {
+    let form = await Surveys.getSectionJSON(sectionID);
 
     //TODO: Check question ref doesn't already exist
 
@@ -435,12 +430,12 @@ exports.addQuestionBefore = async function(slug, adjacentQuestionRef, question) 
     let index = getQuestionPosition(form.fields, adjacentQuestionRef);
     form.fields = insertQuestion(form.fields, formattedQuestion, index);
 
-    let retForm = await updateForm(slug, form);
+    let retForm = await updateForm(sectionID, form);
     return retForm;
 }
 
-exports.addQuestionAfter = async function(slug, adjacentQuestionRef, question) {
-    let form = await Surveys.getJSONFromSlug(slug);
+exports.addQuestionAfter = async function(sectionID, adjacentQuestionRef, question) {
+    let form = await Surveys.getSectionJSON(sectionID);
 
     //TODO: Check question ref doesn't already exist
 
@@ -452,12 +447,12 @@ exports.addQuestionAfter = async function(slug, adjacentQuestionRef, question) {
     let formattedQuestion = formatQuestion(question);
     let index = getQuestionPosition(form.fields, adjacentQuestionRef) + 1;
     form.fields = insertQuestion(form.fields, formattedQuestion, index);
-    let retForm = await updateForm(slug, form);
+    let retForm = await updateForm(sectionID, form);
     return retForm;
 }
 
-exports.deleteQuestion = async function (slug, questionRef) {
-    let form = await Surveys.getJSONFromSlug(slug);
+exports.deleteQuestion = async function (sectionID, questionRef) {
+    let form = await Surveys.getSectionJSON(sectionID);
 
     //TODO: Check if question exists
 
@@ -467,12 +462,12 @@ exports.deleteQuestion = async function (slug, questionRef) {
         form.logic = deleteQuestionFromLogic(form.logic, questionRef);
     }
 
-    let retForm = await updateForm(slug, form);
+    let retForm = await updateForm(sectionID, form);
     return retForm;
 }
 
-exports.updateQuestionJump = async function (slug, questionRef, jump) {
-    let form = await Surveys.getJSONFromSlug(slug);
+exports.updateQuestionJump = async function (sectionID, questionRef, jump) {
+    let form = await Surveys.getSectionJSON(sectionID);
 
     //TODO: Check if both questions exist
 
@@ -505,12 +500,12 @@ exports.updateQuestionJump = async function (slug, questionRef, jump) {
         updated = true;
     }
 
-    let retForm = await updateForm(slug, form);
+    let retForm = await updateForm(sectionID, form);
     return retForm;
 }
 
-exports.addOption = async function (slug, questionRef, option) {
-    let form = await Surveys.getJSONFromSlug(slug);
+exports.addOption = async function (sectionID, questionRef, option) {
+    let form = await Surveys.getSectionJSON(sectionID);
 
     //TODO: Check if question exists and is multiple choice/dropdown
 
@@ -523,12 +518,12 @@ exports.addOption = async function (slug, questionRef, option) {
         }
     }
 
-    let retForm = await updateForm(slug, form);
+    let retForm = await updateForm(sectionID, form);
     return retForm;
 }
 
-exports.updateOptionJump = async function (slug, questionRef, optionRef, jump) {
-    let form = await Surveys.getJSONFromSlug(slug);
+exports.updateOptionJump = async function (sectionID, questionRef, optionRef, jump) {
+    let form = await Surveys.getSectionJSON(sectionID);
 
     //TODO: Check questions and jump exist
 
@@ -561,12 +556,12 @@ exports.updateOptionJump = async function (slug, questionRef, optionRef, jump) {
         form.logic.push(questionLogic);
     }
 
-    let retForm = await updateForm(slug, form);
+    let retForm = await updateForm(sectionID, form);
     return retForm;
 }
 
-exports.deleteOption = async function (slug, questionRef, choiceRef) {
-    let form = await Surveys.getJSONFromSlug(slug);
+exports.deleteOption = async function (sectionID, questionRef, choiceRef) {
+    let form = await Surveys.getSectionJSON(sectionID);
 
     //TODO: Check question and option exist
 
@@ -582,6 +577,6 @@ exports.deleteOption = async function (slug, questionRef, choiceRef) {
         }
     }
 
-    let retForm = await updateForm(slug, form);
+    let retForm = await updateForm(sectionID, form);
     return retForm;
 }

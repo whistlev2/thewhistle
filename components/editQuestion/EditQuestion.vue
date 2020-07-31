@@ -152,7 +152,7 @@ export default {
         },
 
         updateQuestionText() {
-            let url = `/api/edit-form/${this.$attrs.slug}/update-question-title/${this.$attrs.question.ref}`;
+            let url = `/api/edit-form/${this.$attrs.sectionID}/update-question-title/${this.$attrs.question.ref}`;
             let data = {
                 title: this.$attrs.question.title
             };
@@ -163,7 +163,7 @@ export default {
         },
         
         addQuestion() {
-            let url = `/api/edit-form/${this.$attrs.slug}/add-question/${this.$attrs.question.ref}`;
+            let url = `/api/edit-form/${this.$attrs.sectionID}/add-question/${this.$attrs.question.ref}`;
             let data = {
                 before: this.addBefore,
                 question: this.newQuestion
@@ -175,7 +175,7 @@ export default {
         },
 
         deleteQuestion() {
-            let url = `/api/edit-form/${this.$attrs.slug}/delete-question/${this.$attrs.question.ref}`;
+            let url = `/api/edit-form/${this.$attrs.sectionID}/delete-question/${this.$attrs.question.ref}`;
             axios.delete(url).then((response) => {
                 this.emitToParent(response.data.form);  
                 //TODO: Handle errors
@@ -183,7 +183,7 @@ export default {
         },
 
         updateQuestionJump() {
-            let url = `/api/edit-form/${this.$attrs.slug}/update-question-jump/${this.$attrs.question.ref}`;
+            let url = `/api/edit-form/${this.$attrs.sectionID}/update-question-jump/${this.$attrs.question.ref}`;
             let data = {
                 jump: this.$attrs.question.jump
             };
@@ -194,7 +194,7 @@ export default {
         },
 
         addOption() {
-            let url = `/api/edit-form/${this.$attrs.slug}/add-option/${this.$attrs.question.ref}`;
+            let url = `/api/edit-form/${this.$attrs.sectionID}/add-option/${this.$attrs.question.ref}`;
             let data = {
                 option: this.newOption.text
             };
@@ -205,7 +205,7 @@ export default {
         },
 
         updateOptionJump(choice) {
-            let url = `/api/edit-form/${this.$attrs.slug}/update-option-jump/${this.$attrs.question.ref}/${choice.ref}`;
+            let url = `/api/edit-form/${this.$attrs.sectionID}/update-option-jump/${this.$attrs.question.ref}/${choice.ref}`;
             let data = {
                 jump: choice.jump
             };
@@ -216,7 +216,7 @@ export default {
         },
 
         deleteOption(choiceRef) {
-            let url = `/api/edit-form/${this.$attrs.slug}/delete-option/${this.$attrs.question.ref}/${choiceRef}`;
+            let url = `/api/edit-form/${this.$attrs.sectionID}/delete-option/${this.$attrs.question.ref}/${choiceRef}`;
 
             axios.delete(url).then((response) => {
                 this.emitToParent(response.data.form);  

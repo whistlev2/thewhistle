@@ -4,7 +4,8 @@ const typeform = require('../interfaces/typeform.js')
 
 const surveyUtils = require('../utils/survey.js')
 
-const db = require('../db.ts')
+const db = require('../db.ts');
+const { getAllJSDocTagsOfKind } = require('typescript');
 
 // TODO - NTH change word survey to form
 
@@ -92,15 +93,26 @@ exports.getSurveyJSON = function (id, res) {
 
 exports.getEditFormJSON = async function(slug) {
     try {
-        const results = await db.query(`SELECT test_json FROM formsections JOIN forms ON forms.id=formsections.form WHERE forms.slug='${slug}'`);
-        const formDefinitions = results.rows;
-        let ret = [];
-        for (let i = 0; i < formDefinitions.length; i++) {
-            ret.push(generateEditJSON(formDefinitions[i].test_json))
+        let results = await db.query(`SELECT test_logic, forms.title AS title, forms.description AS description FROM formsectionlogic JOIN forms ON forms.id=formsectionlogic.form WHERE forms.slug='${slug}'`);
+        const title = results.rows[0].title;
+        const description = results.rows[0].description;
+        const sectionLogic = results.rows[0].test_logic.sections;
+        for (let i = 0; i < sectionLogic.length; i++) {
+            results = await db.query(`SELECT type, json, test_json FROM formsections WHERE id=${sectionLogic[i].sectionID}`);
+            sectionLogic[i].sectionLogic = results.rows[0].test_json.sectionLogic;
+            sectionLogic[i].type = results.rows[0].type;
+            sectionLogic[i].editJSON = generateEditJSON(results.rows[0].test_json.typeform)
         }
-        return ret;
+
+        return {
+            title: title,
+            description: description,
+            sectionLogic: sectionLogic
+        }
+        //TODO: Add in ret example structures documentation
     } catch (err) {
-        console.error(err);
+        //TODO: Handle errors properly
+        console.log(err)
     }
 }
 
@@ -132,10 +144,9 @@ exports.getTestFormJSON = function (slug, res) {
     });
 }
 
-exports.getJSONFromSlug = async function (slug) {
+exports.getSectionJSON = async function (sectionID) {
     try {
-        //TODO: Update so it works for multiple sections
-        const results = await db.query(`SELECT test_json FROM formsections JOIN forms ON forms.id=formsections.form WHERE forms.slug='${slug}'`);
+        const results = await db.query(`SELECT test_json FROM formsections WHERE id='${sectionID}'`);
         return results.rows[0].test_json;
     } catch (err) {
         console.error(err);
@@ -310,30 +321,34 @@ exports.updateDropdownChoice = function (req, res) {
     editSurvey(req, res, surveyUtils.updateDropdownChoice);
 }
 
-exports.getFormFromSlug = function (slug, res) {
-    //TODO: Make work for multiple sections
-    db.query(`SELECT forms.title AS name, typeforms.test_typeform_id AS id FROM forms JOIN formsections ON formsections.id=forms.first_section JOIN typeforms ON typeforms.form_section=formsections.id WHERE forms.slug='${ slug }'`, (error, results) => {
-        if (error) {
-            throw error;
+exports.getFormFromSlug = async function (slug, test) {
+    try {
+        let results = await db.query(`SELECT logic, test_logic, forms.title AS title FROM formsectionlogic JOIN forms ON forms.id=formsectionlogic.form WHERE forms.slug='${slug}'`);
+        const title = results.rows[0].title;
+        const sectionLogic = test ? results.rows[0].test_logic.sections : results.rows[0].logic.sections;
+        for (let i = 0; i < sectionLogic.length; i++) {
+            results = await db.query(`SELECT type, json, test_json FROM formsections WHERE id=${sectionLogic[i].sectionID}`);
+            sectionLogic[i].type = results.rows[0].type;
+            sectionLogic[i].json = test ? results.rows[0].test_json : results.rows[0].json;
         }
-        const form = results.rows[0];
-        res.json({
-            name: form.name,
-            id: form.id
-        });
-    });
+        return {
+            title: title,
+            sections: sectionLogic
+        }
+    } catch (err) {
+        console.log(err)
+        //TODO: Handle errors properly
+    }
 }
 
-exports.updateJSON = async function(slug, form) {
+exports.updateJSON = async function(sectionID, form) {
     //TODO: Make work for multiple sections
     try {
-        //TODO: Remove cyclic keys in db
-        //TODO: Add FormSectionLogic table with forms foreign key and array of formsections (in json with other logic)
-        //TODO: Remove other logic fields
-        await db.query(`UPDATE formsections SET test_json='${JSON.stringify(form)}' JOIN forms ON forms.first_section=formsections.id WHERE forms.slug='${slug}'`);
+        await db.query(`UPDATE formsections SET test_json='${JSON.stringify(form)}' WHERE id='${sectionID}'`);
         const retForm = generateEditJSON(form);
         return retForm;
     } catch (err) {
+        //TODO: Handle errors properly
         console.error(err);
     }
 }
@@ -350,29 +365,63 @@ updateSurvey = function (slug, survey) {
 
 }
 
-exports.insertForm = async function (form, callback) {
+async function generateTypeformSectionLogic(sectionID) {
+    const typeform = Typeform.createForm(formJSON);
+
+    //TODO: Add section logic
+    return {
+        sections: [
+            {
+                sectionID: sectionID,
+                sectionLogic: {},
+                typeform: typeform
+            }
+        ]
+    }
+}
+
+async function insertIntoForms(form) {
+    //TODO: Handle errors
+    const query = 'INSERT INTO forms(organisation, title, description, slug, web) VALUES($1, $2, $3, $4, $5) RETURNING id'
+    const values = [form.org, form.title, form.description, form.slug, form.web];
+    const results = await db.query(query, values);
+    const formID = results.rows[0].id;
+    return formID;
+}
+
+async function insertIntoFormSections(form) {
+    //TODO: Handle errors
+    const query = 'INSERT INTO formsections (form, type, json, test_json) VALUES ($1, $2, $3, $4) RETURNING id';
+    const stringJSON = JSON.stringify(form.json);
+    const values = [form.id, form.type, stringJSON, stringJSON];
+    const results = await db.query(query, values);
+    const sectionID = results.rows[0].id;
+    return sectionID;
+}
+
+async function insertIntoFormSectionLogic(form, sectionID) {
+    //TODO: Add more types
+    //TODO: Handle errors
+    let logic = {};
+    let testLogic = {};
+    switch (form.type) {
+        case 'typeform':
+            logic = generateTypeformSectionLogic(sectionID);
+            testLogic = generateTypeformSectionLogic(sectionID);
+            break;
+    }
+    const query = 'INSERT INTO formsectionlogic (form, logic, test_logic) VALUES ($1, $2, $3)';
+    const values = [form.id, logic, testLogic];
+    await db.query(query, values);
+}
+
+exports.insertForm = async function (form) {
     try {
-        let query = 'INSERT INTO forms(organisation, title, description, slug, web) VALUES($1, $2, $3, $4, $5) RETURNING id'
-        let values = [form.org, form.title, form.description, form.slug, form.web];
-        let results = await db.query(query, values);
-        const formID = results.rows[0].id;
-        //TODO: Add on completes
-        //TODO: Make type dynamic
-        query = 'INSERT INTO formsections (form, type, json, test_json) VALUES ($1, $2, $3, $4) RETURNING id';
-        values = [formID, 'typeform', JSON.stringify(form.json), JSON.stringify(form.json)];
-        results = await db.query(query, values);
-        const sectionID = results.rows[0].id;
-        await db.query(`UPDATE forms SET first_section=${sectionID} WHERE id=${formID}`);
-        return sectionID;
+        form.id = await insertIntoForms(form);
+        const sectionID = await insertIntoFormSections(form);
+        await insertIntoFormSectionLogic(form, sectionID);
     } catch (err) {
         //TODO: Handle errors properly
         console.log(err)
     }
-}
-
-exports.insertTypeform = async function (sectionID, typeformID, testTypeformID) {
-    //TODO: Handle errors
-    let query = 'INSERT INTO typeforms(form_section, typeform_id, test_typeform_id) VALUES ($1, $2, $3)';
-    let values = [sectionID, typeformID, testTypeformID];
-    await db.query(query, values);
 }
