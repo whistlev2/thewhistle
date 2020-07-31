@@ -87,7 +87,8 @@ exports.up = function (db, callback) {
                 autoIncrement: true
             },
             form: 'int',
-            logic: 'json'
+            logic: 'json',
+            test_logic: 'json'
         }, addFormLogicForeignKey);
     }
 
