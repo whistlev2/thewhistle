@@ -1,8 +1,11 @@
 const FormGen = require('../utils/formGen');
+const Surveys = require('../queries/surveys.js');
 
 const express = require('express');
 
 const router = express.Router()
+
+router.get('/:slug', getForm);
 
 router.post('/:slug/create', createForm);
 
@@ -21,6 +24,18 @@ router.post('/:sectionID/add-option/:questionRef', addOption);
 router.patch('/:sectionID/update-option-jump/:questionRef/:choiceRef', updateOptionJump);
 
 router.delete('/:sectionID/delete-option/:questionRef/:choiceRef', deleteOption);
+
+async function getForm(req, res) {
+    console.log('HERE?')
+    try {
+        console.log('GETTING FORM YO')
+        const form = await Surveys.getEditFormJSON(req.params.slug);
+        console.log('GOT FORM?')
+        res.json(form);
+    } catch (err) {
+        console.log(err);
+    }
+}
 
 async function createForm(req, res) {
     try {

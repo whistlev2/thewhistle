@@ -409,7 +409,7 @@ exports.addFirstQuestion = async function(sectionID, question) {
     let formattedQuestion = formatQuestion(question);
     console.log('QY', formattedQuestion)
     form.fields = [ formattedQuestion ];
-
+    console.log('WHOLE FORM', form);
     let retForm = await updateForm(sectionID, form);
     console.log('RETY', retForm)
     return retForm;

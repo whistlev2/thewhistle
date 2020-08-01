@@ -4,9 +4,11 @@ class Pages {
 
     static async loadEditForm(formSlug) {
         try {
-            const url = process.env.baseURL + '/api/forms/edit/' + formSlug;
+            const url = process.env.baseURL + '/api/edit-form/' + formSlug;
+            console.log('base', url);
             const form = await axios.get(url);
-            return form.data.form;
+            console.log('perper', form.data);
+            return form.data;
         } catch (err) {
             console.error(err);
             //TODO: Handle error properly

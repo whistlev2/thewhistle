@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1>{{ title }}</h1>
-        {{ description }}
+        <p>{{ description }}</p>
         <!-- TODO: Add multiple sections -->
         <template v-if="editJSON.length == 0">
             <v-btn x-large outlined v-on:click="openAddQuestionModal" class="blueBtn">Add first question</v-btn>
@@ -30,25 +30,34 @@ export default {
         EditQuestion,
         AddQuestionModal
     },
-
-    asyncData(context) {
-        return {
-            //TODO: Edit to allow for multiple sections (currently only shows first section)
-            title: context.form.title,
-            description: context.form.title,
-            editJSON: context.form.sectionLogic[0].editJSON,
-            sectionID: context.form.sectionLogic[0].sectionID
-        }
-    },
     
     data() {
         return {
             showAddQuestionModal: false,
-            newQuestion: {}
+            newQuestion: {},
+            title: '',
+            description: '',
+            editJSON: {},
+            sectionID: 0
         }
     },
 
+    created() {
+        this.fetchData();
+        //TODO: Move to async data?
+    },
+
     methods: {
+        fetchData() {
+            const url = '/api/edit-form/' + this.$route.params.form;
+            axios.get(url).then((d) => {
+                this.title = d.data.title;
+                this.description = d.data.description;
+                this.editJSON = d.data.sectionLogic[0].editJSON;
+                this.sectionID = d.data.sectionLogic[0].sectionID;
+            })
+        },
+
         addQuestion() {
             let url = `/api/edit-form/${this.sectionID}/add-first-question`;
             let data = {

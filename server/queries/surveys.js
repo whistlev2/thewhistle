@@ -6,6 +6,7 @@ const surveyUtils = require('../utils/survey.js')
 
 const db = require('../db.ts');
 const { getAllJSDocTagsOfKind } = require('typescript');
+const { type } = require('os');
 
 // TODO - NTH change word survey to form
 
@@ -93,15 +94,14 @@ exports.getSurveyJSON = function (id, res) {
 
 exports.getEditFormJSON = async function(slug) {
     try {
+        console.log('GETTING EDITFORMJSON')
         let results = await db.query(`SELECT test_logic, forms.title AS title, forms.description AS description FROM formsectionlogic JOIN forms ON forms.id=formsectionlogic.form WHERE forms.slug='${slug}'`);
         const title = results.rows[0].title;
         const description = results.rows[0].description;
         const sectionLogic = results.rows[0].test_logic.sections;
         for (let i = 0; i < sectionLogic.length; i++) {
-            results = await db.query(`SELECT type, json, test_json FROM formsections WHERE id=${sectionLogic[i].sectionID}`);
-            sectionLogic[i].sectionLogic = results.rows[0].test_json.sectionLogic;
-            sectionLogic[i].type = results.rows[0].type;
-            sectionLogic[i].editJSON = generateEditJSON(results.rows[0].test_json.typeform)
+            results = await db.query(`SELECT type, test_json FROM formsections WHERE id=${sectionLogic[i].sectionID}`);            sectionLogic[i].type = results.rows[0].type;
+            sectionLogic[i].editJSON = generateEditJSON(results.rows[0].test_json)
         }
 
         return {
@@ -254,6 +254,12 @@ function getQuestionChoices(typeformJSON, questionRef) {
 
 function generateEditJSON(typeformJSON) {
     //TODO: Handle all section types
+    if (!typeformJSON.logic) {
+        typeformJSON.logic = [];
+    }
+    if (!typeformJSON.fields) {
+        typeformJSON.fields = [];
+    }
     let formLogic = typeformJSON.logic;
     let fields = typeformJSON.fields;
     let question = {};
@@ -365,16 +371,13 @@ updateSurvey = function (slug, survey) {
 
 }
 
-async function generateTypeformSectionLogic(form, sectionID) {
-    const typeform = await Typeform.createForm(form.json);
-    console.log('GOT TYPEFORM')
+function generateSectionLogic(sectionID) {
     //TODO: Add section logic
     return {
         sections: [
             {
                 sectionID: sectionID,
                 sectionLogic: {},
-                typeform: typeform
             }
         ]
     }
@@ -391,29 +394,28 @@ async function insertIntoForms(form) {
 
 async function insertIntoFormSections(form) {
     //TODO: Handle errors
+    let actualJSON = {};
+    let testJSON = {};
+
+    //TODO: Add other types
+    switch (form.type) {
+        case 'typeform':
+            actualJSON = await Typeform.createForm(form.json);
+            testJSON = await Typeform.createForm(form.json);
+    }
     const query = 'INSERT INTO formsections (form, type, json, test_json) VALUES ($1, $2, $3, $4) RETURNING id';
-    const stringJSON = JSON.stringify(form.json);
-    const values = [form.id, form.type, stringJSON, stringJSON];
+    const values = [form.id, form.type, JSON.stringify(actualJSON), JSON.stringify(testJSON)];
     const results = await db.query(query, values);
     const sectionID = results.rows[0].id;
     return sectionID;
 }
 
 async function insertIntoFormSectionLogic(form, sectionID) {
-    //TODO: Add more types
     //TODO: Handle errors
-    let logic = {};
-    let testLogic = {};
-    switch (form.type) {
-        case 'typeform':
-            console.log('TYPEFORM CASE')
-            logic = await generateTypeformSectionLogic(form, sectionID);
-            testLogic = await generateTypeformSectionLogic(form, sectionID);
-            break;
-    }
-    console.log('LOGIC?', logic);
+    let logic = generateSectionLogic(sectionID);
+
     const query = 'INSERT INTO formsectionlogic (form, logic, test_logic) VALUES ($1, $2, $3)';
-    const values = [form.id, logic, testLogic];
+    const values = [form.id, logic, logic];
     await db.query(query, values);
 }
 

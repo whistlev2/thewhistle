@@ -23,6 +23,7 @@ async function verify(req, res, next) {
     //TODO: Make login flow work better
     if (requiresVerification(req.originalUrl)) {
         try {
+
             const payload = await jwt.verify(req.session.token, process.env.JWT_SECRET_KEY);
             if (!payload.user) {
                 res.redirect('/login');
@@ -31,9 +32,11 @@ async function verify(req, res, next) {
                 next();
             }
         } catch {
+            console.log('BREAKFAST BADBOYS', req.originalUrl, req.session.token, process.env.JWT_SECRET_KEY);
             res.redirect('/login')
         }
     } else {
+        console.log('VERIFYIN10', req.originalUrl);
         next();
     }
     

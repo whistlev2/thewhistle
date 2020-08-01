@@ -24,10 +24,12 @@ export default async function (context) {
         context.reports = await Pages.loadReports(params.form);
     }
 
-    if (path.startsWith('/edit-form/') && params.hasOwnProperty('form')) {
-        context.form = await Pages.loadEditForm(params.form);
-        context.slug = params.form;
-    }
+    console.log('tempz', path);
+    /* if (path.startsWith('/edit-form/') && params.hasOwnProperty('form')) {
+        console.log('AM EDITING', params.form);
+        //context.form = await Pages.loadEditForm(params.form);
+        //context.slug = params.form;
+    } */
 
     // if (path.startsWith('/report/') && params.hasOwnProperty('report')) {
     //     context.report = await Pages.loadReport(params.report);
