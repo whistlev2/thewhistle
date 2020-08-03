@@ -31,11 +31,11 @@ router.post('/login', async (req, res) => {
         //Store token here
         //TODO: Cookie expiration
         //TODO: Sign cookies
-        const week = Date.now() + (7 * 24 * 60 * 60 * 1000);
+        const week = 7 * 24 * 60 * 60 * 1000;
         console.log('AB')
-        res.cookie('authtoken', token);
+        res.cookie('authtoken', token, { maxAge: week });
         console.log('EC')
-        res.cookie('user', JSON.stringify(user));
+        res.cookie('user', JSON.stringify(user), { maxAge: week });
         console.log('ED')
         res.status(200);
         console.log('EE')
