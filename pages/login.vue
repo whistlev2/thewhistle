@@ -22,9 +22,11 @@ export default {
     methods: {
         login(loginInfo) {
             axios.post('api/auth/login', loginInfo).then((response) => {
-                this.$store.commit('user/set', response.data)
+                console.log('REUP', response.data);
+                this.$store.commit('user/set')
                 this.$router.push('/');
-            }).catch(() => {
+            }).catch((err) => {
+                console.log('ERRRR', err)
                 //TODO: Handle this
             });
         }

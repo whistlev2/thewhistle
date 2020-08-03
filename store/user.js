@@ -1,17 +1,29 @@
-export const state = () => {
-    console.log('INITIALISE USER')
-    return {
-        id: null,
-        firstName: null,
-        surname: null,
-        email: null,
-        loggedIn: false,
-        orgs: []
+let Cookies = require('js-cookie');
+
+function getUser() {
+    try {
+        let userString = Cookies.get('user');
+        return JSON.parse(userString);
+    } catch (err) {
+        return {
+            id: null,
+            firstName: null,
+            surname: null,
+            email: null,
+            loggedIn: false,
+            orgs: []
+        };
     }
 }
 
+export const state = () => {
+    console.log('INITIALISE USER')
+    return getUser()
+}
+
 export const mutations = {
-    set(state, user) {
+    set(state) {
+        let user = getUser()
         console.log('SET USER')
         state.id = user.id;
         state.firstName = user.first_name;
