@@ -26,11 +26,8 @@ router.patch('/:sectionID/update-option-jump/:questionRef/:choiceRef', updateOpt
 router.delete('/:sectionID/delete-option/:questionRef/:choiceRef', deleteOption);
 
 async function getForm(req, res) {
-    console.log('HERE?')
     try {
-        console.log('GETTING FORM YO')
         const form = await Surveys.getEditFormJSON(req.params.slug);
-        console.log('GOT FORM?')
         res.json(form);
     } catch (err) {
         console.log(err);

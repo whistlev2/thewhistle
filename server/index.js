@@ -34,7 +34,7 @@ async function start() {
     app.use(cookieParser())
     app.use(session({
         secret: '9dj48bhkldhr48fj3890drkgb6739&#HF(&5j5&*^%',
-        resave: false,
+        resave: true,
         saveUninitialized: false,
         cookie: {
             maxAge: 60000

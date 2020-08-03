@@ -1,14 +1,18 @@
-export const state = () => ({
-    id: null,
-    firstName: null,
-    surname: null,
-    email: null,
-    loggedIn: false,
-    orgs: []
-})
+export const state = () => {
+    console.log('INITIALISE USER')
+    return {
+        id: null,
+        firstName: null,
+        surname: null,
+        email: null,
+        loggedIn: false,
+        orgs: []
+    }
+}
 
 export const mutations = {
     set(state, user) {
+        console.log('SET USER')
         state.id = user.id;
         state.firstName = user.first_name;
         state.surname = user.surname;
@@ -18,6 +22,7 @@ export const mutations = {
     },
 
     clear(state) {
+        console.log('CLEAR USER')
         delete state.id;
         delete state.firstName;
         delete state.surname;

@@ -26,7 +26,8 @@ router.post('/login', async (req, res) => {
         }
         //Logout after 1 week
         const token = await jwt.sign({ user: user }, process.env.JWT_SECRET_KEY, { expiresIn: "7d" });
-        req.session.token = token;
+        //Store token here
+        res.cookie('authtoken', token);
         res.json(user);
     } catch (err) {
         res.status(401)

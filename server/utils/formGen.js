@@ -405,7 +405,7 @@ exports.addFirstQuestion = async function(sectionID, question) {
     if (!form.logic) {
         form.logic = [];
     }
-
+    //TODO: Work out temperamental nessss - store jwt differently?
     let formattedQuestion = formatQuestion(question);
     console.log('QY', formattedQuestion)
     form.fields = [ formattedQuestion ];

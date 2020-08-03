@@ -64,13 +64,13 @@ export default {
                 question: this.newQuestion
             };
             axios.post(url, data).then((response) => {
-                this.updateEditLogic(response.data.form);  
+                this.updateEditJSON(response.data.form);  
                 //TODO: Handle errors
             });
         },
 
-        updateEditLogic(editLogic) {
-            this.editLogic = editLogic;
+        updateEditJSON(editJSON) {
+            this.editJSON = editJSON;
         },
 
         openAddQuestionModal() {
