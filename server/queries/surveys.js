@@ -28,28 +28,31 @@ function extractTestSurvey(survey) {
 }
 
 exports.getUserForms = async function(userID) {
-    let orgs = await db.query(`SELECT organisation, role FROM userorgs WHERE user='${userID}'`)
-    orgs = orgs.rows;
-    let forms = [];
-    let orgForms = [];
-    let role = '';
-    for (let i = 0; i < orgs.length; i++) {
-        if (orgs[i].role == 'admin') {
-            orgForms = await getOrgForms(orgs[i].organisation);
-            for (let j = 0; j < orgForms.length; j++) {
-                orgForms[j].role = 'admin';
+    try {
+        console.log(userID);
+        let orgs = await db.query(`SELECT organisation, role FROM userorgs WHERE userorgs.user='${userID}'`)
+        orgs = orgs.rows;
+        console.log('ORGS', orgs);
+        let forms = [];
+        let orgForms = [];
+        let role = '';
+        for (let i = 0; i < orgs.length; i++) {
+            if (orgs[i].role == 'admin') {
+                orgForms = await getOrgForms(orgs[i].organisation);
+                console.log('ORG FORMS', orgForms);
+                for (let j = 0; j < orgForms.length; j++) {
+                    orgForms[j].role = 'admin';
+                }
+            } else {
+                orgForms = await getUserOrgForms(userID, orgs[i].organisation);
             }
-        } else {
-            orgForms = await getUserOrgForms(userID, orgs[i].organisation);
+            forms = forms.concat(orgForms);
         }
-        forms = forms.concat(orgForms);
+        console.log('FINALLY', forms)
+        return forms;
+    } catch (err) {
+        console.log('ERROR', err);
     }
-    for (let k = 0; k < forms.length; k++) {
-        //TODO: Sort 'cannot read property title of undefined' error
-        forms[k].title = forms[k].form_json.title;
-        delete forms.form_json;
-    }
-    return forms;
 }
 
 async function getOrgForms(organisationID) {
