@@ -14,7 +14,7 @@
                                 </v-col>
                                 <v-col cols="12">
                                     <v-select v-model="$attrs.newQuestion.type" :rules="notBlank"
-                                        :items="['Statement', 'Agreement', 'Short text', 'Long text', 'Multiple choice', 'Date', 'File upload']"
+                                        :items="questionTypes"
                                         label="Question type" required></v-select>
                                 </v-col>
                                 <v-col cols="12" v-if="$attrs.newQuestion.type=='Multiple choice'">
@@ -50,7 +50,10 @@ export default {
     data() {
         return {
             notBlank: [v => !!v || 'Required'],
-            valid: false
+            valid: false,
+            questionTypes: this.$attrs.web ?
+                ['Statement', 'Agreement', 'Short text', 'Long text', 'Multiple choice', 'Date', 'File upload'] :
+                ['Statement', 'Agreement', 'Text', 'Multiple choice']
         }
     },
     methods: {

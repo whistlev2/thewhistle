@@ -25,7 +25,7 @@ export default {
                 this.$store.commit('user/set')
                 this.$router.push('/');
             }).catch((err) => {
-                console.log('ERRRR', err)
+                console.log('ERROR', err)
                 //TODO: Handle this
             });
         }

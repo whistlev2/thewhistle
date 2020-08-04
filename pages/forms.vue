@@ -49,9 +49,7 @@ export default {
     methods: {
         fetchData() {
             const url = '/api/forms/user/' + this.user.id;
-            console.log('getting url', url)
             axios.get(url).then((d) => {
-                console.log('DDDD', d);
                 this.forms = d.data.forms
             })
         },

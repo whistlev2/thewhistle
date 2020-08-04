@@ -56,8 +56,8 @@
                 </div>
             </v-expand-transition>
         </v-card>
-        <AddQuestionModal :show="showAddQuestionModal" @close="closeAddQuestionModal" @submit="addQuestion" :newQuestion="newQuestion" />
-        <DeleteQuestionModal :show="showDeleteQuestionModal" @close="closeDeleteQuestionModal" @submit="deleteQuestion" :questionText="$attrs.question.title" />
+        <AddQuestionModal :show="showAddQuestionModal" :web="$attrs.web" @close="closeAddQuestionModal" @submit="addQuestion" :newQuestion="newQuestion" />
+        <DeleteQuestionModal :show="showDeleteQuestionModal" :web="$attrs.web" @close="closeDeleteQuestionModal" @submit="deleteQuestion" :questionText="$attrs.question.title" />
         <AddOptionModal :show="showAddOptionModal" @close="closeAddOptionModal" @submit="addOption" :newOption="newOption" />
         <DeleteOptionModal :show="showDeleteOptionModal" @close="closeDeleteOptionModal" @submit="deleteOption" :option="optionToDelete" />
     </div>

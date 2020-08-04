@@ -29,17 +29,14 @@ function extractTestSurvey(survey) {
 
 exports.getUserForms = async function(userID) {
     try {
-        console.log(userID);
         let orgs = await db.query(`SELECT organisation, role FROM userorgs WHERE userorgs.user='${userID}'`)
         orgs = orgs.rows;
-        console.log('ORGS', orgs);
         let forms = [];
         let orgForms = [];
         let role = '';
         for (let i = 0; i < orgs.length; i++) {
             if (orgs[i].role == 'admin') {
                 orgForms = await getOrgForms(orgs[i].organisation);
-                console.log('ORG FORMS', orgForms);
                 for (let j = 0; j < orgForms.length; j++) {
                     orgForms[j].role = 'admin';
                 }
@@ -48,7 +45,6 @@ exports.getUserForms = async function(userID) {
             }
             forms = forms.concat(orgForms);
         }
-        console.log('FINALLY', forms)
         return forms;
     } catch (err) {
         console.log('ERROR', err);
@@ -97,9 +93,10 @@ exports.getSurveyJSON = function (id, res) {
 
 exports.getEditFormJSON = async function(slug) {
     try {
-        let results = await db.query(`SELECT test_logic, forms.title AS title, forms.description AS description FROM formsectionlogic JOIN forms ON forms.id=formsectionlogic.form WHERE forms.slug='${slug}'`);
+        let results = await db.query(`SELECT test_logic, forms.title AS title, forms.description AS description, forms.web AS web FROM formsectionlogic JOIN forms ON forms.id=formsectionlogic.form WHERE forms.slug='${slug}'`);
         const title = results.rows[0].title;
         const description = results.rows[0].description;
+        const web = results.rows[0].web;
         const sectionLogic = results.rows[0].test_logic.sections;
         for (let i = 0; i < sectionLogic.length; i++) {
             results = await db.query(`SELECT type, test_json FROM formsections WHERE id=${sectionLogic[i].sectionID}`);            sectionLogic[i].type = results.rows[0].type;
@@ -109,6 +106,7 @@ exports.getEditFormJSON = async function(slug) {
         return {
             title: title,
             description: description,
+            web: web,
             sectionLogic: sectionLogic
         }
         //TODO: Add in ret example structures documentation
@@ -148,8 +146,11 @@ exports.getTestFormJSON = function (slug, res) {
 
 exports.getSectionJSON = async function (sectionID) {
     try {
-        const results = await db.query(`SELECT test_json FROM formsections WHERE id='${sectionID}'`);
-        return results.rows[0].test_json;
+        const results = await db.query(`SELECT test_json, type FROM formsections WHERE id='${sectionID}'`);
+        return {
+            form: results.rows[0].test_json,
+            type: results.rows[0].type
+        }
     } catch (err) {
         console.error(err);
     }
