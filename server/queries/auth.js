@@ -109,14 +109,11 @@ async function getUserOrgs(userID) {
 exports.authenticateUser = async function (email, password) {
     const results = await db.query(`SELECT * FROM users WHERE email='${email}'`)
     const user = results.rows[0];
-    console.log('You', user)
     user.orgs = await getUserOrgs(user.id);
     if (!user) {
         return null;
     }
-    console.log(password);
     const match = await bcrypt.compare(password, user.password)
-    console.log('MATCH', match);
     user.password = null;
     return match ? user : null;
 }

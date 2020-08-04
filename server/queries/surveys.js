@@ -94,7 +94,6 @@ exports.getSurveyJSON = function (id, res) {
 
 exports.getEditFormJSON = async function(slug) {
     try {
-        console.log('GETTING EDITFORMJSON')
         let results = await db.query(`SELECT test_logic, forms.title AS title, forms.description AS description FROM formsectionlogic JOIN forms ON forms.id=formsectionlogic.form WHERE forms.slug='${slug}'`);
         const title = results.rows[0].title;
         const description = results.rows[0].description;

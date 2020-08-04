@@ -57,7 +57,6 @@ exports.createForm = async function (form) {
             data: form
         })
         //TODO: Check if this returns the whole typeform
-        console.log('Whole form?', response.data);
         return response.data;
     } catch (err) {
         //TODO: Handle errors properly

@@ -397,9 +397,7 @@ exports.updateQuestionTitle = async function(sectionID, questionRef, questionTit
 }
 
 exports.addFirstQuestion = async function(sectionID, question) {
-    console.log('FIRST Q', sectionID, question)
     let form = await Surveys.getSectionJSON(sectionID);
-    console.log('FORMY', form)
     //TODO: Check question ref doesn't already exist
 
     if (!form.logic) {
@@ -407,11 +405,8 @@ exports.addFirstQuestion = async function(sectionID, question) {
     }
     //TODO: Work out temperamental nessss - store jwt differently?
     let formattedQuestion = formatQuestion(question);
-    console.log('QY', formattedQuestion)
     form.fields = [ formattedQuestion ];
-    console.log('WHOLE FORM', form);
     let retForm = await updateForm(sectionID, form);
-    console.log('RETY', retForm)
     return retForm;
 }
 

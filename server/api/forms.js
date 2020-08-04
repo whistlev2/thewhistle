@@ -33,9 +33,7 @@ router.get('/:slug', async (req, res) => {
 
 router.get('/edit/:slug', async (req, res) => {
     try {
-        console.log('UMP ETTY')
         const form = await Surveys.getEditFormJSON(req.params.slug);
-        console.log('J B', form);
         res.json({ form: form });
     } catch (err) {
         console.error(err);
