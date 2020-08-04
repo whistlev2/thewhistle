@@ -3,8 +3,12 @@ let Cookies = require('js-cookie');
 function getUser() {
     try {
         let userString = Cookies.get('user');
+        console.log('GOT USER', userString)
+        console.log(userString);
         return JSON.parse(userString);
     } catch (err) {
+        console.log('NOT GOT USER')
+        //TODO: Redirect to login
         return {
             id: null,
             firstName: null,

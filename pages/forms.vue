@@ -59,6 +59,7 @@ export default {
         },
 
         createForm() {
+            //TODO: Loading icon on wait
             //TODO: Create form and router.push to new form url on success
             let url = `/api/edit-form/${this.newForm.slug}/create`;
             let data = {

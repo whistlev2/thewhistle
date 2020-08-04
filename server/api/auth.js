@@ -17,10 +17,8 @@ async function checkToken(token) {
 }
 
 router.post('/login', async (req, res) => {
-    console.log('LOGGING IN')
     try {
         const user = await Auth.authenticateUser(req.body.email, req.body.password);
-        console.log(user)
         if (!user) {
             res.status(401)
             res.send('Incorrect email/password')
@@ -32,16 +30,11 @@ router.post('/login', async (req, res) => {
         //TODO: Cookie expiration
         //TODO: Sign cookies
         const week = 7 * 24 * 60 * 60 * 1000;
-        console.log('AB')
         res.cookie('authtoken', token, { maxAge: week });
-        console.log('EC')
         res.cookie('user', JSON.stringify(user), { maxAge: week });
-        console.log('ED')
         res.status(200);
-        console.log('EE')
         res.json(user);
     } catch (err) {
-        console.log('zzzzzz')
         res.status(401)
         res.send('Could not authorise you, please try again.')
     }

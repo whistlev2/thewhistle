@@ -62,7 +62,7 @@ async function updateQuestionTitle(req, res) {
 async function addFirstQuestion(req, res) {
     try {
         console.log('HEE', req.params.sectionID)
-        const form = FormGen.addFirstQuestion(req.params.sectionID, req.body.question);
+        const form = await FormGen.addFirstQuestion(req.params.sectionID, req.body.question);
         res.json({
             form: form
         });
