@@ -404,6 +404,11 @@ async function insertIntoFormSections(form) {
         case 'typeform':
             actualJSON = await Typeform.createForm(form.json);
             testJSON = await Typeform.createForm(form.json);
+            break;
+        case 'sms':
+            actualJSON = form.json;
+            testJSON = form.json;
+            break;
     }
     const query = 'INSERT INTO formsections (form, type, json, test_json) VALUES ($1, $2, $3, $4) RETURNING id';
     const values = [form.id, form.type, JSON.stringify(actualJSON), JSON.stringify(testJSON)];

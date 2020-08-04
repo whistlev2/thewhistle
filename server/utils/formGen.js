@@ -332,7 +332,15 @@ function generateIsAction(questionRef, optionRef, jump) {
     }
 }
 
-function generateNewFormJSON(title) {
+function generateNewSMSFormJSON(title) {
+    return {
+        title: title,
+        fields: [],
+        logic: []
+    }
+}
+
+function generateNewTypeformJSON(title) {
     return {
         title: title,
         workspace: {
@@ -365,7 +373,7 @@ function generateNewFormJSON(title) {
 
 exports.createForm = async function (slug, title, description, org, web) {
     try {
-        let formJSON = generateNewFormJSON(title);
+        let formJSON = web ? generateNewTypeformJSON(title) : generateNewSMSFormJSON(title);
         //TODO: Make type dynamic
         let form = {
             json: formJSON,
@@ -374,7 +382,7 @@ exports.createForm = async function (slug, title, description, org, web) {
             description: description,
             org: org,
             web: web,
-            type: 'typeform'
+            type: web ? 'typeform' : 'sms'
         }
         await Surveys.insertForm(form);
     } catch (err) {
