@@ -2,7 +2,7 @@ import axios from 'axios'
 
 import Pages from './pages.ts'
 
-import Lowtech from './lowtech';
+//import Lowtech from './lowtech';
 import { verify } from 'crypto';
 
 
@@ -43,9 +43,9 @@ export default async function (context) {
         context.survey = extractTestSurvey(getTestSurvey());
     }
     // TODO - change conditions for path
-    if (params.hasOwnProperty('lowtech')) {
+    /* if (params.hasOwnProperty('lowtech')) {
         context.questions = Lowtech.getNextQuestions(params.lowtech);
-    }
+    } */
 
     return context
 }
