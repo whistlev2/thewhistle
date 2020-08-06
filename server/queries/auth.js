@@ -107,13 +107,18 @@ async function getUserOrgs(userID) {
 }
 
 exports.authenticateUser = async function (email, password) {
-    const results = await db.query(`SELECT * FROM users WHERE email='${email}'`)
-    const user = results.rows[0];
-    user.orgs = await getUserOrgs(user.id);
-    if (!user) {
+    try {
+        const results = await db.query(`SELECT * FROM users WHERE email='${email}'`);
+        const user = results.rows[0];
+        user.orgs = await getUserOrgs(user.id);
+        if (!user) {
+            return null;
+        }
+        const match = await bcrypt.compare(password, user.password)
+        user.password = null;
+        return match ? user : null;
+    } catch (err) {
+        console.log(err);
         return null;
     }
-    const match = await bcrypt.compare(password, user.password)
-    user.password = null;
-    return match ? user : null;
 }
