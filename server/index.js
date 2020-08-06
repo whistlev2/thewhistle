@@ -22,7 +22,7 @@ var _ = require('underscore');
 // Import and Set Nuxt.js options
 
 const config = require('../nuxt.config.js')
-config.dev = !(process.env.NODE_ENV === 'production')
+config.dev = !(process.env.NODE_ENV == 'production' || process.env.NODE_ENV == 'staging')
 
 async function start() {
     dotenv.config();

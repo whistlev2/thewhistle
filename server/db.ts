@@ -2,7 +2,7 @@ const Pool = require('pg').Pool;
 
 var db = null
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV == 'production' || process.env.NODE_ENV == 'staging') {
     db = new Pool({
         user: process.env.DATABASE_URL,
         host: process.env.DATABASE_URL,
