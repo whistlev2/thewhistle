@@ -330,7 +330,9 @@ exports.updateDropdownChoice = function (req, res) {
     editSurvey(req, res, surveyUtils.updateDropdownChoice);
 }
 
+//Used to get /submit-report pages
 exports.getFormFromSlug = async function (slug, test) {
+    //TODO: NOW - Implement
     try {
         let results = await db.query(`SELECT logic, test_logic, forms.title AS title FROM formsectionlogic JOIN forms ON forms.id=formsectionlogic.form WHERE forms.slug='${slug}'`);
         const title = results.rows[0].title;

@@ -12,8 +12,14 @@ router.post('/webhook', (req, res) => {
     res.status(200).json([])
 })
 
-router.get('/:slug', (req, res) => {
-    responses.getFormResponsesFromSlug(res, req.params.slug);
+router.get('/:slug', async (req, res) => {
+    let reports = await responses.getFormResponsesFromSlug(req.params.slug, false);
+    res.json(reports);
+})
+
+router.get('/:slug/test', async (req, res) => {
+    let reports = await responses.getFormResponsesFromSlug(req.params.slug, true);
+    res.json(reports);
 })
 
 module.exports = router

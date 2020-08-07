@@ -62,19 +62,19 @@ function formatAnswers(answers) {
     return ret;
 }
 
-exports.getFormResponsesFromSlug = function (res, slug) {
+//Used for /reports pages
+exports.getFormResponsesFromSlug = async function (slug, test) {
+    //TODO: NOW - implement
     //TODO: Edit this or delete if redundant
-    db.query(`SELECT typeform_id FROM subforms WHERE slug='${slug}'`, (error, results) => {
-        getFormResponses(res, results.rows[0].typeform_id);
-    })
+    let results = await db.query(`SELECT typeform_id FROM subforms WHERE slug='${slug}'`)
+    let responses = await getFormResponses(results.rows[0].typeform_id);
 }
 
-function getFormResponses(res, formId) {
+async function getFormResponses(formId) {
     //TODO: Edit this or delete if redundant
-    db.query(`SELECT definition, value, raw_response_id FROM reports JOIN questionresponses ON reports.id = questionresponses.raw_response_id WHERE form_id='${formId}'`, (error, results) => {
-        const formattedResponses = formatResponses(results.rows);
-        res.json(formattedResponses);
-    })
+    let results = await db.query(`SELECT definition, value, raw_response_id FROM reports JOIN questionresponses ON reports.id = questionresponses.raw_response_id WHERE form_id='${formId}'`)
+    const formattedResponses = formatResponses(results.rows);
+    return formattedResponses;
 }
 
 //TODO: Remove if not needed

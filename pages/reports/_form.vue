@@ -1,5 +1,6 @@
 <template>
     <div>
+        <ReportTable :headers="headers" :items="items" :query="$route.query" />
         <v-data-table :headers="headers" :items="filteredItems"
             :items-per-page="5" class="elevation-1">
             <template v-slot:item.action="{ item }">
@@ -24,24 +25,7 @@ export default {
     },
 
     computed: {
-        filteredItems: function () {
-            const filters = Object.entries(this.$route.query);
-            let ret = [];
-            var showItem;
-            //TODO - Parse query strings properly
-            for (let i = 0; i < this.items.length; i++) {
-                showItem = true;
-                for (let [key, value] of filters) {
-                    if (this.items[i][key] != value) {
-                        showItem = false;
-                    }
-                }
-                if (showItem) {
-                    ret.push(this.items[i]);
-                }
-            }
-            return ret;
-        }
+        
     },
     mounted () {
         this.headers.push({ text: 'Actions', value: 'action', sortable: false });

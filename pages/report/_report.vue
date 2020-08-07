@@ -145,8 +145,8 @@
 </template>
 
 <script>
-import EditReportAccessModal from '../../components/reports/EditReportAccessModal.vue';
-import EditLocationModal from '../../components/reports/EditLocationModal.vue';
+import EditReportAccessModal from '../../components/report/EditReportAccessModal.vue';
+import EditLocationModal from '../../components/report/EditLocationModal.vue';
 import axios from 'axios'
 var _ = require('underscore');
 export default {

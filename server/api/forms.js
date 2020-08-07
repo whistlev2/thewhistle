@@ -21,7 +21,19 @@ router.get('/test-json/:slug', (req, res) => {
     Surveys.getTestFormJSON(req.params.slug, res);
 })
 
+//Used to get /submit-report page
 router.get('/:slug', async (req, res) => {
+    try {
+        let ret = await Surveys.getFormFromSlug(req.params.slug, false);
+        res.json(ret);
+    } catch (err) {
+        console.log(err)
+        //TODO: Handle errors properly
+    }
+})
+
+//Used to get /submit-test-report page
+router.get('/:slug/test', async (req, res) => {
     try {
         let ret = await Surveys.getFormFromSlug(req.params.slug, true);
         res.json(ret);

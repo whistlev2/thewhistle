@@ -21,7 +21,11 @@ export default async function (context) {
     // }
 
     if (path.startsWith('/reports') && params.hasOwnProperty('form')) {
-        context.reports = await Pages.loadReports(params.form);
+        context.reports = await Pages.loadReports(params.form, false);
+    }
+
+    if (path.startsWith('/test-reports') && params.hasOwnProperty('form')) {
+        context.reports = await Pages.loadReports(params.form, true);
     }
 
     /* if (path.startsWith('/edit-form/') && params.hasOwnProperty('form')) {
@@ -34,8 +38,12 @@ export default async function (context) {
     //     context.report = await Pages.loadReport(params.report);
     // }
 
-    if (path.startsWith('/survey/') && params.hasOwnProperty('survey')) {
-        context.form = await Pages.loadFormFromSlug(params.survey);
+    if (path.startsWith('/submit-report/') && params.hasOwnProperty('form')) {
+        context.form = await Pages.loadFormFromSlug(params.form, false);
+    }
+
+    if (path.startsWith('/submit-test-report/') && params.hasOwnProperty('form')) {
+        context.form = await Pages.loadFormFromSlug(params.form, true);
     }
 
     // TODO - change conditions for path

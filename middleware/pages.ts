@@ -13,8 +13,8 @@ class Pages {
         }
     }
 
-    static async loadReports(form) {
-        const url = process.env.baseURL + `/api/reports/${form}`;
+    static async loadReports(form, test) {
+        const url = process.env.baseURL + `/api/reports/${form}${test ? '/test' : ''}`;
         const reports = await axios.get(url);
         return reports.data;
     }
@@ -34,8 +34,8 @@ class Pages {
       return form.data;
     }
 
-    static async loadFormFromSlug(slug) {
-        const url = process.env.baseURL + `/api/forms/${slug}`;
+    static async loadFormFromSlug(slug, test) {
+        const url = process.env.baseURL + `/api/forms/${slug}${test ? '/test' : ''}`;
         const form = await axios.get(url);
         return form.data;
     }

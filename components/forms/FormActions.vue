@@ -1,8 +1,9 @@
 <template>
     <div>
-        <v-btn :to="actualURL" class="blueBtn" text>View Form</v-btn>
-        <v-btn v-if="this.$attrs.form.published" :to="actualURL" class="blueBtn" text>View Actual</v-btn>
-        <v-btn :to="responsesURL" class="blueBtn" text>View Responses</v-btn>
+        <v-btn :to="testFormURL" class="blueBtn" text>View Test Form</v-btn>
+        <v-btn v-if="this.$attrs.form.published" :to="liveFormURL" class="blueBtn" text>View Live Form</v-btn>
+        <v-btn :to="testReportsURL" class="blueBtn" text>View Test Reports</v-btn>
+        <v-btn :to="reportsURL" class="blueBtn" text>View Reports</v-btn>
         <template v-if="canEdit">
             <v-btn :to="editURL" class="blueBtn" text>Edit</v-btn>
             <v-btn v-on:click="showPublishModal = true" class="blueBtn" text>Publish</v-btn>
@@ -36,13 +37,18 @@ export default {
         }
     },
     computed: {
-        testURL: function () {
-            return `/survey/${this.$attrs.form.slug}/test`;
+        testFormURL: function () {
+            return `/submit-test-report/${this.$attrs.form.slug}`;
         },
-        actualURL: function () {
-            return `/survey/${this.$attrs.form.slug}`;
+        liveFormURL: function () {
+            return `/submit-report/${this.$attrs.form.slug}`;
         },
-        responsesURL: function () {
+        testReportsURL: function () {
+            //TODO - NTH - make sure slug is well behaved Parse query params
+            //TODO: Make this work
+            return `/test-reports/${this.$attrs.form.slug}`;
+        },
+        reportsURL: function () {
             //TODO - NTH - make sure slug is well behaved Parse query params
             //TODO: Make this work
             return `/reports/${this.$attrs.form.slug}`;
