@@ -3,13 +3,14 @@ var pgFormat = require('pg-format');
 
 const db = require('../db.ts')
 
-//TODO: Remove if not needed
-exports.storeResponse = function (payload) {
-    storeRawResponse(payload);
+
+exports.storeResponse = async function (payload) {
+    await storeRawResponse(payload);
 }
 
-//TODO: Remove if not needed
-function storeRawResponse(payload) {
+
+async function storeRawResponse(payload) {
+    //TODO: Now this
     const form_id = payload.form_response.form_id;
     const date = payload.form_response.submitted_at;
     const query = 'INSERT INTO reports(response_json, form_id, date) VALUES($1, $2, $3) RETURNING id'

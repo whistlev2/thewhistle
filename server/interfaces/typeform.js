@@ -3,6 +3,7 @@
 
 const request = require('request');
 const axios = require('axios');
+const { TypePredicateKind } = require('typescript');
 
 
 const TYPEFORM_API_BASE_URL = "api.typeform.com"
@@ -24,6 +25,31 @@ const bearer = {
 
 function jsonCallback(error, res, body) {
     res.json(body);
+}
+
+function createWebhook(typeformID, sectionID) {
+    //TODO: Get section ID
+    try {
+        const url = `https://${TYPEFORM_API_BASE_URL}/forms/${typeformID}/webhooks/${typeformID}`;
+        //TODO: Add env variable
+        const data = {
+            url: `${process.env.url}/api/reports/typeform-webhook/${sectionID}`,
+            enabled: true
+        }
+        //TODO: Add secret
+        //TODO: Set SSL true
+        await axios({
+            method: 'post',
+            url: url,
+            headers: headers,
+            data: data
+        })
+
+        return ret;
+    } catch (err) {
+        //TODO: Handle errors properly
+        console.log(err);
+    }
 }
 
 exports.getForm = function (form) {
@@ -56,8 +82,11 @@ exports.createForm = async function (form) {
             headers: headers,
             data: form
         })
-        //TODO: Check if this returns the whole typeform
-        return response.data;
+        let ret = response.data;
+
+        createWebhook(response.data.id);
+
+        return ret;
     } catch (err) {
         //TODO: Handle errors properly
         console.log(err);
