@@ -28,7 +28,8 @@ exports.up = function (db: any, callback: any) {
             status: 'string',
             tags: 'string',
             active: 'boolean',
-            location: 'string'
+            location: 'string',
+            test: 'boolean'
         },
         addUserForeignKey
     );

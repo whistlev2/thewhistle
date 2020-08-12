@@ -5,7 +5,7 @@
         <!-- TODO: Add multiple sections -->
         <template v-if="editJSON.length == 0">
             <v-btn x-large outlined v-on:click="openAddQuestionModal" class="blueBtn">Add first question</v-btn>
-            <AddQuestionModal :show="showAddQuestionModal" @close="closeAddQuestionModal" @submit="addQuestion" :newQuestion="newQuestion" />
+            <AddQuestionModal :show="showAddQuestionModal" :web="web" @close="closeAddQuestionModal" @submit="addQuestion" :newQuestion="newQuestion" />
         </template>
         <EditQuestion v-for="question in editJSON" :sectionID="sectionID" :question="question" :web="web" :key="question.ref" v-on:questionChange="updateEditJSON" />      
     </div>

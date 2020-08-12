@@ -8,6 +8,33 @@
     "schema": "my_schema"
   },
 
+  "pg": {
+    "driver": "pg",
+    "user": "postgres",
+    "password": "postgres",
+    "host": "localhost",
+    "database": "thewhistle",
+    "schema": "my_schema"
+  },
+
+  "prod": {
+    "driver": "pg",
+    "user": "postgres",
+    "password": "postgres",
+    "host": "localhost",
+    "database": "thewhistle",
+    "schema": "my_schema"
+  },
+
+  "staging": {
+    "driver": "pg",
+    "user": "postgres",
+    "password": "postgres",
+    "host": "localhost",
+    "database": "thewhistle",
+    "schema": "my_schema"
+  },
+
   "test": {
     "driver": "sqlite3",
     "filename": ":memory:"

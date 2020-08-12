@@ -18,17 +18,17 @@
     </v-row>
 </template>
 <script>
-    export default {
-        methods: {
-            deleteForm() {
-                this.closeModal();
-                //TODO - L - post form ID to API end point to delete data (this does not delete the responses)
-            },
+export default {
+    methods: {
+        deleteForm() {
+            this.closeModal();
+            //TODO - L - post form ID to API end point to delete data (this does not delete the responses)
+        },
 
-            closeModal() {
-                this.$attrs.show = false;
-                this.$emit('close');
-            }
+        closeModal() {
+            this.$attrs.show = false;
+            this.$emit('close');
         }
     }
+}
 </script>

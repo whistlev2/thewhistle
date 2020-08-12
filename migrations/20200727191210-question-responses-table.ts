@@ -25,7 +25,7 @@ exports.up = function (db: any, callback: any) {
         section: 'int',
         question_ref: 'string',
         definition: 'json',
-        value: 'json',
+        value: 'string',
     }, addReportForeignKey);
 
     function addReportForeignKey(err: any) {

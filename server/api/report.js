@@ -3,6 +3,10 @@ const report = require('../queries/report.js')
 
 const router = express.Router()
 
+router.post('/test-typeform-webhook/:section', postTestWebhook);
+
+router.post('/typeform-webhook/:section', postWebhook);
+
 router.get('/:id', getReport);
 
 router.post('/assigned/:id', postAssigned);
@@ -16,6 +20,18 @@ router.post('/tags/:id', postTags);
 router.post('/active/:id', postActive);
 
 router.post('/note/:id', postNote);
+
+async function postTestWebhook(req, res) {
+    await report.submitTypeformSection(req.params.section, req.body, true);
+    res.status(200);
+    res.send();
+}
+
+async function postWebhook(req, res) {
+    await report.submitTypeformSection(req.params.section, req.body, false);
+    res.status(200);
+    res.send();
+}
 
 function getReport(req, res) {
     try {

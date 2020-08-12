@@ -416,6 +416,12 @@ async function insertIntoFormSections(form) {
     const values = [form.id, form.type, JSON.stringify(actualJSON), JSON.stringify(testJSON)];
     const results = await db.query(query, values);
     const sectionID = results.rows[0].id;
+
+    if (form.type == 'typeform') {
+        await Typeform.createWebhook(actualJson.id, sectionID, false);
+        await Typeform.createWebhook(testJSON.id, sectionID, true);
+    }
+
     return sectionID;
 }
 

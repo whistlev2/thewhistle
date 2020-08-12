@@ -1,6 +1,69 @@
 const db = require('../db.ts')
 const users = require('./users.js')
 
+async function getFormFromSection(sectionID) {
+    const results = await db.query(`SELECT form FROM formsections where id=${sectionID}`)
+    const formID = results.rows[0].form;
+    return formID;
+}
+
+async function insertReport(formID, test) {
+    const query = `INSERT INTO reports(form, active, test, date) VALUES($1, $2, $3, to_timestamp(${Date.now()} / 1000.0)) RETURNING id`;
+    const values = [formID, true, test];
+    const results = await db.query(query, values);
+    const reportID = results.rows[0].id;
+
+    return reportID;
+}
+
+function getValueFromAnswer(answer) {
+    switch (answer.type) {
+        case 'short_text':
+        case 'long_text':
+            return answer.text;
+        case 'choices':
+            return answer.choices.labels.join();
+        case 'choice':
+            return answer.choice.label;
+        default:
+            return answer[answer.type];
+    }
+}
+
+function getDefinitionFromID(definitions, fieldID) {
+    for (let i = 0; i < definitions.length; i++) {
+        if (definitions[i].id == fieldID) {
+            return definitions[i];
+        }
+    }
+    //TODO: Handle errors
+    return {};
+}
+
+async function insertQuestionResponse(reportID, sectionID, ref, definition, value) {
+    const query = 'INSERT INTO questionresponses(report, section, question_ref, definition, value) VALUES($1, $2, $3, $4, $5)';
+    const values = [reportID, sectionID, ref, JSON.stringify(definition), JSON.stringify(value)];
+    await db.query(query, values);
+}
+
+exports.submitTypeformSection = async function (sectionID, payload, test) {
+    let formID = await getFormFromSection(sectionID);
+    let reportID = await insertReport(formID, test);
+    const definitions = payload.form_response.definition.fields;
+    const answers = payload.form_response.answers;
+    let promises = [];
+    let value = {};
+    let ref = '';
+    let definition = {};
+    for (let i = 0; i < answers.length; i++) {
+        value = getValueFromAnswer(answers[i]);
+        definition = getDefinitionFromID(definitions, answers[i].field.id);
+        ref = definition.ref;
+        promises.push(insertQuestionResponse(reportID, sectionID, ref, definition, value))
+    }
+    Promise.all(promises);
+}
+
 exports.getResponses = async function (id) {
     try {
         //TODO: Check ID change still works
@@ -214,7 +277,7 @@ exports.addNote = async function (report, user, comment) {
 
 async function addAudit(audit) {
     try {
-        await db.query(`INSERT INTO AUDIT(report, user, time, action) VALUES (${audit.report}, ${audit.user}, to_timestamp(${Date.now()} / 1000.0), '${audit.action}')`);
+        await db.query(`INSERT INTO audit(report, user, time, action) VALUES (${audit.report}, ${audit.user}, to_timestamp(${Date.now()} / 1000.0), '${audit.action}')`);
     } catch (err) {
     }
 }
