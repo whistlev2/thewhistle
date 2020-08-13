@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 
 function requiresVerification(path) {
-    console.log(path)
     if (path == '/login') {
         return false;
     } else if (path == '/api/auth/logout') {

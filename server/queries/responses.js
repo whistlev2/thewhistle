@@ -63,12 +63,56 @@ function formatAnswers(answers) {
     return ret;
 }
 
+function formatHeaders(headers) {
+    let ret = [];
+    for (let i = 0; i < headers.length; i++) {
+        ret.push({
+            text: headers[i],
+            value: headers[i]
+        })
+    }
+    return ret;
+}
+
+function formatItems(items) {
+    let ret = [];
+    for (let [_, value] of Object.entries(items)) {
+        ret.push(value);
+    }
+    return ret;
+}
+
 //Used for /reports pages
-exports.getFormResponsesFromSlug = async function (slug, test) {
+exports.getReportsFromFormSlug = async function (slug, test) {
     //TODO: NOW - implement
     //TODO: Edit this or delete if redundant
-    let results = await db.query(`SELECT typeform_id FROM subforms WHERE slug='${slug}'`)
-    let responses = await getFormResponses(results.rows[0].typeform_id);
+    try {
+        let query = `SELECT reports.id, reports.date, questionresponses.question_ref, questionresponses.value FROM reports JOIN forms ON reports.form = forms.id JOIN questionresponses ON reports.id=questionresponses.report WHERE forms.slug='${slug}' AND reports.test=${test}`
+        let results = await db.query(query);
+        let rows = results.rows;
+        let headers = [];
+        let items = {};
+        for (let i = 0; i < rows.length; i++) {
+            if (!headers.includes(rows[i].question_ref)) {
+                headers.push(rows[i].question_ref);
+            }
+
+            if (!items.hasOwnProperty(rows[i].id)) {
+                items[rows[i].id] = {
+                    url: `/report/${rows[i].id}`,
+                    date: rows[i].date
+                };
+            }
+            items[rows[i].id][rows[i].question_ref] = rows[i].value;
+        }
+        let ret = {
+            headers: formatHeaders(headers),
+            items: formatItems(items)
+        };
+        return ret;
+    } catch (err) {
+        console.log(err);
+    }
 }
 
 async function getFormResponses(formId) {
@@ -98,17 +142,6 @@ function formatResponses(responses) {
         headers: formatHeaders(headers),
         items: formatItems(items)
     };
-}
-
-function formatHeaders(headers) {
-    let ret = [];
-    for (let [value, text] of Object.entries(headers)) {
-        ret.push({
-            value: value,
-            text: text
-        });
-    }
-    return ret;
 }
 
 function formatItems(items) {

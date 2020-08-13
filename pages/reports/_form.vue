@@ -1,18 +1,15 @@
 <template>
     <div>
         <ReportTable :headers="headers" :items="items" :query="$route.query" />
-        <v-data-table :headers="headers" :items="filteredItems"
-            :items-per-page="5" class="elevation-1">
-            <template v-slot:item.action="{ item }">
-                <v-btn :to="item.url" style="background-color:#033549; color:white;" text>View</v-btn>
-            </template>
-        </v-data-table>
     </div>
 </template>
 
 <script>
-
+import ReportTable from '../../components/reports/ReportTable.vue'
 export default {
+    components: {
+        ReportTable
+    },
 
     data() {
         return {
@@ -21,7 +18,10 @@ export default {
     },
 
     asyncData(context) {
-        return context.reports;
+        return {
+            headers: context.reports.headers,
+            items: context.reports.items
+        }
     },
 
     computed: {

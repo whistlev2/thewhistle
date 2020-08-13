@@ -9,12 +9,12 @@ router.post('/typeform-webhook/:section', async (req, res) => {
 })
 
 router.get('/:slug', async (req, res) => {
-    let reports = await responses.getFormResponsesFromSlug(req.params.slug, false);
+    let reports = await responses.getReportsFromFormSlug(req.params.slug, false);
     res.json(reports);
 })
 
 router.get('/:slug/test', async (req, res) => {
-    let reports = await responses.getFormResponsesFromSlug(req.params.slug, true);
+    let reports = await responses.getReportsFromFormSlug(req.params.slug, true);
     res.json(reports);
 })
 

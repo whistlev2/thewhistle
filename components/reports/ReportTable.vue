@@ -15,7 +15,6 @@
 }
 </style>
 <script>
-
 export default {
     computed: {
         filteredItems: function () {
