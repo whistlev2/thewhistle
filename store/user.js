@@ -44,10 +44,12 @@ export const mutations = {
 
 export const getters = {
     get(state) {
+        getUser();
         return state
     },
 
     getNewFormOrgs(state) {
+        getUser();
         let ret = [];
         const orgs = state.orgs;
         for (let i = 0; i < orgs.length; i++) {
