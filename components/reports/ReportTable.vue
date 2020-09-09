@@ -22,15 +22,17 @@ export default {
             let ret = [];
             var showItem = true;
             //TODO - Parse query strings properly
-            for (let i = 0; i < this.$attrs.items.length; i++) {
-                showItem = true;
-                for (let [key, value] of filters) {
-                    if (this.items[i][key] != value) {
-                        showItem = false;
+            if (this.$attrs.items) {
+                for (let i = 0; i < this.$attrs.items.length; i++) {
+                    showItem = true;
+                    for (let [key, value] of filters) {
+                        if (this.items[i][key] != value) {
+                            showItem = false;
+                        }
                     }
-                }
-                if (showItem) {
-                    ret.push(this.$attrs.items[i]);
+                    if (showItem) {
+                        ret.push(this.$attrs.items[i]);
+                    }
                 }
             }
             return ret;
