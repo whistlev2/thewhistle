@@ -41,7 +41,8 @@ export default {
     },
     methods: {
         fetchData() {
-          const orgId = 1//${this.$store.state.authUser.organiastion_id}
+          //TODO: Get org properly
+          const orgId = 1
           const url = '/api/users/organisation/'+ orgId +'/users';
           axios.get(url).then(
             (d) =>

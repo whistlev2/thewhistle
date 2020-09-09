@@ -46,7 +46,7 @@ export default {
                 password: this.password,
                 organisation: this.orgId
             }
-            this.$store.dispatch('register', postData)
+            //TODO: Register user
             this.closeModal();
             // TODO - NTH - create new organisation - passes in name and slug
         },

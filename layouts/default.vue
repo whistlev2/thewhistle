@@ -47,7 +47,7 @@ export default {
     methods: {
         logout() {
             axios.post('api/auth/logout').then(() => {
-                this.$store.commit('user/clear')
+                Cookies.remove('user');
                 this.$router.push('/login');
             }).catch(() => {
                 //TODO: Handle this
