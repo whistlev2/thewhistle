@@ -48,6 +48,7 @@ export default {
         logout() {
             axios.post('api/auth/logout').then(() => {
                 Cookies.remove('user');
+                Cookies.remove('authtoken')
                 this.$router.push('/login');
             }).catch(() => {
                 //TODO: Handle this

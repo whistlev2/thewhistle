@@ -41,9 +41,7 @@ router.post('/login', async (req, res) => {
 })
 
 router.post('/logout', (req, res) => {
-    cookies.set('authtoken', {expires: Date.now()});
-    cookies.set('user', {expires: Date.now()});
-    res.redirect('/')
+    res.redirect('/');
 })
 
 router.get('/user', async (req, res) => {
