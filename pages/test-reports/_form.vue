@@ -28,7 +28,9 @@ export default {
         
     },
     mounted () {
-        this.headers.push({ text: 'Actions', value: 'action', sortable: false });
+        if (this.headers) {
+            this.headers.push({ text: 'Actions', value: 'action', sortable: false });
+        }
     }
 
 }
