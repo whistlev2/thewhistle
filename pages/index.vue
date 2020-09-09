@@ -7,7 +7,7 @@
             </div>
             <v-card>
                 <v-card-title class="headline">
-                    Welcome to the Whistle {{ user.firstName }}
+                    Welcome to the Whistle {{ user ? user.firstName : '' }}
                 </v-card-title>
                 <v-card-text>
                     <h3>Amplifying Witness Voices</h3>
@@ -22,12 +22,19 @@
 
 <script>
 
-import { mapGetters } from 'vuex';
-
 export default {
-    computed: mapGetters({
-        user: 'user/get'
-    }),
+    computed: {
+        user: function () {
+            let user = {};
+            try {
+                user = JSON.parse(Cookies.get('user'));
+            } catch (err) {
+                return null;
+                //TODO: Redirect to login
+            }
+            return user;
+        }
+    },
     components: {
     }
 }

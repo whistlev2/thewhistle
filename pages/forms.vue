@@ -22,7 +22,6 @@
 import FormActions from '../components/forms/FormActions.vue';
 import CreateFormModal from '../components/forms/CreateFormModal.vue'
 import axios from 'axios'
-import { mapGetters } from 'vuex';
 
 export default {
     components: {
@@ -48,10 +47,14 @@ export default {
     },
     methods: {
         fetchData() {
-            const url = '/api/forms/user/' + this.user.id;
-            axios.get(url).then((d) => {
-                this.forms = d.data.forms
-            })
+            if (this.user) {
+                const url = '/api/forms/user/' + this.user.id;
+                axios.get(url).then((d) => {
+                    this.forms = d.data.forms
+                })
+            } else {
+                //TODO: Redirect to login
+            }
         },
 
         closeCreateFormModal() {
@@ -76,8 +79,17 @@ export default {
 
     },
 
-    computed: mapGetters({
-        user: 'user/get'
-    })
+    computed: {
+        user: function () {
+            let user = {};
+            try {
+                user = JSON.parse(Cookies.get('user'));
+            } catch (err) {
+                return null;
+                //TODO: Redirect to login
+            }
+            return user;
+        }
+    }
 }
 </script>

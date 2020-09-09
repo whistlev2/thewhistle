@@ -51,7 +51,6 @@
 }
 </style>
 <script>
-import { mapGetters } from 'vuex';
 export default {
     data() {
         return {
@@ -64,13 +63,32 @@ export default {
             this.$attrs.show = false;
             this.$emit('close');
         },
+
         submit() {
             this.closeModal();
             this.$emit('submit');
-        }
+        },
+
+        
     },
-    computed: mapGetters({
-        orgs: 'user/getNewFormOrgs'
-    })
+    computed: {
+        orgs: function () {
+            let user = {};
+            try {
+                user = JSON.parse(Cookies.get('user'));
+            } catch (err) {
+                return [];
+                //TODO: Redirect to login
+            }
+            let ret = [];
+            const orgs = user.orgs;
+            for (let i = 0; i < orgs.length; i++) {
+                if (orgs[i].active && (orgs[i].role == 'admin' || orgs[i].role == 'editor')) {
+                    ret.push(orgs[i]);
+                }
+            }
+            return ret;
+        }
+    }
 }
 </script>

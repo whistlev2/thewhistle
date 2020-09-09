@@ -1,6 +1,6 @@
 <template>
     <v-app light>
-        <MenuBar v-if="user.loggedIn" :logout="logout" />
+        <MenuBar v-if="loggedIn" :logout="logout" />
         <!-- Make not logged in menu bar and implement mobile menu -->
         <v-main>
             <v-container>
@@ -15,7 +15,6 @@
 import MenuBar from '../components/MenuBar.vue'
 import MobileMenuBar from '../components/MobileMenuBar.vue'
 
-import { mapGetters } from 'vuex';
 import axios from 'axios';
 
 export default {
@@ -52,10 +51,17 @@ export default {
             }).catch(() => {
                 //TODO: Handle this
             });
+        },
+        loggedIn() {
+            let user = {};
+            try {
+                user = JSON.parse(Cookies.get('user'));
+            } catch (err) {
+                return false;
+                //TODO: Redirect to login
+            }
+            return user.id ? true : false;
         }
-    },
-    computed: mapGetters({
-        user: 'user/get'
-    })
+    }
 }
 </script>
