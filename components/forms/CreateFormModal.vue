@@ -51,6 +51,8 @@
 }
 </style>
 <script>
+let Cookies = require('js-cookie');
+
 export default {
     data() {
         return {

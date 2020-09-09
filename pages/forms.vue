@@ -22,6 +22,7 @@
 import FormActions from '../components/forms/FormActions.vue';
 import CreateFormModal from '../components/forms/CreateFormModal.vue'
 import axios from 'axios'
+let Cookies = require('js-cookie');
 
 export default {
     components: {

@@ -10,6 +10,8 @@
 
 import CreateOrganisationModal from '../components/organisations/CreateOrganisationModal.vue';
 
+let Cookies = require('js-cookie');
+
 export default {
     components: {
         CreateOrganisationModal

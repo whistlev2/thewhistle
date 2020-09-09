@@ -7,7 +7,7 @@
             </div>
             <v-card>
                 <v-card-title class="headline">
-                    Welcome to the Whistle {{ user ? user.firstName : '' }}
+                    Welcome to the Whistle {{ getUserFirstName() }}
                 </v-card-title>
                 <v-card-text>
                     <h3>Amplifying Witness Voices</h3>
@@ -21,10 +21,14 @@
 </template>
 
 <script>
-
+let Cookies = require('js-cookie');
 export default {
-    computed: {
-        user: function () {
+    methods: {
+        getUserFirstName() {
+            let user = this.getUser();
+            return user ? user.first_name : ''
+        },
+        getUser() {
             let user = {};
             try {
                 user = JSON.parse(Cookies.get('user'));

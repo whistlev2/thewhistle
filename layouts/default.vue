@@ -16,6 +16,7 @@ import MenuBar from '../components/MenuBar.vue'
 import MobileMenuBar from '../components/MobileMenuBar.vue'
 
 import axios from 'axios';
+let Cookies = require('js-cookie');
 
 export default {
     components: {
