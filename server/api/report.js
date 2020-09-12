@@ -44,22 +44,30 @@ function getReport(req, res) {
         let files = report.getFiles(req.params.id);
         let userOptions = report.getUserOptions(req.params.id);
         let reportOptions = report.getReportOptions(req.params.id);
-        Promise.all([ responses, formSlug, reporterID, metadata, notes, audit, files, userOptions, reportOptions ]).then( data => {
-            res.json({
-                responses: data[0],
-                formSlug: data[1],
-                reporterID: data[2],
-                metadata: data[3],
-                notes: data[4],
-                audit: data[5],
-                files: data[6],
-                options: {
-                    assignedTo: data[7],
-                    status: data[8].status,
-                    tags: data[8].tags
-                }
+        Promise.all([ responses, formSlug, reporterID, metadata, notes, audit, files, userOptions, reportOptions ])
+            .catch(() => {
+                res.status(500).send('Could not get report data');
+                //TODO: Handle errors properly
             })
-        })
+            .then( data => {
+                
+                const ret = {
+                    responses: data[0],
+                    formSlug: data[1],
+                    reporterID: data[2],
+                    metadata: data[3],
+                    notes: data[4],
+                    audit: data[5],
+                    files: data[6],
+                    options: {
+                        assignedTo: data[7],
+                        status: data[8].status,
+                        tags: data[8].tags
+                    }
+                }
+                console.log('got stuffs', ret);
+                res.json(ret)
+            })
     } catch {
         res.status(500).send('Could not get report data');
         //TODO: Handle errors properly

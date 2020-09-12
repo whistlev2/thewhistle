@@ -92,14 +92,38 @@ exports.getReporterID = async function (reportID) {
 exports.getMetadata = async function (reportID) {
     try {
         let metadata = await db.query(`SELECT reports.date, reports.status, reports.tags, reports.active, reports.location, users.id AS assigned_to FROM reports JOIN users ON reports.assigned_to=users.id  WHERE reports.id=${parseInt(reportID)}`);
-        metadata = metadata.rows[0];
-        metadata.tags = metadata.tags.split(',')
-        const date = new Date(metadata.date);
-        metadata.date = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
-        metadata.assignedTo = metadata.assigned_to;
-        delete metadata.assigned_to;
-        return metadata;
+        if (metadata.rows.length > 0) {
+            metadata = metadata.rows[0];
+            console.log('met', metadata)
+            if (metadata.tags) {
+                metadata.tags = metadata.tags.split(',')
+            }
+
+            if (metadata.date) {
+                const date = new Date(metadata.date);
+                metadata.date = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+            } else {
+                metadata.date = ''
+            }
+
+            metadata.assignedTo = metadata.assigned_to;
+            if (metadata.assigned_to) {
+                delete metadata.assigned_to;
+            }
+
+            return metadata;
+        } else {
+            return {
+                date: '',
+                status: '',
+                tags: [],
+                assignedTo: '',
+                active: '',
+                location: ''
+            }
+        }
     } catch (err) {
+        console.log('eek')
         //TODO: Handle errors properly
     }
 }
@@ -170,9 +194,11 @@ exports.getReportOptions = async function (reportID) {
             if (reportOptions[i].status) {
                 statuses.push(reportOptions[i].status)
             }
-            let currentTags = reportOptions[i].tags.split(',')
-            for(let j = 0; j < currentTags.length; j++) {
-                tags.push(currentTags[j]);
+            if (reportOptions[i].tags) {
+                let currentTags = reportOptions[i].tags.split(',')
+                for(let j = 0; j < currentTags.length; j++) {
+                    tags.push(currentTags[j]);
+                }
             }
         }
         return {
@@ -180,6 +206,7 @@ exports.getReportOptions = async function (reportID) {
             tags: tags
         };
     } catch (err) {
+        console.log(err)
         //TODO: Handle errors properly
     }
 }
