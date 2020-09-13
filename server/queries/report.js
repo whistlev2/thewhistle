@@ -91,7 +91,8 @@ exports.getReporterID = async function (reportID) {
 
 exports.getMetadata = async function (reportID) {
     try {
-        let metadata = await db.query(`SELECT reports.date, reports.status, reports.tags, reports.active, reports.location, users.id AS assigned_to FROM reports JOIN users ON reports.assigned_to=users.id  WHERE reports.id=${parseInt(reportID)}`);
+        let metadata = await db.query(`SELECT reports.date, reports.status, reports.tags, reports.active, reports.location, assigned_to FROM reports WHERE reports.id=${parseInt(reportID)}`);
+        console.log('office', reportID, metadata.rows);
         if (metadata.rows.length > 0) {
             metadata = metadata.rows[0];
             console.log('met', metadata)
@@ -138,6 +139,7 @@ exports.getNotes = async function (reportID) {
         }
         return notes;
     } catch (err) {
+        console.log('err')
         //TODO: Handle errors properly
     }
 }
@@ -150,8 +152,10 @@ exports.getAudit = async function (reportID) {
             let date = new Date(audit[i].time);
             audit[i].time = date.toLocaleString('en-GB', { timeZone: 'UTC' });
         }
+        console.log('or', audit)
         return audit;
     } catch (err) {
+        console.log('eer')
         //TODO: Handle errors properly
     }
 }
@@ -180,6 +184,7 @@ exports.getUserOptions = async function (reportID) {
         userOptions = userOptions.rows;
         return userOptions;
     } catch (err) {
+        console.log('ur')
         //TODO: Handle errors properly
     }
 }
@@ -206,7 +211,7 @@ exports.getReportOptions = async function (reportID) {
             tags: tags
         };
     } catch (err) {
-        console.log(err)
+        console.log('eeee', err)
         //TODO: Handle errors properly
     }
 }
@@ -286,19 +291,22 @@ exports.updateActive = async function (report, user, active) {
 
 exports.addNote = async function (report, user, comment) {
     try {
-        await db.query(`INSERT INTO notes(report, user, time, comment) VALUES (${report}, ${user}, to_timestamp(${Date.now()} / 1000.0), '${comment}')`);
+        await db.query(`INSERT INTO notes(report, "user", time, comment) VALUES (${report}, ${user}, to_timestamp(${Date.now()} / 1000.0), '${comment}')`);
         const audit = {
             report: report,
             user: user,
             action: `Added note ${comment}`
         }
-        await addAudit(audit);
+        //await addAudit(audit);
+        let auditTrail = await exports.getAudit(report);
+        let notes = await exports.getNotes(report);
         const ret = {
-            audit: await exports.getAudit(report),
-            notes: await exports.getNotes(report)
+            audit: auditTrail,
+            notes: notes
         }
         return ret;
     } catch (err) {
+        console.log(err)
     }
 }
 

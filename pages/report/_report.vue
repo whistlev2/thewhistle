@@ -27,7 +27,7 @@
             <v-subheader>Submitted Report</v-subheader>
             <v-list-item v-for="question in report.responses" :key="question.ref">
                 <v-list-item-content>
-                    <v-list-item-title>{{ question.key }}</v-list-item-title>
+                    <v-list-item-title>{{ question.ref }}</v-list-item-title>
                     <v-list-item-subtitle>{{ question.value }}</v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
@@ -90,7 +90,7 @@
                     </v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
-            <v-list-group no-action sub-group>
+            <v-list-group v-if="report.audit.length > 0" no-action sub-group>
                 <template v-slot:activator>
                     <v-list-item-content>
                         <v-list-item-title>Audit trail</v-list-item-title>
@@ -148,6 +148,7 @@
 import EditReportAccessModal from '../../components/report/EditReportAccessModal.vue';
 import EditLocationModal from '../../components/report/EditLocationModal.vue';
 import axios from 'axios'
+let Cookies = require('js-cookie');
 var _ = require('underscore');
 export default {
     components: {
@@ -184,8 +185,8 @@ export default {
                 this.report.responses = _.map(d.data.responses, (res) => {
                     return {
                         ref: res.question_ref,
-                        key: res.definition.title,
-                        value: res.value.value
+                        question: res.definition.title,
+                        value: res.value
                     }
                 })
                 this.report.reporterID = d.data.reporterID;
@@ -199,11 +200,22 @@ export default {
             });
         },
 
+        getUser() {
+            let user = {};
+            try {
+                user = JSON.parse(Cookies.get('user'));
+            } catch (err) {
+                return null;
+                //TODO: Redirect to login
+            }
+            return user;
+        },
+
         updateAssigned() {
             const url = `/api/report/assigned/${this.report.id}`;
             const data = {
                 report: this.report.id,
-                user: this.$auth.user.id,
+                user: this.getUser().id,
                 assigned: this.report.metadata.assignedTo
             };
             axios.post(url, data).then((response) => {
@@ -216,7 +228,7 @@ export default {
             const url = `/api/report/status/${this.report.id}`;
             const data = {
                 report: this.report.id,
-                user: this.$auth.user.id,
+                user: this.getUser().id,
                 status: this.report.metadata.status
             };
             axios.post(url, data).then((response) =>
@@ -230,9 +242,10 @@ export default {
             const url = `/api/report/tags/${this.report.id}`;
             const data = {
                 report: this.report.id,
-                user: this.$auth.user.id,
+                user: this.getUser().id,
                 tags: this.report.metadata.tags
             };
+            console.log('upp', url, data);
             axios.post(url, data).then((response) =>
                 this.report.audit = response.data.audit
                 //TODO: Update audit trail
@@ -244,7 +257,7 @@ export default {
             const url = `/api/report/active/${this.report.id}`;
             const data = {
                 report: this.report.id,
-                user: this.$auth.user.id,
+                user: this.getUser().id,
                 active: this.report.metadata.active
             };
             axios.post(url, data).then((response) =>
@@ -258,7 +271,7 @@ export default {
             const url = `/api/report/location/${this.report.id}`;
             const data = {
                 report: this.report.id,
-                user: this.$auth.user.id,
+                user: this.getUser().id,
                 location: location
             };
             this.report.metadata.location = location;
@@ -273,7 +286,7 @@ export default {
             const url = `/api/report/note/${this.report.id}`;
             const data = {
                 report: this.report.id,
-                user: this.$auth.user.id,
+                user: this.getUser().id,
                 comment: this.comment
             };
             axios.post(url, data).then((response) => {

@@ -65,7 +65,6 @@ function getReport(req, res) {
                         tags: data[8].tags
                     }
                 }
-                console.log('got stuffs', ret);
                 res.json(ret)
             })
     } catch {
