@@ -32,7 +32,7 @@ router.get('/:userID', async (req, res) => {
         res.json({ users: users });
     } catch (err) {
         //TODO: Handle errors properly
-        console.log('bruk', err)
+        console.log(err)
         res.status(500);
         res.send();
     }

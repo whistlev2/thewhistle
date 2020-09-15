@@ -15,7 +15,7 @@
                                 <v-col cols="12">
                                     <v-text-field v-model="organisationSlug" :rules="notBlank" label="Abbreviation"
                                         hint="Max 8 characters, no spaces." counter="8"
-                                        persistent-hint="true" required></v-text-field>
+                                        :persistent-hint="true" required></v-text-field>
                                 </v-col>
                             </v-form>
                         </v-row>
@@ -24,7 +24,7 @@
                 <v-card-actions>
                     <div class="flex-grow-1"></div>
                     <v-btn color="blue darken-1" text v-on:click="closeModal">Close</v-btn>
-                    <v-btn color="blue darken-1" disabled="!valid" text @click="createOrganisation">Create</v-btn>
+                    <v-btn color="blue darken-1" :disabled="!valid" text @click="createOrganisation">Create</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>

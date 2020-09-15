@@ -6,22 +6,25 @@ const reports = require('./reports.js')
 const report = require('./report.js')
 const auth = require('./auth.js')
 const editForm = require('./editForm.js')
+const organisations = require('./organisations.js')
 
 const Surveys = require('../queries/surveys.js')
 
 const router = express.Router()
 // Set up routes
 
-router.use('/users', users)
+router.use('/users', users);
 
-router.use('/forms', forms)
+router.use('/forms', forms);
 
-router.use('/reports', reports)
+router.use('/reports', reports);
 
-router.use('/report', report)
+router.use('/report', report);
 
-router.use('/edit-form', editForm)
+router.use('/edit-form', editForm);
 
-router.use('/auth', auth)
+router.use('/auth', auth);
+
+router.use('/organisations', organisations);
 
 module.exports = router

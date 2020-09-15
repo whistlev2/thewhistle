@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-data-table :headers="headers" :items="items" :items-per-page="5" class="elevation-1"></v-data-table>
+        <v-data-table :headers="headers" :items="orgs" :items-per-page="5" class="elevation-1"></v-data-table>
         <v-btn v-on:click="showCreateModal = true" style="position: absolute; right: 18px; margin-top: 10px; background-color:#033549; color:white;" text>Create Organisation</v-btn>
         <CreateOrganisationModal :show="showCreateModal" @close="closeCreateModal" />
     </div>
@@ -9,6 +9,7 @@
 <script>
 
 import CreateOrganisationModal from '../components/organisations/CreateOrganisationModal.vue';
+import axios from 'axios'
 
 
 export default {
@@ -17,33 +18,45 @@ export default {
     },
 
     data() {
-        if (!this.user) {
-            //TODO: Redirect to login
-        }
-        const name = this.user ? this.user.firstName : '';
-        const headers = [{
-            text: 'Organisation',
-            value: 'ref1'
-        },
-        {
-            text: 'My role',
-            value: 'ref2'
-        }
-        ];
-        const items = [{
-            ref1: `${name}`,
-            ref2: 'admin'
-        }]
-
-
         return {
-            headers: headers,
-            items: items,
+            headers: [{
+                text: 'Organisation',
+                value: 'name'
+            },
+            {
+                text: 'My role',
+                value: 'role'
+            }],
+            orgs: [],
             showCreateModal: false
         }
     },
 
+    created() {
+        this.fetchData()
+    },
+
     methods: {
+        getUser() {
+            let user = {};
+            try {
+                user = this.$cookies.get('user');
+            } catch (err) {
+                console.log(err)
+                return null;
+                //TODO: Redirect to login
+            }
+            return user;
+        },
+
+        fetchData() {
+            let currentUser = this.getUser();
+            const url = `/api/organisations/${currentUser.id}`;
+            axios.get(url).then((data) => {
+                this.orgs = data.data.orgs;
+            })
+        },
+
         closeCreateModal() {
             this.showCreateModal = false;
         }
