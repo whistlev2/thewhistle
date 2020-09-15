@@ -51,7 +51,6 @@
 }
 </style>
 <script>
-let Cookies = require('js-cookie');
 
 export default {
     data() {
@@ -77,7 +76,7 @@ export default {
         orgs: function () {
             let user = {};
             try {
-                user = JSON.parse(Cookies.get('user'));
+                user = user = this.$cookies.get('user');
             } catch (err) {
                 return [];
                 //TODO: Redirect to login

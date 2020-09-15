@@ -11,7 +11,6 @@
 import CreateUserModal from '../components/users/CreateUserModal.vue';
 import axios from 'axios'
 
-let Cookies = require('js-cookie');
 var _ = require('underscore');
 
 export default {
@@ -46,7 +45,7 @@ export default {
             try {
                 user = this.$cookies.get('user');
             } catch (err) {
-                console.log('peace', err)
+                console.log(err)
                 return null;
                 //TODO: Redirect to login
             }

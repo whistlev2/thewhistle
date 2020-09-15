@@ -148,8 +148,9 @@
 import EditReportAccessModal from '../../components/report/EditReportAccessModal.vue';
 import EditLocationModal from '../../components/report/EditLocationModal.vue';
 import axios from 'axios'
-let Cookies = require('js-cookie');
+
 var _ = require('underscore');
+
 export default {
     components: {
         EditReportAccessModal,
@@ -203,7 +204,7 @@ export default {
         getUser() {
             let user = {};
             try {
-                user = JSON.parse(Cookies.get('user'));
+                user = this.$cookies.get('user');
             } catch (err) {
                 return null;
                 //TODO: Redirect to login

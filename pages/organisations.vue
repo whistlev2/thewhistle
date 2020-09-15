@@ -10,7 +10,6 @@
 
 import CreateOrganisationModal from '../components/organisations/CreateOrganisationModal.vue';
 
-let Cookies = require('js-cookie');
 
 export default {
     components: {
@@ -54,7 +53,7 @@ export default {
         user: function () {
             let user = {};
             try {
-                user = JSON.parse(Cookies.get('user'));
+                user = user = this.$cookies.get('user');
             } catch (err) {
                 return null;
                 //TODO: Redirect to login

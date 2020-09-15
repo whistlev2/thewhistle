@@ -22,7 +22,6 @@
 import FormActions from '../components/forms/FormActions.vue';
 import CreateFormModal from '../components/forms/CreateFormModal.vue'
 import axios from 'axios'
-let Cookies = require('js-cookie');
 
 export default {
     components: {
@@ -84,8 +83,7 @@ export default {
         user: function () {
             let user = {};
             try {
-                user = JSON.parse(Cookies.get('user'));
-                console.log('userform', user);
+                user = user = this.$cookies.get('user');
             } catch (err) {
                 return null;
                 //TODO: Redirect to login

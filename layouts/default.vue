@@ -16,7 +16,6 @@ import MenuBar from '../components/MenuBar.vue'
 import MobileMenuBar from '../components/MobileMenuBar.vue'
 
 import axios from 'axios';
-let Cookies = require('js-cookie');
 
 export default {
     components: {
@@ -57,7 +56,7 @@ export default {
         loggedIn() {
             let user = {};
             try {
-                user = JSON.parse(Cookies.get('user'));
+                user = user = this.$cookies.get('user');
             } catch (err) {
                 return false;
                 //TODO: Redirect to login

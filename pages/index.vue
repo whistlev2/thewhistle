@@ -21,7 +21,7 @@
 </template>
 
 <script>
-let Cookies = require('js-cookie');
+
 export default {
     methods: {
         getUserFirstName() {
@@ -31,7 +31,7 @@ export default {
         getUser() {
             let user = {};
             try {
-                user = JSON.parse(Cookies.get('user'));
+                user = user = this.$cookies.get('user');
             } catch (err) {
                 return null;
                 //TODO: Redirect to login
