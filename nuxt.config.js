@@ -58,7 +58,8 @@ module.exports = {
      */
     modules: [
         '@nuxtjs/vuetify',
-        '@nuxtjs/axios'
+        '@nuxtjs/axios',
+        'cookie-universal-nuxt'
     ],
     /*
      ** vuetify module configuration

@@ -2,6 +2,8 @@ const bcrypt = require('bcrypt')
 
 const db = require('../db.ts')
 
+const Users = require('./users.js')
+
 const user = {
     id: 1,
     name: 'BOB',
@@ -101,19 +103,17 @@ exports.deserializeUser = function (id, done) {
     });
 } */
 
-async function getUserOrgs(userID) {
-    const results = await db.query(`SELECT organisations.id, organisations.name, organisations.active, userorgs.role FROM organisations JOIN userorgs ON organisations.id=userorgs.organisation WHERE userorgs.user=${userID}`)
-    return results.rows;
-}
+
 
 exports.authenticateUser = async function (email, password) {
     try {
         const results = await db.query(`SELECT * FROM users WHERE email='${email}'`);
         const user = results.rows[0];
-        user.orgs = await getUserOrgs(user.id);
         if (!user) {
             return null;
         }
+        //TODO: Check this still works
+        user.orgs = await Users.getUserOrgs(user.id);
         const match = await bcrypt.compare(password, user.password)
         user.password = null;
         return match ? user : null;

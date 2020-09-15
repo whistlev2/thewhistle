@@ -85,6 +85,7 @@ export default {
             let user = {};
             try {
                 user = JSON.parse(Cookies.get('user'));
+                console.log('userform', user);
             } catch (err) {
                 return null;
                 //TODO: Redirect to login
