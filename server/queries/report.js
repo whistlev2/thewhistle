@@ -92,10 +92,8 @@ exports.getReporterID = async function (reportID) {
 exports.getMetadata = async function (reportID) {
     try {
         let metadata = await db.query(`SELECT reports.date, reports.status, reports.tags, reports.active, reports.location, assigned_to FROM reports WHERE reports.id=${parseInt(reportID)}`);
-        console.log('office', reportID, metadata.rows);
         if (metadata.rows.length > 0) {
             metadata = metadata.rows[0];
-            console.log('met', metadata)
             if (metadata.tags) {
                 metadata.tags = metadata.tags.split(',')
             }
@@ -124,7 +122,7 @@ exports.getMetadata = async function (reportID) {
             }
         }
     } catch (err) {
-        console.log('eek')
+        console.log(err)
         //TODO: Handle errors properly
     }
 }
@@ -152,10 +150,9 @@ exports.getAudit = async function (reportID) {
             let date = new Date(audit[i].time);
             audit[i].time = date.toLocaleString('en-GB', { timeZone: 'UTC' });
         }
-        console.log('or', audit)
         return audit;
     } catch (err) {
-        console.log('eer')
+        console.log(err)
         //TODO: Handle errors properly
     }
 }
@@ -184,7 +181,7 @@ exports.getUserOptions = async function (reportID) {
         userOptions = userOptions.rows;
         return userOptions;
     } catch (err) {
-        console.log('ur')
+        console.log(err)
         //TODO: Handle errors properly
     }
 }
@@ -211,7 +208,7 @@ exports.getReportOptions = async function (reportID) {
             tags: tags
         };
     } catch (err) {
-        console.log('eeee', err)
+        console.log(err)
         //TODO: Handle errors properly
     }
 }
