@@ -64,10 +64,10 @@ exports.submitTypeformSection = async function (sectionID, payload, test) {
     Promise.all(promises);
 }
 
-exports.getResponses = async function (id) {
+exports.getResponses = async function (reportID) {
     try {
         //TODO: Check ID change still works
-        const responses = await db.query(`SELECT * FROM questionresponses where id=${id}`)
+        const responses = await db.query(`SELECT * FROM questionresponses where report=${reportID}`)
         return responses.rows;
     } catch (err) {
         throw err;

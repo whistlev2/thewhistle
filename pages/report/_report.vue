@@ -246,7 +246,6 @@ export default {
                 user: this.getUser().id,
                 tags: this.report.metadata.tags
             };
-            console.log('upp', url, data);
             axios.post(url, data).then((response) =>
                 this.report.audit = response.data.audit
                 //TODO: Update audit trail
