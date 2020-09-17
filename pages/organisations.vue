@@ -61,6 +61,12 @@ export default {
             })
         },
 
+        updateUserCookie() {
+            let user = this.getUser();
+            user.orgs = this.orgs;
+            this.$cookies.set('user', user, { maxAge: 7 * 24 * 60 * 60 });
+        },
+
         createOrg() {
             let url = `/api/organisations/create`;
             let data = {
@@ -69,6 +75,7 @@ export default {
             };
             axios.post(url, data).then((response) => {
                 this.orgs = response.data.orgs;
+                this.updateUserCookie()
                 //TODO: Handle errors
             });
         },
