@@ -417,10 +417,12 @@ async function insertIntoFormSections(form) {
     const results = await db.query(query, values);
     const sectionID = results.rows[0].id;
 
-    if (form.type == 'typeform') {
+    
+    //TODO: Make webhook creation work
+    /* if (form.type == 'typeform') {
         await Typeform.createWebhook(actualJSON.id, sectionID, false);
         await Typeform.createWebhook(testJSON.id, sectionID, true);
-    }
+    } */
 
     return sectionID;
 }
@@ -429,7 +431,6 @@ async function insertIntoFormSectionLogic(form, sectionID) {
     //TODO: Handle errors
     try {
         let logic = generateSectionLogic(sectionID);
-        console.log('LOG', form.id, logic);
         const query = 'INSERT INTO formsectionlogic (form, logic, test_logic) VALUES ($1, $2, $3)';
         const values = [form.id, logic, logic];
         await db.query(query, values);

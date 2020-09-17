@@ -374,7 +374,6 @@ function generateNewTypeformJSON(title) {
 }
 
 exports.createForm = async function (slug, title, description, org, web) {
-    console.log('create', slug, title, description, org, web)
     try {
         let formJSON = web ? generateNewTypeformJSON(title) : generateNewSMSFormJSON(title);
         //TODO: Make type dynamic
