@@ -419,10 +419,10 @@ async function insertIntoFormSections(form) {
 
     
     //TODO: Make webhook creation work
-    /* if (form.type == 'typeform') {
+    if (form.type == 'typeform') {
         await Typeform.createWebhook(actualJSON.id, sectionID, false);
         await Typeform.createWebhook(testJSON.id, sectionID, true);
-    } */
+    }
 
     return sectionID;
 }

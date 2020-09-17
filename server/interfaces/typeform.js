@@ -28,12 +28,11 @@ function jsonCallback(error, res, body) {
 }
 
 exports.createWebhook = async function (typeformID, sectionID, test) {
-    //TODO: Get section ID
     try {
         const url = `https://${TYPEFORM_API_BASE_URL}/forms/${typeformID}/webhooks/${typeformID}`;
-        //TODO: Add env variable
+
         const data = {
-            url: `${process.env.url}/api/report/${test ? 'test-' : ''}typeform-webhook/${sectionID}`,
+            url: `https://${BASE_URL}/api/report/${test ? 'test-' : ''}typeform-webhook/${sectionID}`,
             enabled: true
         }
         //TODO: Add secret
@@ -45,7 +44,6 @@ exports.createWebhook = async function (typeformID, sectionID, test) {
             data: data
         })
 
-        return ret;
     } catch (err) {
         //TODO: Handle errors properly
         console.log(err);
