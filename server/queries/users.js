@@ -1,5 +1,7 @@
 const db = require('../db.ts')
 
+const bcrypt = require('bcrypt')
+
 // TODO - combine the users.js API functions with this file
 
 
@@ -57,4 +59,30 @@ exports.getOrgUsers = function (res, orgId) {
 exports.getUser = async function (userID) {
     const user = await db.query(`SELECT * FROM users WHERE id='${userID}'`);
     return user.rows[0];
+}
+
+async function hashPassword(password) {
+    let salt = await bcrypt.genSalt();
+    let hash = await bcrypt.hash(password, salt);
+    return hash;
+}
+
+exports.createUser = async function (user) {
+    try {
+        let hash = await hashPassword(user.password);
+
+        let query = `INSERT INTO users(first_name, surname, email, password) VALUES($1, $2, $3, $4) RETURNING id`;
+        let values = [user.firstName, user.surname, user.email, hash];
+        let results = await db.query(query, values);
+        const userID = results.rows[0].id;
+
+        for (let i = 0; i < user.orgs.length; i++) {
+            query = `INSERT INTO userorgs("user", organisation, "role") VALUES($1, $2, $3)`;
+            values = [userID, user.orgs[i].id, user.orgs[i].role];
+            await db.query(query, values);
+        }
+    } catch (err) {
+        console.log('Error creating user', err);
+        //TODO: Handle errors properly
+    }
 }

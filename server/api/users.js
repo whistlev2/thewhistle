@@ -38,6 +38,20 @@ router.get('/:userID', async (req, res) => {
     }
 });
 
+router.post('/create', async (req, res) => {
+    try {
+        //TODO: Validate req.body.currentUserID?
+        await Users.createUser(req.body.newUser)
+        let users = await Users.getUsers(req.body.currentUserID);
+        res.json({ users: users });
+    } catch (err) {
+        console.log('Error creating user', err);
+        res.status(500);
+        res.send();
+        //TODO: Handle errors properly
+    }
+})
+
 router.get('/organisation/:id/users', (req, res) => {
     Users.getOrgUsers(res, req.params.id)
 })

@@ -10,10 +10,22 @@
                         <v-row>
                             <v-form ref="form" v-model="valid">
                                 <v-col cols="12">
-                                    <v-text-field v-model="email" :rules="notBlank" label="Email" required></v-text-field>
+                                    <v-text-field v-model="$attrs.user.firstName" :rules="notBlank" label="First name" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field v-model="password" :rules="notBlank" label="Password" required></v-text-field>
+                                    <v-text-field v-model="$attrs.user.surname" :rules="notBlank" label="Surname" required></v-text-field>
+                                </v-col>
+                                <v-col cols="12">
+                                    <v-text-field v-model="$attrs.user.email" :rules="notBlank" label="Email" required></v-text-field>
+                                </v-col>
+                                <v-col cols="12">
+                                    <v-text-field type="password" v-model="$attrs.user.password" :rules="notBlank" label="Password" required></v-text-field>
+                                </v-col>
+                                <v-col cols="12">
+                                    <v-select v-model="$attrs.user.orgs" :items="$attrs.orgOptions" item-text="name" return-object chips label="Organisations" multiple></v-select>
+                                </v-col>
+                                <v-col v-for="org in $attrs.user.orgs" :key="org.id" cols="12">
+                                    <v-select v-model="org.role" :rules="notBlank" :items="['admin', 'editor']" :label="org.name + ' role'" required></v-select>
                                 </v-col>
                             </v-form>
                         </v-row>
@@ -32,23 +44,14 @@
 export default {
     data() {
         return {
-            email: '',
-            password: '',
-            orgId: 1,
             notBlank: [v => !!v || 'Required'],
             valid: false
         }
     },
     methods: {
         createUser() {
-            const postData = {
-                email: this.email,
-                password: this.password,
-                organisation: this.orgId
-            }
-            //TODO: Register user
+            this.$emit('submit');
             this.closeModal();
-            // TODO - NTH - create new organisation - passes in name and slug
         },
 
         closeModal() {

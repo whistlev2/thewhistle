@@ -14,5 +14,4 @@ exports.createOrg = async function (org, userID) {
         console.log('Error creating organisation', err);
         //TODO: Handle errors properly
     }
-
 }
