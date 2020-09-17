@@ -2,7 +2,7 @@
     <div>
         <v-data-table :headers="headers" :items="orgs" :items-per-page="5" class="elevation-1"></v-data-table>
         <v-btn v-on:click="showCreateModal = true" style="position: absolute; right: 18px; margin-top: 10px; background-color:#033549; color:white;" text>Create Organisation</v-btn>
-        <CreateOrganisationModal :show="showCreateModal" @close="closeCreateModal" />
+        <CreateOrganisationModal :show="showCreateModal" @close="closeCreateModal" @submit="createOrg" :org="newOrg" />
     </div>
 </template>
 
@@ -28,7 +28,11 @@ export default {
                 value: 'role'
             }],
             orgs: [],
-            showCreateModal: false
+            showCreateModal: false,
+            newOrg: {
+                name: '',
+                slug: ''
+            }
         }
     },
 
@@ -52,9 +56,21 @@ export default {
         fetchData() {
             let currentUser = this.getUser();
             const url = `/api/organisations/${currentUser.id}`;
-            axios.get(url).then((data) => {
-                this.orgs = data.data.orgs;
+            axios.get(url).then((response) => {
+                this.orgs = response.data.orgs;
             })
+        },
+
+        createOrg() {
+            let url = `/api/organisations/create`;
+            let data = {
+                org: this.newOrg,
+                user: this.getUser().id
+            };
+            axios.post(url, data).then((response) => {
+                this.orgs = response.data.orgs;
+                //TODO: Handle errors
+            });
         },
 
         closeCreateModal() {

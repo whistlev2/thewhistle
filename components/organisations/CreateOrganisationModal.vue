@@ -10,10 +10,10 @@
                         <v-row>
                             <v-form ref="form" v-model="valid">
                                 <v-col cols="12">
-                                    <v-text-field v-model="organisationName" :rules="notBlank" label="Name" required></v-text-field>
+                                    <v-text-field v-model="$attrs.org.name" :rules="notBlank" label="Name" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field v-model="organisationSlug" :rules="notBlank" label="Abbreviation"
+                                    <v-text-field v-model="$attrs.org.slug" :rules="notBlank" label="Abbreviation"
                                         hint="Max 8 characters, no spaces." counter="8"
                                         :persistent-hint="true" required></v-text-field>
                                 </v-col>
@@ -31,39 +31,34 @@
     </v-row>
 </template>
 <script>
-    export default {
-        data() {
-            return {
-                organisationName: '',
-                organisationSlug: '',
-                notBlank: [v => !!v || 'Required'],
-                valid: false
-            }
+export default {
+    data() {
+        return {
+            notBlank: [v => !!v || 'Required'],
+            valid: false
+        }
+    },
+    methods: {
+        createOrganisation() {
+            this.$emit('submit');
+            this.closeModal();
+            // TODO - NTH - create new organisation - passes in name and slug
         },
-        methods: {
-            createOrganisation() {
-                const postData = {
-                    name: this.organisationName,
-                    slug: this.organisationSlug
-                }
-                this.closeModal();
-                // TODO - NTH - create new organisation - passes in name and slug
-            },
 
-            closeModal() {
-                this.$attrs.show = false;
-                this.$emit('close');
-            },
+        closeModal() {
+            this.$attrs.show = false;
+            this.$emit('close');
+        },
 
-            validSlug(slug) {
-                if (slug.length > 8) {
-                    return 'Abbreviations cannot be more than 8 characters long.';
-                }
-                if (slug.indexOf(' ') !== -1) {
-                    return 'Abbreviations cannot contain spaces. Try ' + slug.replace(' ', '-') + '?';
-                }
-                return true;
+        validSlug(slug) {
+            if (slug.length > 8) {
+                return 'Abbreviations cannot be more than 8 characters long.';
             }
+            if (slug.indexOf(' ') !== -1) {
+                return 'Abbreviations cannot contain spaces. Try ' + slug.replace(' ', '-') + '?';
+            }
+            return true;
         }
     }
+}
 </script>
