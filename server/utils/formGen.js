@@ -300,13 +300,24 @@ function deleteQuestionFromActions(actions, questionRef) {
 }
 
 function deleteQuestionFromLogic(formLogic, questionRef) {
+    console.log('-----------------')
+    console.log('Logic\n', formLogic);
+    console.log('QuestionRef: ', questionRef)
     for (let i = formLogic.length - 1; i >= 0; i--) {
+        console.log('Count', i);
+        console.log('Logic', formLogic)
         if (formLogic[i].ref == questionRef) {
+            console.log('Splice');
             formLogic.splice(i, 1);
         } else {
-            formLogic = deleteQuestionFromActions(formLogic[i], questionRef);
+            console.log('Delete actions')
+            formLogic[i].actions = deleteQuestionFromActions(formLogic[i].actions, questionRef);
+            if (formLogic[i].actions.length == 0) {
+                formLogic.splice(i, 1);
+            }
         }
     }
+    console.log('-----------------')
 
     return formLogic;
 }
@@ -459,7 +470,6 @@ exports.addQuestionAfter = async function(sectionID, adjacentQuestionRef, questi
 
     form.logic = addQuestionAfterLogic(form.logic, adjacentQuestionRef, question.ref);
     let formattedQuestion = formatQuestion(question);
-    console.log('FORMATTED QUESTION Choice', formattedQuestion.properties.choices[0]);
     let index = getQuestionPosition(form.fields, adjacentQuestionRef) + 1;
     form.fields = insertQuestion(form.fields, formattedQuestion, index);
     let retForm = await updateForm(sectionID, form, type);

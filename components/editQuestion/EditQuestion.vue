@@ -40,7 +40,7 @@
                                     <v-select dense outlined v-model="choice.jump" :items="$attrs.question.jumpOptions"
                                         label="Option jump" v-on:change="updateOptionJump(choice)" item-text="label" item-value="ref" />
                                 </v-col>
-                                <v-col cols="6" md="2">
+                                <v-col cols="6" md="2" v-if="$attrs.question.choices.length > 1">
                                     <v-btn x-large outlined v-on:click="openDeleteOptionModal(choice)" class="blueBtn">Remove option</v-btn>
                                 </v-col>
                             </v-row>
