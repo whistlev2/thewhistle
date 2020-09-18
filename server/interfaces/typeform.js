@@ -56,19 +56,32 @@ exports.getForm = function (form) {
 }
 
 exports.updateForm = async function (formID, form) {
-    const url = `https://${TYPEFORM_API_BASE_URL}/forms/${formID}`;
-    const body = JSON.stringify(form);
-    request.put({
-        url: url,
-        headers: headers,
-        body: body
-    }, function (error, response) {
-        if (error) {
-            console.err(error);
-        } else {
-            return response
-        }
-    })
+    try {
+        const url = `https://${TYPEFORM_API_BASE_URL}/forms/${formID}`;
+        const data = JSON.stringify(form);
+        console.log('To typeform\n', data);
+        await axios({
+            method: 'put',
+            url: url,
+            headers: headers,
+            data: data
+        }).catch((err) => {
+            console.log(`***************UPDATE ERROR*****************\nStatus: ${err.response.data.status} ${err.response.data.code}\nDescription: ${err.response.data.description}\n`);
+            let details = err.response.data.details;
+            console.log(details);
+            if (Array.isArray(details)) {
+                for (let i = 0; i < details.length; i++) {
+                    console.log(`${i}: ${details[i]}`)
+                }
+            } else if (typeof details === 'object' && details !== null) {
+                for (let key in details) {
+                    console.log(`${key}: ${details[key]}`);
+                }
+            }
+        })
+    } catch (err) {
+        console.log('hmmmmm', err)
+    }
 }
 
 exports.createForm = async function (form) {

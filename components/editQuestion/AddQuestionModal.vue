@@ -17,14 +17,17 @@
                                         :items="questionTypes"
                                         label="Question type" required></v-select>
                                 </v-col>
-                                <v-col cols="12" v-if="$attrs.newQuestion.type=='Multiple choice'">
-                                    <v-switch v-model="$attrs.newQuestion.multipleSelection" class="ma-2"
-                                        label="Allow user to select multiple options"></v-switch>
-                                </v-col>
                                 <v-col cols="12">
                                     <v-text-field v-model="$attrs.newQuestion.ref" :rules="notBlank" label="Reference"
                                         hint="E.g. for 'How old are you?', reference might be 'User age'."
                                         :persistent-hint="true" required></v-text-field>
+                                </v-col>
+                                <v-col cols="12" v-if="$attrs.newQuestion.type=='Multiple choice'">
+                                    <v-switch v-model="$attrs.newQuestion.multipleSelection" class="ma-2"
+                                        label="Allow user to select multiple options"></v-switch>
+                                </v-col>
+                                <v-col cols="12" v-if="$attrs.newQuestion.type=='Multiple choice'">
+                                    <v-text-field v-model="$attrs.newQuestion.option" :rules="notBlank" label="First option" :persistent-hint="true" required></v-text-field>
                                 </v-col>
                             </v-form>
                         </v-row>

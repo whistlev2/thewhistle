@@ -5,10 +5,12 @@ const Typeform = require('../interfaces/typeform.js');
 
 
 async function updateForm(sectionID, form, type) {
-    let retForm = await Surveys.updateJSON(sectionID, form);
     if (type == 'typeform') {
-        Typeform.updateForm(form.id, form);
+        await Typeform.updateForm(form.id, form);
     }
+
+    let retForm = await Surveys.updateJSON(sectionID, form);
+    
     return retForm;
 }
 
@@ -139,6 +141,13 @@ function generateLongTextField(question) {
     }
 }
 
+function generateNewChoice(choice) {
+    return {
+        ref: choice,
+        label: choice
+    }
+}
+
 function generateMultipleChoiceField(question) {
     return {
         ref: question.ref,
@@ -147,11 +156,11 @@ function generateMultipleChoiceField(question) {
             required: false
         },
         properties: {
-            randomize: false,
             allow_multiple_selection: question.multipleSelection, // eslint-disable-line
             allow_other_choice: false, // eslint-disable-line
-            vertical_alignment: true, // eslint-disable-line
-            choices: [],
+            choices: [
+                generateNewChoice(question.option)
+            ]
         },
         type: 'multiple_choice'
     }
@@ -302,13 +311,6 @@ function deleteQuestionFromLogic(formLogic, questionRef) {
     return formLogic;
 }
 
-function generateNewChoice(choice) {
-    return {
-        ref: choice,
-        label: choice
-    }
-}
-
 function generateIsAction(questionRef, optionRef, jump) {
     return {
         action: 'jump',
@@ -457,6 +459,7 @@ exports.addQuestionAfter = async function(sectionID, adjacentQuestionRef, questi
 
     form.logic = addQuestionAfterLogic(form.logic, adjacentQuestionRef, question.ref);
     let formattedQuestion = formatQuestion(question);
+    console.log('FORMATTED QUESTION Choice', formattedQuestion.properties.choices[0]);
     let index = getQuestionPosition(form.fields, adjacentQuestionRef) + 1;
     form.fields = insertQuestion(form.fields, formattedQuestion, index);
     let retForm = await updateForm(sectionID, form, type);
