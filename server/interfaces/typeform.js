@@ -55,33 +55,51 @@ exports.getForm = function (form) {
     const response = request.get(url, bearer, jsonCallback);
 }
 
+function moveAlwaysJump(questionLogic) {
+    for (let j = 0; j < questionLogic.actions.length; j++) {
+        if (questionLogic.actions[j].condition.op == 'always') {
+            if (j < questionLogic.actions.length - 1) {
+                let alwaysAction = questionLogic.actions.splice(j, 1);
+                questionLogic.actions.push(alwaysAction[0]);
+            }
+            break;
+        }
+    }
+    return questionLogic
+}
+
+function moveAlwaysJumps(formLogic) {
+    //'An action with `always` condition always has to be the last in list of actions.'
+    for (let i = 0; i < formLogic.length; i++) {
+        formLogic[i] = moveAlwaysJump(formLogic[i]);
+    }
+    return formLogic;
+}
+
+function adaptForm(form) {
+    if (form.logic) {
+        form.logic = moveAlwaysJumps(form.logic);
+    }
+    return form;
+}
+
 exports.updateForm = async function (formID, form) {
+    form = adaptForm(form);
     try {
         const url = `https://${TYPEFORM_API_BASE_URL}/forms/${formID}`;
         const data = JSON.stringify(form);
-        console.log('To typeform\n', data);
         await axios({
             method: 'put',
             url: url,
             headers: headers,
             data: data
         }).catch((err) => {
-            console.log(`***************UPDATE ERROR*****************\nStatus: ${err.response.data.status} ${err.response.data.code}\nDescription: ${err.response.data.description}\n`);
-            let details = err.response.data.details;
-            console.log(details);
-            if (Array.isArray(details)) {
-                for (let i = 0; i < details.length; i++) {
-                    console.log(`${i}: ${details[i]}`)
-                }
-            } else if (typeof details === 'object' && details !== null) {
-                for (let key in details) {
-                    console.log(`${key}: ${details[key]}`);
-                }
-            }
+            console.log(`Status: ${err.response.status} ${err.response.data.code}\nDescription: ${err.response.data.description}\n`);
         })
     } catch (err) {
-        console.log('hmmmmm', err)
+        console.log('Error updating Typeform', err)
     }
+    return form;
 }
 
 exports.createForm = async function (form) {

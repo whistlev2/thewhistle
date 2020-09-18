@@ -607,6 +607,7 @@ exports.deleteOption = async function (sectionID, questionRef, choiceRef) {
 
     //TODO: Check question and option exist
 
+    //Remove choice from fields
     for (let i = 0; i < form.fields.length; i++) {
         if (form.fields[i].ref == questionRef) {
             for (let j = 0; j < form.fields[i].properties.choices.length; j++) {
@@ -619,6 +620,23 @@ exports.deleteOption = async function (sectionID, questionRef, choiceRef) {
         }
     }
 
+    //Remove choice from logic
+    if (form.logic) {
+        for (let i = 0; i < form.logic.length; i++) {
+            if (form.logic[i].ref == questionRef) {
+                for (let j = 0; j < form.logic[i].actions.length; j++) {
+                    for (let k = 0; k < form.logic[i].actions[j].condition.vars.length; k++) {
+                        if (form.logic[i].actions[j].condition.vars[k].type == 'choice' && form.logic[i].actions[j].condition.vars[k].value == choiceRef) {
+                            form.logic[i].actions.splice(j, 1);
+                            if (form.logic[i].actions.length == 0) {
+                                form.logic.splice(i, 1);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     let retForm = await updateForm(sectionID, form, type);
     return retForm;
 }
