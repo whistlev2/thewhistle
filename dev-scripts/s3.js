@@ -12,9 +12,9 @@ var s3 = new AWS.S3();
 
 var presignedGETURL = s3.getSignedUrl('getObject', {
     Bucket: process.env.AWS_BUCKET,
-    Key: '', //filename
+    Key: 'db.dump', //filename
     Expires: 1000 //time to expire in seconds
 });
 
 console.log(presignedGETURL);
-//heroku pg:backups:restore --app staging-thewhistle --confirm "" DATABASE_URL
+//heroku pg:backups:restore --app staging-thewhistle --confirm "http://whistlev2.s3.eu-west-2.amazonaws.com/db.dump" DATABASE_URL

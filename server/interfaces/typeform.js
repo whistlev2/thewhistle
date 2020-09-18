@@ -32,7 +32,7 @@ exports.createWebhook = async function (typeformID, sectionID, test) {
         const url = `https://${TYPEFORM_API_BASE_URL}/forms/${typeformID}/webhooks/${typeformID}`;
 
         const data = {
-            url: `https://${BASE_URL}/api/report/${test ? 'test-' : ''}typeform-webhook/${sectionID}`,
+            url: `https://${process.env.BASE_URL}/api/report/${test ? 'test-' : ''}typeform-webhook/${sectionID}`,
             enabled: true
         }
         //TODO: Add secret

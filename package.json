@@ -12,7 +12,9 @@
     "prettier": "pretty-quick",
     "start": "node server/index.js",
     "test": "mocha",
-    "typeform-webhook": "ngrok http 3000"
+    "typeform-webhook": "ngrok http 3000",
+    "dump": "pg_dump -U postgres -d thewhistle > dump.sql",
+    "s3": "node dev-scripts/s3"
   },
   "dependencies": {
     "@babel/cli": "^7.10.5",
@@ -87,6 +89,7 @@
     "@vue/cli-plugin-unit-mocha": "^4.4.6",
     "@vue/eslint-config-typescript": "^4.0.0",
     "@vue/test-utils": "^1.0.3",
+    "aws-sdk": "^2.756.0",
     "babel-core": "7.0.0-bridge.0",
     "chai": "^4.1.2",
     "eslint": "^5.16.0",
