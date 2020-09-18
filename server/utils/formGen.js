@@ -289,35 +289,42 @@ function deleteQuestionFromFields(formFields, questionRef) {
     return formFields;
 }
 
-function deleteQuestionFromActions(actions, questionRef) {
+function deleteQuestionFromActions(actions, questionRef, questionJump) {
     for (let i = actions.length - 1; i >= 0; i--) {
         if (actions[i].details.to.value == questionRef) {
-            actions.splice(i, 1);
+            if (questionJump) {
+                actions[i].details.to.value = questionJump;
+            } else {
+                actions.splice(i, 1);
+            }
         }
     }
 
     return actions;
 }
 
-function deleteQuestionFromLogic(formLogic, questionRef) {
-    console.log('-----------------')
-    console.log('Logic\n', formLogic);
-    console.log('QuestionRef: ', questionRef)
-    for (let i = formLogic.length - 1; i >= 0; i--) {
-        console.log('Count', i);
-        console.log('Logic', formLogic)
-        if (formLogic[i].ref == questionRef) {
-            console.log('Splice');
-            formLogic.splice(i, 1);
-        } else {
-            console.log('Delete actions')
-            formLogic[i].actions = deleteQuestionFromActions(formLogic[i].actions, questionRef);
-            if (formLogic[i].actions.length == 0) {
-                formLogic.splice(i, 1);
-            }
+function getAlwaysJump(questionActions) {
+    for (let i = 0; i < questionActions.length; i++) {
+        if (questionActions[i].action == 'jump' && questionActions[i].condition.op == 'always') {
+            return questionActions[i].details.to.value;
         }
     }
-    console.log('-----------------')
+}
+
+function deleteQuestionFromLogic(formLogic, questionRef) {
+    let questionJump = null;
+    for (let i = formLogic.length - 1; i >= 0; i--) {
+        if (formLogic[i].ref == questionRef) {
+            questionJump = getAlwaysJump(formLogic[i].actions);
+            formLogic.splice(i, 1);
+        }
+    }
+    for (let i = formLogic.length - 1; i >= 0; i--) {
+        formLogic[i].actions = deleteQuestionFromActions(formLogic[i].actions, questionRef, questionJump);
+        if (formLogic[i].actions.length == 0) {
+            formLogic.splice(i, 1);
+        }
+    }
 
     return formLogic;
 }
