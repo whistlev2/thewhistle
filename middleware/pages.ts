@@ -14,7 +14,7 @@ class Pages {
     }
 
     static async loadReports(form, test) {
-        const url = process.env.baseURL + `/api/reports/${form}${test ? '/test' : ''}`;
+        const url = `/api/reports/${form}${test ? '/test' : ''}`;
         const reports = await axios.get(url);
         return reports.data;
     }
