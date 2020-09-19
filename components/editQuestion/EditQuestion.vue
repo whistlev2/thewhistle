@@ -34,7 +34,7 @@
                         <v-container>
                             <v-row v-for="choice in $attrs.question.choices" :key="choice.ref">
                                 <v-col cols="12" md="6">
-                                    <v-text-field outlined v-model="choice.label" disabled></v-text-field>
+                                    <v-text-field outlined v-model="choice.label" :label="choice.ref" disabled></v-text-field>
                                 </v-col>
                                 <v-col cols="6" md="4">
                                     <v-select dense outlined v-model="choice.jump" :items="$attrs.question.jumpOptions"
@@ -196,7 +196,7 @@ export default {
         addOption() {
             let url = `/api/edit-form/${this.$attrs.sectionID}/add-option/${this.$attrs.question.ref}`;
             let data = {
-                option: this.newOption.text
+                option: this.newOption
             };
             axios.post(url, data).then((response) => {
                 this.emitToParent(response.data.form);  

@@ -143,8 +143,8 @@ function generateLongTextField(question) {
 
 function generateNewChoice(choice) {
     return {
-        ref: choice,
-        label: choice
+        ref: choice.ref,
+        label: choice.text
     }
 }
 
@@ -159,7 +159,10 @@ function generateMultipleChoiceField(question) {
             allow_multiple_selection: question.multipleSelection, // eslint-disable-line
             allow_other_choice: false, // eslint-disable-line
             choices: [
-                generateNewChoice(question.option)
+                generateNewChoice({
+                    ref: question.optionRef,
+                    text: question.optionText
+                })
             ]
         },
         type: 'multiple_choice'
