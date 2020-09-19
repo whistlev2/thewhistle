@@ -35,7 +35,7 @@ class Pages {
     }
 
     static async loadFormFromSlug(slug, test) {
-        const url = process.env.baseURL + `/api/forms/${slug}${test ? '/test' : ''}`;
+        const url = `/api/forms/${slug}${test ? '/test' : ''}`;
         const form = await axios.get(url);
         return form.data;
     }
