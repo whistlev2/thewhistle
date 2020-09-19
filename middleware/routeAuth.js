@@ -15,6 +15,14 @@ function requiresVerification(path) {
         return false;
     } else if (path.startsWith('/__webpack_hmr/')) {
         return false;
+    } else if (path.startsWith('/api/report/test-typeform-webhook/')) {
+        return false;
+    } else if (path.startsWith('/api/report/typeform-webhook/')) {
+        return false;
+    } else if (path.startsWith('/submit-test-report/')) {
+        return false;
+    } else if (path.startsWith('/submit-report/')) {
+        return false;
     }
     return true;
 }
