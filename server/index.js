@@ -15,6 +15,8 @@ const api = require('./api/index.js')
 
 const surveys = require('../server/queries/surveys.js');
 
+let ngrok = require('./utils/ngrok.js');
+
 const app = express()
 
 var _ = require('underscore');
@@ -66,6 +68,11 @@ async function start() {
 
     // Listen the server
     app.listen(process.env.PORT || 3000)
+
+    if (config.dev) {
+        await ngrok.connect();
+    }
+
     consola.ready({
         message: `Server listening on http://${host}:${port}`,
         badge: true
