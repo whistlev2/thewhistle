@@ -99,6 +99,7 @@
     "eslint-plugin-react-hooks": "^1.6.0",
     "eslint-plugin-vue": "^5.0.0",
     "fs": "0.0.1-security",
+    "localtunnel": "^2.0.0",
     "material-design-icons-iconfont": "^5.0.1",
     "mocha": "^8.1.0",
     "ngrok": "^3.2.7",

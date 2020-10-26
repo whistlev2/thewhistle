@@ -30,9 +30,9 @@ function jsonCallback(error, res, body) {
 exports.createWebhook = async function (typeformID, sectionID, test) {
     try {
         const url = `https://${TYPEFORM_API_BASE_URL}/forms/${typeformID}/webhooks/${typeformID}`;
-
+        const config = require('../../nuxt.config.js');
         const data = {
-            url: `https://${process.env.BASE_URL}/api/report/${test ? 'test-' : ''}typeform-webhook/${sectionID}`,
+            url: `https://${config.dev ? process.env.LOCALTUNNEL_SUBDOMAIN + '.loca.lt' : process.env.BASE_URL}/api/report/${test ? 'test-' : ''}typeform-webhook/${sectionID}`,
             enabled: true
         }
         //TODO: Add secret

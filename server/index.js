@@ -15,7 +15,7 @@ const api = require('./api/index.js')
 
 const surveys = require('../server/queries/surveys.js');
 
-let ngrok = require('./utils/ngrok.js');
+let localtunnel = require('localtunnel');
 
 const app = express()
 
@@ -70,7 +70,13 @@ async function start() {
     app.listen(process.env.PORT || 3000)
 
     if (config.dev) {
-        await ngrok.connect();
+        try {
+            let tunnel = await localtunnel({ port: port, subdomain: process.env.LOCALTUNNEL_SUBDOMAIN });
+            console.log('Tunnel setup at', tunnel.url);
+        } catch (err){
+            console.log('Error setting up localtunnel');
+            console.error(err);
+        }
     }
 
     consola.ready({
