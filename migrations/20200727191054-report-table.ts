@@ -22,6 +22,7 @@ exports.up = function (db: any, callback: any) {
                 primaryKey: true,
                 autoIncrement: true
             },
+            reporter: 'string',
             form: 'int',
             date: 'datetime',
             assigned_to: 'int',

@@ -72,7 +72,7 @@ async function start() {
     if (config.dev) {
         try {
             let tunnel = await localtunnel({ port: port, subdomain: process.env.LOCALTUNNEL_SUBDOMAIN });
-            console.log('Tunnel setup at', tunnel.url);
+            console.log('\nTunnel setup at', tunnel.url);
         } catch (err){
             console.log('Error setting up localtunnel');
             console.error(err);

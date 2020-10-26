@@ -1,4 +1,3 @@
-<!-- TODO - NTH move to Components file -->
 <template>
     <div style="margin: 0 auto; width: 600px;">
         <!-- TODO - ensure height works -->
@@ -13,7 +12,7 @@ export default {
 
     mounted() {
         var formID = this.$attrs.id
-        const url = `https://admin.typeform.com/to/${formID}`;
+        const url = `https://admin.typeform.com/to/${formID}?reporter=142857`;
         var el = document.getElementById("my-embedded-typeform");
 
         // When instantiating a widget embed, you must provide the DOM element

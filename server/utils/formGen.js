@@ -381,6 +381,9 @@ function generateNewTypeformJSON(title) {
             show_progress_bar: true,
             show_typeform_branding: true,
         },
+        hidden: [
+            "reporter"
+        ],
         fields: [],
         logic: [],
         thankyou_screens: [

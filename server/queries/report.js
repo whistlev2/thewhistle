@@ -7,9 +7,9 @@ async function getFormFromSection(sectionID) {
     return formID;
 }
 
-async function insertReport(formID, test) {
-    const query = `INSERT INTO reports(form, active, test, date) VALUES($1, $2, $3, to_timestamp(${Date.now()} / 1000.0)) RETURNING id`;
-    const values = [formID, true, test];
+async function insertReport(formID, test, reporter) {
+    const query = `INSERT INTO reports(form, active, test, date, reporter) VALUES($1, $2, $3, to_timestamp(${Date.now()} / 1000.0), $4) RETURNING id`;
+    const values = [formID, true, test, reporter];
     const results = await db.query(query, values);
     const reportID = results.rows[0].id;
 
@@ -48,7 +48,10 @@ async function insertQuestionResponse(reportID, sectionID, ref, definition, valu
 
 exports.submitTypeformSection = async function (sectionID, payload, test) {
     let formID = await getFormFromSection(sectionID);
-    let reportID = await insertReport(formID, test);
+    let hiddenFields = payload.form_response.hidden;
+    //TODO: Parse other hidden fields
+    let reporter = hiddenFields ? hiddenFields.reporter : undefined;
+    let reportID = await insertReport(formID, test, reporter);
     const definitions = payload.form_response.definition.fields;
     const answers = payload.form_response.answers;
     let promises = [];
