@@ -35,33 +35,46 @@ export default {
             right: true,
             rightDrawer: false,
             title: 'The Whistle',
-            windowWidth: 0
+            windowWidth: 0,
+            loggedIn: this.isLoggedIn()
         }
     },
+    created() {
+        this.$nuxt.$on('login', this.recomputeLoggedIn);
+    },
+
     mounted() {
         window.onresize = () => {
             this.windowWidth = window.innerWidth
         }
     },
+    computed: {
+        
+    },
     methods: {
         logout() {
             axios.post('api/auth/logout').then(() => {
-                Cookies.remove('user');
-                Cookies.remove('authtoken')
+                this.$cookies.remove('user');
+                this.$cookies.remove('authtoken')
+                this.recomputeLoggedIn();
                 this.$router.push('/login');
             }).catch(() => {
                 //TODO: Handle this
             });
         },
-        loggedIn() {
-            let user = {};
+
+        isLoggedIn() {
             try {
-                user = user = this.$cookies.get('user');
+                let user = this.$cookies.get('user');
+                return user.id ? true : false;
             } catch (err) {
                 return false;
                 //TODO: Redirect to login
             }
-            return user.id ? true : false;
+        },
+
+        recomputeLoggedIn() {
+            this.loggedIn = this.isLoggedIn();
         }
     }
 }

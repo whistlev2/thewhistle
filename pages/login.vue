@@ -22,6 +22,7 @@ export default {
     methods: {
         login(loginInfo) {
             axios.post('api/auth/login', loginInfo).then((response) => {
+                this.$nuxt.$emit('login');
                 this.$router.push('/');
             }).catch((err) => {
                 console.log('ERROR', err)

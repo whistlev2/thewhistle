@@ -67,6 +67,8 @@ async function hashPassword(password) {
     return hash;
 }
 
+exports.hash = hashPassword;
+
 exports.createUser = async function (user) {
     try {
         let hash = await hashPassword(user.password);
