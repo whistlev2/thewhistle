@@ -11,10 +11,10 @@ import * as typeformEmbed from '@typeform/embed'
 export default {
 
     mounted() {
-        var formID = this.$attrs.id
-        const url = `https://admin.typeform.com/to/${formID}?reporter=142857`;
+        console.log('MOUNTED TYPEFORM', this.$attrs.reportID);
+        const url = `https://admin.typeform.com/to/${this.$attrs.typeformID}?report=${this.$attrs.reportID}`;
         var el = document.getElementById("my-embedded-typeform");
-
+        //TODO: Make this run on start report event
         // When instantiating a widget embed, you must provide the DOM element
         // that will contain your typeform, the URL of your typeform, and your
         // desired embed settings

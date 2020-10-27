@@ -14,13 +14,14 @@
                 </v-radio-group>
             </template>
             <template v-if="usedBefore && hasReporter">
-                <v-text-field v-model="reporter" label="Reporter number" :rules="[() => validReporterNumber || 'Invalid reporter number']" outlined></v-text-field>
+                <v-text-field v-model="reporter" label="Reporter number" v-on:change="noReporterMatchInDB=false" :rules="[() => validReporterNumber || 'Invalid reporter number.']" outlined></v-text-field>
+                <p v-if="noReporterMatchInDB" class="err">Incorrect reporter number. Please try again.</p>
             </template>
             <v-btn v-if="validReporterInfo" outlined v-on:click="startReport" class="blueBtn">Next</v-btn>
         </div>
         <div v-else>
             <!-- TODO: Put in report ID as hidden field -->
-            <Typeform :id="$attrs.typeformID"></Typeform>
+            <Typeform :typeformID="$attrs.typeformID" :reportID="reportID"></Typeform>
         </div>
     </div>
 </template>
@@ -28,6 +29,9 @@
 .blueBtn {
     background-color: #50addb;
     color: white;
+}
+.err {
+    color: red;
 }
 </style>
 <script>
@@ -49,6 +53,8 @@ export default {
             usedBefore: true,
             hasReporter: true,
             reporter: '',
+            reportID: '',
+            noReporterMatchInDB: false
         }
     },
 
@@ -74,12 +80,17 @@ export default {
             if (this.usedBefore && this.hasReporter) {
                 data.reporter = this.reporter;
             }
-            axios.post(url, data).then((response) => {
-                //TODO: Handle response
-                console.log(response.data);
-                console.log(response.status);
-                //TODO: Handle errors
-            });
+            axios.post(url, data)
+                .then((response) => {
+                    this.reporter = response.data.reporter;
+                    this.reportID = response.data.id;
+                    console.log('SET DATA')
+                    this.startedReport = true;
+                })
+                .catch((response) => {
+                    //TODO: Check response
+                    this.noReporterMatchInDB = true;
+                })
         }
     }
 
