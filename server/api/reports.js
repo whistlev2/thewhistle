@@ -3,6 +3,7 @@ const responses = require('../queries/responses.js')
 
 const router = express.Router()
 
+//TODO: Remove this?
 router.post('/typeform-webhook/:section', async (req, res) => {
     await responses.storeResponse(req.params.section, req.body)
     res.status(200).json([])

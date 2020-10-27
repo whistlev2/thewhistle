@@ -11,7 +11,7 @@
                 <v-card-actions>
                     <div class="flex-grow-1"></div>
                     <v-btn color="blue darken-1" text v-on:click="closeModal">Close</v-btn>
-                    <v-btn color="blue darken-1" disabled="!valid" text @click="deleteForm">Delete</v-btn>
+                    <v-btn color="blue darken-1" :disabled="true" text @click="deleteForm">Delete</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>

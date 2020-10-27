@@ -382,7 +382,7 @@ function generateNewTypeformJSON(title) {
             show_typeform_branding: true,
         },
         hidden: [
-            "reporter"
+            "report"
         ],
         fields: [],
         logic: [],

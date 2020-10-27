@@ -19,6 +19,7 @@
             <v-btn v-if="validReporterInfo" outlined v-on:click="startReport" class="blueBtn">Next</v-btn>
         </div>
         <div v-else>
+            <!-- TODO: Put in report ID as hidden field -->
             <Typeform :id="$attrs.typeformID"></Typeform>
         </div>
     </div>
@@ -34,6 +35,8 @@
 //TODO: Sort broken refresh
 
 import Typeform from './Typeform.vue'
+
+import axios from 'axios';
 
 export default {
     components: {
@@ -62,7 +65,21 @@ export default {
 
     methods: {
         startReport() {
+            //TODO: Get form
+            let url = `/api/report/start/${this.$attrs.form}`;
 
+            let data = {
+                test: this.$attrs.test
+            };
+            if (this.usedBefore && this.hasReporter) {
+                data.reporter = this.reporter;
+            }
+            axios.post(url, data).then((response) => {
+                //TODO: Handle response
+                console.log(response.data);
+                console.log(response.status);
+                //TODO: Handle errors
+            });
         }
     }
 

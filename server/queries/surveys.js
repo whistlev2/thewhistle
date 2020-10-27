@@ -333,8 +333,9 @@ exports.updateDropdownChoice = function (req, res) {
 //Used to get /submit-report pages
 exports.getFormFromSlug = async function (slug, test) {
     try {
-        let results = await db.query(`SELECT logic, test_logic, forms.title AS title FROM formsectionlogic JOIN forms ON forms.id=formsectionlogic.form WHERE forms.slug='${slug}'`);
+        let results = await db.query(`SELECT logic, test_logic, forms.title AS title, forms.id AS form_id FROM formsectionlogic JOIN forms ON forms.id=formsectionlogic.form WHERE forms.slug='${slug}'`);
         const title = results.rows[0].title;
+        const formID = results.rows[0].form_id;
         const sectionLogic = test ? results.rows[0].test_logic.sections : results.rows[0].logic.sections;
         for (let i = 0; i < sectionLogic.length; i++) {
             results = await db.query(`SELECT type, json, test_json FROM formsections WHERE id=${sectionLogic[i].sectionID}`);
@@ -342,6 +343,8 @@ exports.getFormFromSlug = async function (slug, test) {
             sectionLogic[i].json = test ? results.rows[0].test_json : results.rows[0].json;
         }
         return {
+            id: formID,
+            slug: slug,
             title: title,
             sections: sectionLogic
         }

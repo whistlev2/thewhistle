@@ -1,9 +1,11 @@
 const express = require('express');
 const report = require('../queries/report.js')
 
+const InvalidReporterError = require('../utils/errors/InvalidReporterError').err;
+
 const router = express.Router()
 
-router.post('/test-typeform-webhook/:section', postTestWebhook);
+router.post('/start/:form', startReport);
 
 router.post('/typeform-webhook/:section', postWebhook);
 
@@ -21,14 +23,25 @@ router.post('/active/:id', postActive);
 
 router.post('/note/:id', postNote);
 
-async function postTestWebhook(req, res) {
-    await report.submitTypeformSection(req.params.section, req.body, true);
-    res.status(200);
-    res.send();
+async function startReport(req, res) {
+    try {
+        let reportData = await report.startReport(req.params.form, req.body);
+        res.status(200);
+        res.json(reportData);
+    } catch (err) {
+        if (err instanceof InvalidReporterError) {
+            res.status(404);
+            res.send(err.message);
+        } else {
+            console.log(err)
+            res.status(500);
+            res.send();
+        }
+    }
 }
 
 async function postWebhook(req, res) {
-    await report.submitTypeformSection(req.params.section, req.body, false);
+    await report.submitTypeformSection(req.params.section, req.body);
     res.status(200);
     res.send();
 }

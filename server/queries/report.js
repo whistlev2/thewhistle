@@ -1,5 +1,6 @@
-const db = require('../db.ts')
-const users = require('./users.js')
+const db = require('../db.ts');
+const InvalidReporterError = require('../utils/errors/InvalidReporterError').err;
+const users = require('./users.js');
 
 async function getFormFromSection(sectionID) {
     const results = await db.query(`SELECT form FROM formsections where id=${sectionID}`)
@@ -46,12 +47,48 @@ async function insertQuestionResponse(reportID, sectionID, ref, definition, valu
     await db.query(query, values);
 }
 
-exports.submitTypeformSection = async function (sectionID, payload, test) {
-    let formID = await getFormFromSection(sectionID);
-    let hiddenFields = payload.form_response.hidden;
-    //TODO: Parse other hidden fields
-    let reporter = hiddenFields ? hiddenFields.reporter : undefined;
+async function validateReporter(formID, reporter) {
+    const results = await db.query(`SELECT id FROM reports WHERE reporter='${reporter}' AND form=${formID}`);
+    return results.rows.length > 0;
+}
+
+async function generateNewReporter() {
+    //Note potential (but unlikely) race condition here.
+    let reporter = '';
+    let results = {};
+    let foundNewReporter = false;
+    while (!foundNewReporter) {
+        reporter = Math.floor(100000 + Math.random() * 900000).toString(10);
+        results = await db.query(`SELECT id FROM reports WHERE reporter='${reporter}'`);
+        foundNewReporter = results.rows.length == 0;
+    }
+    return reporter;
+}
+
+exports.startReport = async function (formID, body) {
+    let test = body.test
+
+    let reporter = body.reporter;
+    if (reporter) {
+        let validReporter = await validateReporter(formID, reporter);
+        if (!validReporter) {
+            throw new InvalidReporterError(`${reporter} is not a valid reporter number for this form.`);
+        }
+    } else {
+        reporter = await generateNewReporter();
+    }
+
     let reportID = await insertReport(formID, test, reporter);
+
+    return {
+        id: reportID,
+        reporter: reporter
+    };
+}
+
+exports.submitTypeformSection = async function (sectionID, payload) {
+    let hiddenFields = payload.form_response.hidden;
+    let reportID = hiddenFields.report;
     const definitions = payload.form_response.definition.fields;
     const answers = payload.form_response.answers;
     let promises = [];
