@@ -183,6 +183,7 @@ export default {
             this.report.id = this.$route.params.report
             const reportUrl = `/api/report/${this.report.id}`;
             axios.get(reportUrl).then((d) => {
+                console.log('REPORT DATA YO', d);
                 this.report.responses = _.map(d.data.responses, (res) => {
                     return {
                         ref: res.question_ref,

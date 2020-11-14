@@ -49,6 +49,7 @@ async function postWebhook(req, res) {
 
 function getReport(req, res) {
     try {
+        console.log('REPORT ID', req.params.id)
         let responses = report.getResponses(req.params.id);
         let formSlug = report.getFormSlug(req.params.id);
         let reporterID = report.getReporterID(req.params.id);
@@ -64,7 +65,6 @@ function getReport(req, res) {
                 //TODO: Handle errors properly
             })
             .then( data => {
-                
                 const ret = {
                     responses: data[0],
                     formSlug: data[1],
@@ -79,6 +79,7 @@ function getReport(req, res) {
                         tags: data[8].tags
                     }
                 }
+                console.log('REPORT DATA', ret);
                 res.json(ret)
             })
     } catch {

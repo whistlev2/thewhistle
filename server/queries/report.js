@@ -69,8 +69,13 @@ async function generateNewReporter() {
 }
 
 async function insertUsedBefore(reportID, usedBefore) {
-    const query = 'INSERT INTO questionresponses(report, question_ref, value) VALUES($1, $2, $3)';
-    const values = [reportID, 'Used report form before?', usedBefore ? 'Yes' : 'No'];
+    const definition = {
+        title: 'Used report form before?',
+        type: 'boolean',
+        ref: 'Used before?'
+    }
+    const query = 'INSERT INTO questionresponses(report, question_ref, value, definition) VALUES($1, $2, $3, $4)';
+    const values = [reportID, 'Used before?', usedBefore ? 'Yes' : 'No', definition];
     await db.query(query, values);
 }
 
