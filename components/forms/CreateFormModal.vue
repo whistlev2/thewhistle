@@ -10,15 +10,15 @@
                         <v-row>
                             <v-form ref="form" v-model="valid">
                                 <v-col cols="12">
-                                    <v-text-field v-model="$attrs.newForm.title" :rules="notBlank" label="Title" required></v-text-field>
+                                    <v-text-field v-model="$attrs.newForm.title" :rules="validTitle" label="Title" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field v-model="$attrs.newForm.description" :rules="notBlank" label="Description" required></v-text-field>
+                                    <v-text-field v-model="$attrs.newForm.description" :rules="validDescription" label="Description" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
                                     <!-- TODO: Validation on slug -->
-                                    <v-text-field v-model="$attrs.newForm.slug" :rules="notBlank" label="Slug" 
-                                    hint="Unique reference for the URL" :persistent-hint="true" required></v-text-field>
+                                    <v-text-field v-model="$attrs.newForm.slug" :rules="validSlug" label="Abbreviation" 
+                                    hint="Unique reference for the form's URL" :persistent-hint="true" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
                                     <!-- TODO: Give options from user's orgs -->
@@ -56,6 +56,9 @@ export default {
     data() {
         return {
             notBlank: [v => !!v || 'Required'],
+            validTitle: [ v => !!v || 'Required', v => (v.length() > 2 && v.length() < 21) || 'Length must be between 3 and 20 characters'],
+            validDescription: [ v => !!v || 'Required'],
+            validSlug: [ v => !!v || 'Required', v => v.match(/^[\w-]+$/g) || 'Can only contain letters, numbers and hyphens', v => (v.length() > 2 && v.length() < 21) || 'Length must be between 3 and 20 characters'],
             valid: false
         }
     },
