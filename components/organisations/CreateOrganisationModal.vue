@@ -10,10 +10,10 @@
                         <v-row>
                             <v-form ref="form" v-model="valid">
                                 <v-col cols="12">
-                                    <v-text-field v-model="$attrs.org.name" :rules="notBlank" label="Name" required></v-text-field>
+                                    <v-text-field v-model="$attrs.org.name" :rules="validName" label="Name" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field v-model="$attrs.org.slug" :rules="notBlank" label="Abbreviation"
+                                    <v-text-field v-model="$attrs.org.slug" :rules="validSlug" label="Abbreviation"
                                         hint="Max 8 characters, no spaces." counter="8"
                                         :persistent-hint="true" required></v-text-field>
                                 </v-col>
@@ -34,8 +34,9 @@
 export default {
     data() {
         return {
-            notBlank: [v => !!v || 'Required'],
-            valid: false
+            valid: false,
+            validName: [ v => !!v || 'Required', v => v.match(/^(\w|'| )+$/g) || 'Can only contain letters, numbers, apostrophes and spaces' ],
+            validSlug: [ v => !!v || 'Required', v => v.match(/^(\w|-)+$/g) || 'Can only contain letters, numbers and hyphens', v => v.length < 9 || 'Must be under 8 characters' ]
         }
     },
     methods: {
@@ -49,16 +50,6 @@ export default {
             this.$attrs.show = false;
             this.$emit('close');
         },
-
-        validSlug(slug) {
-            if (slug.length > 8) {
-                return 'Abbreviations cannot be more than 8 characters long.';
-            }
-            if (slug.indexOf(' ') !== -1) {
-                return 'Abbreviations cannot contain spaces. Try ' + slug.replace(' ', '-') + '?';
-            }
-            return true;
-        }
     }
 }
 </script>
