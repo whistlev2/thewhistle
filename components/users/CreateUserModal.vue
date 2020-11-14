@@ -10,16 +10,16 @@
                         <v-row>
                             <v-form ref="form" v-model="valid">
                                 <v-col cols="12">
-                                    <v-text-field v-model="$attrs.user.firstName" :rules="notBlank" label="First name" required></v-text-field>
+                                    <v-text-field v-model="$attrs.user.firstName" :rules="validName" label="First name" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field v-model="$attrs.user.surname" :rules="notBlank" label="Surname" required></v-text-field>
+                                    <v-text-field v-model="$attrs.user.surname" :rules="validName" label="Surname" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field v-model="$attrs.user.email" :rules="notBlank" label="Email" required></v-text-field>
+                                    <v-text-field v-model="$attrs.user.email" :rules="validEmail" label="Email" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field type="password" v-model="$attrs.user.password" :rules="notBlank" label="Password" required></v-text-field>
+                                    <v-text-field type="password" v-model="$attrs.user.password" :rules="validPassword" label="Password" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
                                     <v-select v-model="$attrs.user.orgs" :items="$attrs.orgOptions" item-text="name" return-object chips label="Organisations" multiple></v-select>
@@ -45,6 +45,9 @@ export default {
     data() {
         return {
             notBlank: [v => !!v || 'Required'],
+            validName: [v => !!v || 'Required', v => v.match(/^[a-zA-Z' -]+$/g) || 'Can only contain letters, apostrophes, hyphens and spaces'],
+            validEmail: [v => !!v || 'Required', v => v.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g) || 'Invalid email address'],
+            validPassword: [v => !!v || 'Required',  v => v.match(/^\S+$/g) || 'Invalid password', v => v.length() > 7 && v.length() < 21 || 'Password must be between 8 and 20 characters.'],
             valid: false
         }
     },

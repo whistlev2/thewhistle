@@ -35,8 +35,8 @@ export default {
     data() {
         return {
             valid: false,
-            validName: [ v => !!v || 'Required', v => v.match(/^(\w|'| )+$/g) || 'Can only contain letters, numbers, apostrophes and spaces' ],
-            validSlug: [ v => !!v || 'Required', v => v.match(/^(\w|-)+$/g) || 'Can only contain letters, numbers and hyphens', v => v.length < 9 || 'Must be under 8 characters' ]
+            validName: [ v => !!v || 'Required', v => v.match(/^[\w' ]+$/g) || 'Can only contain letters, numbers, apostrophes and spaces' ],
+            validSlug: [ v => !!v || 'Required', v => v.match(/^[\w-]+$/g) || 'Can only contain letters, numbers and hyphens', v => v.length < 9 || 'Must be under 8 characters' ]
         }
     },
     methods: {
