@@ -21,6 +21,7 @@
         </div>
         <div v-else>
             <!-- TODO: Put in report ID as hidden field -->
+            Your anonymous reporter number is {{ reporter }}. Please take note of this for future reference if you can.
             <Typeform :typeformID="$attrs.typeformID" :reportID="reportID"></Typeform>
         </div>
     </div>
@@ -75,7 +76,8 @@ export default {
             let url = `/api/report/start/${this.$attrs.form}`;
 
             let data = {
-                test: this.$attrs.test
+                test: this.$attrs.test,
+                usedBefore: this.usedBefore
             };
             if (this.usedBefore && this.hasReporter) {
                 data.reporter = this.reporter;
@@ -84,7 +86,6 @@ export default {
                 .then((response) => {
                     this.reporter = response.data.reporter;
                     this.reportID = response.data.id;
-                    console.log('SET DATA')
                     this.startedReport = true;
                 })
                 .catch((response) => {

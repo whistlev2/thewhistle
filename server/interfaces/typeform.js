@@ -112,7 +112,6 @@ exports.createForm = async function (form) {
             data: form
         })
         let ret = response.data;
-
         return ret;
     } catch (err) {
         //TODO: Handle errors properly

@@ -435,18 +435,21 @@ exports.updateQuestionTitle = async function(sectionID, questionRef, questionTit
 }
 
 exports.addFirstQuestion = async function(sectionID, question) {
-    let sectionJSON = await Surveys.getSectionJSON(sectionID);
-    let form = sectionJSON.form;
-    let type = sectionJSON.type;
-    //TODO: Check question ref doesn't already exist
-
-    if (!form.logic) {
-        form.logic = [];
+    try {
+        let sectionJSON = await Surveys.getSectionJSON(sectionID);
+        let form = sectionJSON.form;
+        let type = sectionJSON.type;
+        //TODO: Check question ref doesn't already exist
+        if (!form.logic) {
+            form.logic = [];
+        }
+        let formattedQuestion = formatQuestion(question);
+        form.fields = [ formattedQuestion ];
+        let retForm = await updateForm(sectionID, form, type);
+        return retForm;
+    } catch (err) {
+        console.log('Add first question error', err)
     }
-    let formattedQuestion = formatQuestion(question);
-    form.fields = [ formattedQuestion ];
-    let retForm = await updateForm(sectionID, form, type);
-    return retForm;
 }
 
 exports.addQuestionBefore = async function(sectionID, adjacentQuestionRef, question) {

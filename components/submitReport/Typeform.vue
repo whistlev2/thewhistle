@@ -11,7 +11,6 @@ import * as typeformEmbed from '@typeform/embed'
 export default {
 
     mounted() {
-        console.log('MOUNTED TYPEFORM', this.$attrs.reportID);
         const url = `https://admin.typeform.com/to/${this.$attrs.typeformID}?report=${this.$attrs.reportID}`;
         var el = document.getElementById("my-embedded-typeform");
         //TODO: Make this run on start report event

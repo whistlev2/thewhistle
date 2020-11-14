@@ -41,6 +41,7 @@ async function startReport(req, res) {
 }
 
 async function postWebhook(req, res) {
+    console.log('WEBHOOK')
     await report.submitTypeformSection(req.params.section, req.body);
     res.status(200);
     res.send();

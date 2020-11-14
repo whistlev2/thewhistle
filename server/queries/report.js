@@ -42,9 +42,12 @@ function getDefinitionFromID(definitions, fieldID) {
 }
 
 async function insertQuestionResponse(reportID, sectionID, ref, definition, value) {
+    console.log('INSERT Q', reportID, sectionID, ref, definition, value);
     const query = 'INSERT INTO questionresponses(report, section, question_ref, definition, value) VALUES($1, $2, $3, $4, $5)';
     const values = [reportID, sectionID, ref, JSON.stringify(definition), JSON.stringify(value)];
+    console.log('here')
     await db.query(query, values);
+    console.log('there')
 }
 
 async function validateReporter(formID, reporter) {
@@ -65,6 +68,12 @@ async function generateNewReporter() {
     return reporter;
 }
 
+async function insertUsedBefore(reportID, usedBefore) {
+    const query = 'INSERT INTO questionresponses(report, question_ref, value) VALUES($1, $2, $3)';
+    const values = [reportID, 'Used report form before?', usedBefore ? 'Yes' : 'No'];
+    await db.query(query, values);
+}
+
 exports.startReport = async function (formID, body) {
     let test = body.test
 
@@ -80,6 +89,8 @@ exports.startReport = async function (formID, body) {
 
     let reportID = await insertReport(formID, test, reporter);
 
+    await insertUsedBefore(reportID, body.usedBefore);
+
     return {
         id: reportID,
         reporter: reporter
@@ -87,21 +98,26 @@ exports.startReport = async function (formID, body) {
 }
 
 exports.submitTypeformSection = async function (sectionID, payload) {
-    let hiddenFields = payload.form_response.hidden;
-    let reportID = hiddenFields.report;
-    const definitions = payload.form_response.definition.fields;
-    const answers = payload.form_response.answers;
-    let promises = [];
-    let value = {};
-    let ref = '';
-    let definition = {};
-    for (let i = 0; i < answers.length; i++) {
-        value = getValueFromAnswer(answers[i]);
-        definition = getDefinitionFromID(definitions, answers[i].field.id);
-        ref = definition.ref;
-        promises.push(insertQuestionResponse(reportID, sectionID, ref, definition, value))
+    try {
+        console.log(sectionID, payload);
+        let hiddenFields = payload.form_response.hidden;
+        let reportID = hiddenFields.report;
+        const definitions = payload.form_response.definition.fields;
+        const answers = payload.form_response.answers;
+        let promises = [];
+        let value = {};
+        let ref = '';
+        let definition = {};
+        for (let i = 0; i < answers.length; i++) {
+            value = getValueFromAnswer(answers[i]);
+            definition = getDefinitionFromID(definitions, answers[i].field.id);
+            ref = definition.ref;
+            promises.push(insertQuestionResponse(reportID, sectionID, ref, definition, value))
+        }
+        Promise.all(promises);
+    } catch (err) {
+        console.log('Webhook error', err)
     }
-    Promise.all(promises);
 }
 
 exports.getResponses = async function (reportID) {
