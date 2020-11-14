@@ -42,7 +42,6 @@ function getDefinitionFromID(definitions, fieldID) {
 }
 
 async function insertQuestionResponse(reportID, sectionID, ref, definition, value) {
-    console.log('INSERT Q', reportID, sectionID, ref, definition, value);
     const query = 'INSERT INTO questionresponses(report, section, question_ref, definition, value) VALUES($1, $2, $3, $4, $5)';
     const values = [reportID, sectionID, ref, JSON.stringify(definition), JSON.stringify(value)];
     console.log('here')
@@ -104,7 +103,6 @@ exports.startReport = async function (formID, body) {
 
 exports.submitTypeformSection = async function (sectionID, payload) {
     try {
-        console.log(sectionID, payload);
         let hiddenFields = payload.form_response.hidden;
         let reportID = hiddenFields.report;
         const definitions = payload.form_response.definition.fields;
@@ -145,14 +143,9 @@ exports.getFormSlug = async function (reportID) {
     }
 }
 
-exports.getReporterID = async function (reportID) {
-    return 'REPORTER1';
-    //TODO: Implement
-}
-
 exports.getMetadata = async function (reportID) {
     try {
-        let metadata = await db.query(`SELECT reports.date, reports.status, reports.tags, reports.active, reports.location, assigned_to FROM reports WHERE reports.id=${parseInt(reportID)}`);
+        let metadata = await db.query(`SELECT reports.date, reports.status, reports.tags, reports.active, reports.location, reports.reporter, assigned_to FROM reports WHERE reports.id=${parseInt(reportID)}`);
         if (metadata.rows.length > 0) {
             metadata = metadata.rows[0];
             if (metadata.tags) {
@@ -179,7 +172,8 @@ exports.getMetadata = async function (reportID) {
                 tags: [],
                 assignedTo: '',
                 active: '',
-                location: ''
+                location: '',
+                reporter: ''
             }
         }
     } catch (err) {

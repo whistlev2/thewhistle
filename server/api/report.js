@@ -41,7 +41,6 @@ async function startReport(req, res) {
 }
 
 async function postWebhook(req, res) {
-    console.log('WEBHOOK')
     await report.submitTypeformSection(req.params.section, req.body);
     res.status(200);
     res.send();
@@ -49,17 +48,15 @@ async function postWebhook(req, res) {
 
 function getReport(req, res) {
     try {
-        console.log('REPORT ID', req.params.id)
         let responses = report.getResponses(req.params.id);
         let formSlug = report.getFormSlug(req.params.id);
-        let reporterID = report.getReporterID(req.params.id);
         let metadata = report.getMetadata(req.params.id);
         let notes = report.getNotes(req.params.id);
         let audit = report.getAudit(req.params.id);
         let files = report.getFiles(req.params.id);
         let userOptions = report.getUserOptions(req.params.id);
         let reportOptions = report.getReportOptions(req.params.id);
-        Promise.all([ responses, formSlug, reporterID, metadata, notes, audit, files, userOptions, reportOptions ])
+        Promise.all([ responses, formSlug, metadata, notes, audit, files, userOptions, reportOptions ])
             .catch(() => {
                 res.status(500).send('Could not get report data');
                 //TODO: Handle errors properly
@@ -68,18 +65,16 @@ function getReport(req, res) {
                 const ret = {
                     responses: data[0],
                     formSlug: data[1],
-                    reporterID: data[2],
-                    metadata: data[3],
-                    notes: data[4],
-                    audit: data[5],
-                    files: data[6],
+                    metadata: data[2],
+                    notes: data[3],
+                    audit: data[4],
+                    files: data[5],
                     options: {
-                        assignedTo: data[7],
-                        status: data[8].status,
-                        tags: data[8].tags
+                        assignedTo: data[6],
+                        status: data[7].status,
+                        tags: data[7].tags
                     }
                 }
-                console.log('REPORT DATA', ret);
                 res.json(ret)
             })
     } catch {

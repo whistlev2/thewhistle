@@ -1,7 +1,7 @@
 <!-- TODO - NTH - Add outline of admin metadata form -->
 <template>
     <div>
-        <h1>{{ report.reporterID }} - {{ report.metadata.date }} - {{ report.formSlug }}</h1>
+        <h1>Reporter {{ report.metadata.reporter }} - {{ report.metadata.date }} - {{ report.formSlug }}</h1>
 
         <v-list two-line subheader style="background-color: #dee9ed">
             <v-list-item >
@@ -183,7 +183,6 @@ export default {
             this.report.id = this.$route.params.report
             const reportUrl = `/api/report/${this.report.id}`;
             axios.get(reportUrl).then((d) => {
-                console.log('REPORT DATA YO', d);
                 this.report.responses = _.map(d.data.responses, (res) => {
                     return {
                         ref: res.question_ref,
