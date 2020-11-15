@@ -1,33 +1,34 @@
 <template>
     <div>
         <v-card style="padding: 50px; margin: 10px">
-            <v-card-title>
-                <v-text-field :label="$attrs.question.ref" outlined v-model="$attrs.question.title"
-                    v-on:change="updateQuestionText"></v-text-field>
-            </v-card-title>
-            <v-row>
-                <v-col cols="12" md="4">
-                    Question type: {{ $attrs.question.type }}
-                </v-col>
-                <v-col cols="12" md="8" v-if="$attrs.question.jumps.length > 0">
-                    Can jump to {{ $attrs.question.jumps.join(', ') }}
-                </v-col>
-            </v-row>
-            <v-card-actions>
-                <v-btn x-large outlined v-on:click="openAddBeforeQuestionModal" class="blueBtn">Add before</v-btn>
-                <v-btn x-large outlined v-on:click="openAddAfterQuestionModal" class="blueBtn">Add after</v-btn>
-                <v-btn x-large outlined v-on:click="openDeleteQuestionModal" class="blueBtn">Delete question</v-btn>
-                    
-                <v-select dense outlined v-model="$attrs.question.jump" label="Default question jump:" :items="$attrs.question.jumpOptions" v-on:change="updateQuestionJump" style="padding-left: 10px; padding-top: 30px;" />
+            <v-form v-model="valid">
+                <v-card-title>
+                    <v-text-field :label="$attrs.question.ref" outlined v-model="$attrs.question.title"
+                        v-on:change="updateQuestionText" :rules="validText"></v-text-field>
+                </v-card-title>
+                <v-row>
+                    <v-col cols="12" md="4">
+                        Question type: {{ $attrs.question.type }}
+                    </v-col>
+                    <v-col cols="12" md="8" v-if="$attrs.question.jumps.length > 0">
+                        Can jump to {{ $attrs.question.jumps.join(', ') }}
+                    </v-col>
+                </v-row>
+                <v-card-actions>
+                    <v-btn x-large outlined v-on:click="openAddBeforeQuestionModal" class="blueBtn">Add before</v-btn>
+                    <v-btn x-large outlined v-on:click="openAddAfterQuestionModal" class="blueBtn">Add after</v-btn>
+                    <v-btn x-large outlined v-on:click="openDeleteQuestionModal" class="blueBtn">Delete question</v-btn>
+                        
+                    <v-select dense outlined v-model="$attrs.question.jump" label="Default question jump:" :items="$attrs.question.jumpOptions" v-on:change="updateQuestionJump" style="padding-left: 10px; padding-top: 30px;" />
 
 
-                <v-spacer></v-spacer>
+                    <v-spacer></v-spacer>
 
-                <v-btn v-if="multipleChoice" text @click="showOptions = !showOptions">
-                    Show options <v-icon>{{ showOptions ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-                </v-btn>
-            </v-card-actions>
-
+                    <v-btn v-if="multipleChoice" text @click="showOptions = !showOptions">
+                        Show options <v-icon>{{ showOptions ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+                    </v-btn>
+                </v-card-actions>
+            </v-form>
             <v-expand-transition v-if="multipleChoice">
                 <div v-show="showOptions">
                     <template>
@@ -96,7 +97,9 @@ export default {
             showDeleteOptionModal: false,
             newQuestion: {},
             newOption: {},
-            optionToDelete: {}
+            optionToDelete: {},
+            valid: false,
+            validText: [ v => !!v || 'Required' ]
         }
     },
     computed: {
@@ -152,14 +155,16 @@ export default {
         },
 
         updateQuestionText() {
-            let url = `/api/edit-form/${this.$attrs.sectionID}/update-question-title/${this.$attrs.question.ref}`;
-            let data = {
-                title: this.$attrs.question.title
-            };
-            axios.patch(url, data).then((response) => {
-                this.emitToParent(response.data.form);  
-                //TODO: Handle errors
-            });
+            if (this.$attrs.question.title.length > 0) {
+                let url = `/api/edit-form/${this.$attrs.sectionID}/update-question-title/${this.$attrs.question.ref}`;
+                let data = {
+                    title: this.$attrs.question.title
+                };
+                axios.patch(url, data).then((response) => {
+                    this.emitToParent(response.data.form);  
+                    //TODO: Handle errors
+                });
+            }
         },
         
         addQuestion() {

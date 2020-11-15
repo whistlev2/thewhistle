@@ -56,9 +56,9 @@ export default {
     data() {
         return {
             notBlank: [v => !!v || 'Required'],
-            validTitle: [ v => !!v || 'Required', v => (v.length() > 2 && v.length() < 21) || 'Length must be between 3 and 20 characters'],
+            validTitle: [ v => !!v || 'Required', v => (v.length > 2 && v.length < 21) || 'Length must be between 3 and 20 characters'],
             validDescription: [ v => !!v || 'Required'],
-            validSlug: [ v => !!v || 'Required', v => v.match(/^[\w-]+$/g) || 'Can only contain letters, numbers and hyphens', v => (v.length() > 2 && v.length() < 21) || 'Length must be between 3 and 20 characters'],
+            validSlug: [ v => !!v || 'Required', v => v.match(/^[\w-]+$/g) || 'Can only contain letters, numbers and hyphens', v => (v.length > 2 && v.length < 21) || 'Length must be between 3 and 20 characters'],
             valid: false
         }
     },
