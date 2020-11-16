@@ -1,5 +1,5 @@
 const db = require('../db.ts');
-const InvalidReporterError = require('../utils/errors/InvalidReporterError').err;
+const { InvalidReporterError } = require('../utils/errors/InvalidReporterError.js');
 const users = require('./users.js');
 
 async function getFormFromSection(sectionID) {
@@ -44,9 +44,7 @@ function getDefinitionFromID(definitions, fieldID) {
 async function insertQuestionResponse(reportID, sectionID, ref, definition, value) {
     const query = 'INSERT INTO questionresponses(report, section, question_ref, definition, value) VALUES($1, $2, $3, $4, $5)';
     const values = [reportID, sectionID, ref, JSON.stringify(definition), JSON.stringify(value)];
-    console.log('here')
     await db.query(query, values);
-    console.log('there')
 }
 
 async function validateReporter(formID, reporter) {

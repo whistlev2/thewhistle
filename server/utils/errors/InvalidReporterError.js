@@ -1,3 +1,9 @@
-class InvalidReporterError extends Error {}
+const { WhistleError } = require("./WhistleError");
 
-exports.err = InvalidReporterError;
+class InvalidReporterError extends WhistleError {
+    constructor(message) {
+        super(message, 'InvalidReporterError');
+    }
+}
+
+exports.InvalidReporterError = InvalidReporterError;

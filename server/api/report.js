@@ -1,8 +1,6 @@
 const express = require('express');
 const report = require('../queries/report.js')
 
-const InvalidReporterError = require('../utils/errors/InvalidReporterError').err;
-
 const router = express.Router()
 
 router.post('/start/:form', startReport);
@@ -23,19 +21,20 @@ router.post('/active/:id', postActive);
 
 router.post('/note/:id', postNote);
 
-async function startReport(req, res) {
+async function startReport(req, res, next) {
     try {
         let reportData = await report.startReport(req.params.form, req.body);
         res.status(200);
         res.json(reportData);
     } catch (err) {
-        if (err instanceof InvalidReporterError) {
+        if (err.name == 'InvalidReporterError') {
             res.status(404);
             res.send(err.message);
         } else {
             console.log(err)
             res.status(500);
             res.send();
+            next(err);
         }
     }
 }
