@@ -25,54 +25,57 @@ router.patch('/:sectionID/update-option-jump/:questionRef/:choiceRef', updateOpt
 
 router.delete('/:sectionID/delete-option/:questionRef/:choiceRef', deleteOption);
 
-async function getForm(req, res) {
+async function getForm(req, res, next) {
     try {
         const form = await Forms.getEditFormJSON(req.params.slug);
         res.json(form);
     } catch (err) {
-        console.log(err);
+        res.status(500);
+        res.send('Could not get form')
+        next(err);
     }
 }
 
-async function createForm(req, res) {
+async function createForm(req, res, next) {
     try {
         //TODO: Input validations
         await FormGen.createForm(req.params.slug, req.body.title, req.body.description, req.body.org, req.body.web)
         res.status(201) //Created
         res.send()
     } catch (err) {
-        //TODO: Handle errors properly
-        console.error(err)
+        res.status(500);
+        res.send('Could not create form');
+        next(err);
     }
 }
 
-async function updateQuestionTitle(req, res) {
+async function updateQuestionTitle(req, res, next) {
     try {
         const form = await FormGen.updateQuestionTitle(req.params.sectionID, req.params.questionRef, req.body.title);
         res.json({
             form: form
         });
     } catch (err) {
-        console.error(err);
         res.status(500);
-        //TODO: Handle errors properly
+        res.send('Could not update question title');
+        next(err);
     }
 }
 
-async function addFirstQuestion(req, res) {
+async function addFirstQuestion(req, res, next) {
     try {
         const form = await FormGen.addFirstQuestion(req.params.sectionID, req.body.question);
         res.json({
             form: form
         });
     } catch (err) {
-        console.error(err);
         res.status(500);
-        //TODO: Handle errors properly
+        res.send('Could not add first question');
+        next(err);
     }
 }
 
-async function addQuestion(req, res) {
+async function addQuestion(req, res, next) {
     try {
         const form = req.body.before ?
             await FormGen.addQuestionBefore(req.params.sectionID, req.params.questionRef, req.body.question) :
@@ -82,74 +85,74 @@ async function addQuestion(req, res) {
             form: form
         });
     } catch (err) {
-        console.error(err);
         res.status(500);
-        //TODO: Handle errors properly
+        res.send('Could not add question');
+        next(err);
     }
 }
 
-async function deleteQuestion(req, res) {
+async function deleteQuestion(req, res, next) {
     try {
         const form = await FormGen.deleteQuestion(req.params.sectionID, req.params.questionRef);
         res.json({
             form: form
         });
     } catch (err) {
-        console.error(err);
         res.status(500);
-        //TODO: Handle errors properly
+        res.send('Could not delete question');
+        next(err)
     }
 }
 
-async function updateQuestionJump(req, res) {
+async function updateQuestionJump(req, res, next) {
     try {
         const form = await FormGen.updateQuestionJump(req.params.sectionID, req.params.questionRef, req.body.jump);
         res.json({
             form: form
         });
     } catch (err) {
-        console.error(err);
         res.status(500);
-        //TODO: Handle errors properly
+        res.send('Could not update question jump');
+        next(err);
     }
 }
 
-async function addOption(req, res) {
+async function addOption(req, res, next) {
     try {
         const form = await FormGen.addOption(req.params.sectionID, req.params.questionRef, req.body.option);
         res.json({
             form: form
         });
     } catch (err) {
-        console.error(err);
         res.status(500);
-        //TODO: Handle errors properly
+        res.send('Could not add option');
+        next(err);
     }
 }
 
-async function updateOptionJump(req, res) {
+async function updateOptionJump(req, res, next) {
     try {
         const form = await FormGen.updateOptionJump(req.params.sectionID, req.params.questionRef, req.params.choiceRef, req.body.jump);
         res.json({
             form: form
         });
     } catch (err) {
-        console.error(err);
         res.status(500);
-        //TODO: Handle errors properly
+        res.send('Could not update option jump');
+        next(err);
     }
 }
 
-async function deleteOption(req, res) {
+async function deleteOption(req, res, next) {
     try {
         const form = await FormGen.deleteOption(req.params.sectionID, req.params.questionRef, req.params.choiceRef);
         res.json({
             form: form
         });
     } catch (err) {
-        console.error(err);
         res.status(500);
-        //TODO: Handle errors properly
+        res.send('Could not delete option');
+        next(err);
     }
 }
 

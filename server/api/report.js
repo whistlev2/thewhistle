@@ -32,19 +32,25 @@ async function startReport(req, res, next) {
             res.send(err.message);
         } else {
             res.status(500);
-            res.send();
+            res.send('Could not start report');
             next(err);
         }
     }
 }
 
-async function postWebhook(req, res) {
-    await report.submitTypeformSection(req.params.section, req.body);
-    res.status(200);
-    res.send();
+async function postWebhook(req, res, next) {
+    try {
+        await report.submitTypeformSection(req.params.section, req.body);
+        res.status(200);
+        res.send();
+    } catch (err) {
+        res.status(500);
+        res.send('Could not process webhook');
+        next(err);
+    }
 }
 
-function getReport(req, res) {
+function getReport(req, res, next) {
     try {
         let responses = report.getResponses(req.params.id);
         let formSlug = report.getFormSlug(req.params.id);
@@ -75,40 +81,77 @@ function getReport(req, res) {
                 }
                 res.json(ret)
             })
-    } catch {
-        res.status(500).send('Could not get report data');
-        //TODO: Handle errors properly
+    } catch (err) {
+        res.status(500)
+        res.send('Could not get report data');
+        next(err);
     }
 }
 
-async function postAssigned(req, res) {
-    const audit = await report.updateAssigned(req.body.report, req.body.user, req.body.assigned);
-    res.json({ audit: audit });
+async function postAssigned(req, res, next) {
+    try {
+        const audit = await report.updateAssigned(req.body.report, req.body.user, req.body.assigned);
+        res.json({ audit: audit });
+    } catch (err) {
+        res.status(500);
+        res.send('Could not update report assignment');
+        next(err);
+    }
 }
 
-async function postStatus(req, res) {
-    const audit = await report.updateStatus(req.body.report, req.body.user, req.body.status);
-    res.json({ audit: audit });
+async function postStatus(req, res, next) {
+    try {
+        const audit = await report.updateStatus(req.body.report, req.body.user, req.body.status);
+        res.json({ audit: audit });
+    } catch (err) {
+        res.status(500);
+        res.send('Could not update report status');
+        next(err);
+    }
 }
 
-async function postLocation(req, res) {
-    const audit = await report.updateLocation(req.body.report, req.body.user, req.body.location);
-    res.json({ audit: audit });
+async function postLocation(req, res, next) {
+    try {
+        const audit = await report.updateLocation(req.body.report, req.body.user, req.body.location);
+        res.json({ audit: audit });
+    } catch (err) {
+        res.status(500);
+        res.send('Could not update report location');
+        next(err);
+    }
 }
 
-async function postTags(req, res) {
-    const audit = await report.updateTags(req.body.report, req.body.user, req.body.tags);
-    res.json({ audit: audit });
+async function postTags(req, res, next) {
+    try {
+        const audit = await report.updateTags(req.body.report, req.body.user, req.body.tags);
+        res.json({ audit: audit });
+    } catch (err) {
+        res.status(500);
+        res.send('Could not update report tags');
+        next(err);
+    }
 }
 
-async function postActive(req, res) {
-    const audit = await report.updateActive(req.body.report, req.body.user, req.body.active);
-    res.json({ audit: audit });
+async function postActive(req, res, next) {
+    try {
+        const audit = await report.updateActive(req.body.report, req.body.user, req.body.active);
+        res.json({ audit: audit });
+    } catch (err) {
+        res.status(500);
+        res.send('Could not archive/unarchive report');
+        next(err);
+    }
 }
 
-async function postNote(req, res) {
-    const ret = await report.addNote(req.body.report, req.body.user, req.body.comment);
-    res.json({ audit: ret.audit, notes: ret.notes });
+async function postNote(req, res, next) {
+    try {
+        const ret = await report.addNote(req.body.report, req.body.user, req.body.comment);
+        res.json({ audit: ret.audit, notes: ret.notes });
+    } catch (err) {
+        res.status(500);
+        res.send('Could not add note to report');
+        next(err);
+    }
 }
 
 module.exports = router

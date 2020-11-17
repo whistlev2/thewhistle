@@ -9,14 +9,26 @@ router.post('/typeform-webhook/:section', async (req, res) => {
     res.status(200).json([])
 })
 
-router.get('/:slug', async (req, res) => {
-    let reports = await responses.getReportsFromFormSlug(req.params.slug, false);
-    res.json(reports);
+router.get('/:slug', async (req, res, next) => {
+    try {
+        let reports = await responses.getReportsFromFormSlug(req.params.slug, false);
+        res.json(reports);
+    } catch (err) {
+        res.status(500);
+        res.send('Could not get reports');
+        next(err);
+    }
 })
 
-router.get('/:slug/test', async (req, res) => {
-    let reports = await responses.getReportsFromFormSlug(req.params.slug, true);
-    res.json(reports);
+router.get('/:slug/test', async (req, res, next) => {
+    try {
+        let reports = await responses.getReportsFromFormSlug(req.params.slug, true);
+        res.json(reports);
+    } catch (err) {
+        res.status(500);
+        res.send('Could not get test reports');
+        next(err);
+    }
 })
 
 module.exports = router

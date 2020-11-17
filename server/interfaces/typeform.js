@@ -3,8 +3,8 @@
 
 const request = require('request');
 const axios = require('axios');
-const { TypePredicateKind } = require('typescript');
 
+const { TypeformUpdateError, TypeformWebhookError } = require('../utils/errors/errors.js');
 
 const TYPEFORM_API_BASE_URL = "api.typeform.com"
 const ACCESS_TOKEN = "5o33hz2vjVsNbKCu8T4Zb2cYnNM6kWknvqnsfe5mX4Dn"
@@ -28,29 +28,23 @@ function jsonCallback(error, res, body) {
 }
 
 exports.createWebhook = async function (typeformID, sectionID, test) {
+    const url = `https://${TYPEFORM_API_BASE_URL}/forms/${typeformID}/webhooks/${typeformID}`;
+    const config = require('../../nuxt.config.js');
+    const data = {
+        url: `https://${config.dev ? process.env.LOCALTUNNEL_SUBDOMAIN + '.loca.lt' : process.env.BASE_URL}/api/report/typeform-webhook/${sectionID}`,
+        enabled: true
+    }
+    //TODO: Add secret
+    //TODO: Set SSL true
     try {
-        const url = `https://${TYPEFORM_API_BASE_URL}/forms/${typeformID}/webhooks/${typeformID}`;
-        const config = require('../../nuxt.config.js');
-        const data = {
-            url: `https://${config.dev ? process.env.LOCALTUNNEL_SUBDOMAIN + '.loca.lt' : process.env.BASE_URL}/api/report/typeform-webhook/${sectionID}`,
-            enabled: true
-        }
-        //TODO: Add secret
-        //TODO: Set SSL true
-        try {
-            await axios({
-                method: 'put',
-                url: url,
-                headers: headers,
-                data: data
-            })
-        } catch (err) {
-            throw new TypeformWebhookError(data.url, err);
-        }
-
+        await axios({
+            method: 'put',
+            url: url,
+            headers: headers,
+            data: data
+        })
     } catch (err) {
-        //TODO: Handle errors properly
-        console.log(err);
+        throw new TypeformWebhookError(data.url, err);
     }
 }
 

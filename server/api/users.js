@@ -26,106 +26,39 @@ router.get('/', (req, res) => {
     Users.getAllUsers(res)
 })
 
-router.get('/:userID', async (req, res) => {
+router.get('/:userID', async (req, res, next) => {
     try {
         let users = await Users.getUsers(req.params.userID);
         res.json({ users: users });
     } catch (err) {
-        //TODO: Handle errors properly
-        console.log(err)
         res.status(500);
-        res.send();
+        res.send('Could not get user');
+        next(err);
     }
 });
 
-router.post('/create', async (req, res) => {
+router.post('/create', async (req, res, next) => {
     try {
         //TODO: Validate req.body.currentUserID?
         await Users.createUser(req.body.newUser)
         let users = await Users.getUsers(req.body.currentUserID);
         res.json({ users: users });
     } catch (err) {
-        console.log('Error creating user', err);
         res.status(500);
-        res.send();
-        //TODO: Handle errors properly
+        res.send('Could not create user');
+        next(err)
     }
 })
 
-router.get('/organisation/:id/users', async (req, res) => {
-    let users = await Users.getOrgUsers(req.params.id);
-    res.json(users);
-})
-
-router.get('/organisation/:id/user/:uid', (req, res) => {
-    var r = {
-        user: usr,
-        forms: [form]
+router.get('/organisation/:id/users', async (req, res, next) => {
+    try {
+        let users = await Users.getOrgUsers(req.params.id);
+        res.json(users);
+    } catch (err) {
+        res.status(500);
+        res.send('Could not get users');
+        next(err);
     }
-    res.json(r)
 })
-
-
-router.get('/organisation/:id/user/:uid/form/:fid', (req, res) => {
-    var r = {
-        allReports: true,
-        allowedReports: [{
-            reportID: "QWERTY",
-            access: true
-        }]
-    }
-    res.json(r)
-})
-
-router.get('/organisation/:id/user/:uid/forms', (req, res) => {
-    var r = {
-        forms: [{
-            id: 45,
-            name: "testFormName",
-            testURL: "testURL",
-            publishedURL: "pubURL"
-        }]
-    }
-    res.json(r)
-})
-
-
-router.get('/user/:uid/admin-orgs-access', (req, res) => {
-    var r = {
-        organisations: [{
-            orgName: "orgName",
-            id: "ERTYU",
-            role: "admin"
-        }]
-    }
-    res.json(r)
-})
-
-
-router.get('/user/:uid/form/:fid', (req, res) => {
-    var r = {
-        reports: [{
-            reportId: 987
-        }]
-    }
-    res.json(r)
-})
-
-router.get('/report/:id', (req, res) => {
-    var r = {
-        reports: [{
-            id: 4567,
-            fields: []
-        }]
-    }
-    res.json(r)
-})
-
-router.get('/organisation/:id/reports', (req, res) => {
-    responseQueries.getResponse(res, 'nYkngh')
-})
-
-
-
 
 module.exports = router

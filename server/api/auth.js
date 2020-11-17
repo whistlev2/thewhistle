@@ -41,13 +41,18 @@ router.post('/login', async (req, res, next) => {
     }
 })
 
-router.post('/logout', (req, res) => {
-    res.clearCookie('authtoken');
-    res.clearCookie('user');
-    res.redirect('/');
+router.post('/logout', (req, res, next) => {
+    try {
+        res.clearCookie('authtoken');
+        res.clearCookie('user');
+        res.redirect('/');
+    } catch (err) {
+        res.redirect('/');
+        next(err);
+    }
 })
 
-router.get('/user', async (req, res) => {
+router.get('/user', async (req, res, next) => {
     try {
         const tokenCookie = req.cookies['auth._token.local'];
         let validToken = tokenCookie.startsWith('Bearer ');
@@ -62,8 +67,9 @@ router.get('/user', async (req, res) => {
         } else {
             res.status(401).json({ msg: "Unauthorised"})
         }
-    } catch {
+    } catch (err) {
         res.status(401).json({ msg: "Not authorised"})
+        next(err)
     }
 })
 
