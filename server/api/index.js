@@ -7,6 +7,7 @@ const report = require('./report.js')
 const auth = require('./auth.js')
 const editForm = require('./editForm.js')
 const organisations = require('./organisations.js')
+const errors = require('./errors.js');
 
 const Surveys = require('../queries/surveys.js')
 
@@ -26,5 +27,7 @@ router.use('/edit-form', editForm);
 router.use('/auth', auth);
 
 router.use('/organisations', organisations);
+
+router.use('/errors', errors);
 
 module.exports = router

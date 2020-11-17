@@ -28,6 +28,10 @@ export default async function (context) {
         context.reports = await Pages.loadReports(params.form, true);
     }
 
+    if (path.startsWith('/errors')) {
+        context.errors = await Pages.loadErrors();
+    }
+
     /* if (path.startsWith('/edit-form/') && params.hasOwnProperty('form')) {
         console.log('AM EDITING', params.form);
         //context.form = await Pages.loadEditForm(params.form);

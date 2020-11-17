@@ -1,5 +1,5 @@
 const db = require('../db.ts');
-const { InvalidReporterError } = require('../utils/errors/InvalidReporterError.js');
+const { InvalidReporterError } = require('../utils/errors/errors.js');
 const users = require('./users.js');
 
 async function getFormFromSection(sectionID) {

@@ -40,6 +40,12 @@ class Pages {
         return form.data;
     }
 
+    static async loadErrors() {
+        const url = '/api/errors';
+        const errors = await axios.get(url);
+        return errors.data;
+    }
+
 
     // static async loadReport(reportId) {
     //     const url = process.env.baseURL + `/api/report/${reportId}`;

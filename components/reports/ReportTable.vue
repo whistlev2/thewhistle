@@ -26,7 +26,7 @@ export default {
                 for (let i = 0; i < this.$attrs.items.length; i++) {
                     showItem = true;
                     for (let [key, value] of filters) {
-                        if (this.items[i][key] != value) {
+                        if (this.$attrs.items[i][key] != value) {
                             showItem = false;
                         }
                     }

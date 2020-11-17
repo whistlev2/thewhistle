@@ -10,6 +10,7 @@
                 <v-btn to="/organisations" text>Organisations</v-btn>
                 <v-btn to="/forms" text>Forms</v-btn>
                 <v-btn to="/users" text>Users</v-btn>
+                <v-btn to="/errors" text>Errors</v-btn>
                 <!-- TODO - Add user logic -->
                 <!-- TODO - L - Add edit own details and logout in dropdown -->
                 <v-btn @click="logout" text>Logout</v-btn>

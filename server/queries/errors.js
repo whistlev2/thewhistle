@@ -1,5 +1,5 @@
 const db = require('../db.ts');
-const { DBInsertionError } = require('../utils/errors/DBInsertionError.js');
+const { DBInsertionError, DBSelectionError } = require('../utils/errors/errors.js');
 
 exports.insertError = async function (stack, url, body) {
     try {
@@ -14,6 +14,10 @@ exports.insertError = async function (stack, url, body) {
 }
 
 exports.getErrors = async function() {
-    const results = await db.query(`SELECT * FROM errors`)
-    return results.rows;
+    try {
+        const results = await db.query(`SELECT * FROM errors`)
+        return results.rows;
+    } catch (err) {
+        throw new DBSelectionError('errors', err);
+    }
 }

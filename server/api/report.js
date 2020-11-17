@@ -31,7 +31,6 @@ async function startReport(req, res, next) {
             res.status(404);
             res.send(err.message);
         } else {
-            console.log(err)
             res.status(500);
             res.send();
             next(err);
