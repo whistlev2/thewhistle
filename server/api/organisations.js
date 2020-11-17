@@ -9,10 +9,16 @@ router.get('/:userID', async (req, res) => {
     res.json({ orgs: orgs });
 })
 
-router.post('/create', async (req, res) => {
-    await Organisations.createOrg(req.body.org, req.body.user);
-    let orgs = await Users.getUserOrgs(req.body.user);
-    res.json({ orgs: orgs });
+router.post('/create', async (req, res, next) => {
+    try {
+        await Organisations.createOrg(req.body.org, req.body.user);
+        let orgs = await Users.getUserOrgs(req.body.user);
+        res.json({ orgs: orgs });
+    } catch (err) {
+        res.status(500);
+        res.send('Could not create organisation');
+        next(err);
+    }
 })
 
 module.exports = router

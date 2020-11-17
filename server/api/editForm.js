@@ -1,5 +1,5 @@
 const FormGen = require('../utils/formGen');
-const Surveys = require('../queries/surveys.js');
+const Forms = require('../queries/forms.js');
 
 const express = require('express');
 
@@ -27,7 +27,7 @@ router.delete('/:sectionID/delete-option/:questionRef/:choiceRef', deleteOption)
 
 async function getForm(req, res) {
     try {
-        const form = await Surveys.getEditFormJSON(req.params.slug);
+        const form = await Forms.getEditFormJSON(req.params.slug);
         res.json(form);
     } catch (err) {
         console.log(err);

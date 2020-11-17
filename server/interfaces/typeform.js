@@ -37,12 +37,16 @@ exports.createWebhook = async function (typeformID, sectionID, test) {
         }
         //TODO: Add secret
         //TODO: Set SSL true
-        await axios({
-            method: 'put',
-            url: url,
-            headers: headers,
-            data: data
-        })
+        try {
+            await axios({
+                method: 'put',
+                url: url,
+                headers: headers,
+                data: data
+            })
+        } catch (err) {
+            throw new TypeformWebhookError(data.url, err);
+        }
 
     } catch (err) {
         //TODO: Handle errors properly
@@ -85,26 +89,24 @@ function adaptForm(form) {
 
 exports.updateForm = async function (formID, form) {
     form = adaptForm(form);
+    const url = `https://${TYPEFORM_API_BASE_URL}/forms/${formID}`;
+    const data = JSON.stringify(form);
     try {
-        const url = `https://${TYPEFORM_API_BASE_URL}/forms/${formID}`;
-        const data = JSON.stringify(form);
         await axios({
             method: 'put',
             url: url,
             headers: headers,
             data: data
-        }).catch((err) => {
-            console.log(`Status: ${err.response.status} ${err.response.data.code}\nDescription: ${err.response.data.description}\n`);
-        })
+        });
     } catch (err) {
-        console.log('Error updating Typeform', err)
+        throw new TypeformUpdateError(form, err);
     }
     return form;
 }
 
 exports.createForm = async function (form) {
+    const url = `https://${TYPEFORM_API_BASE_URL}/forms`;
     try {
-        const url = `https://${TYPEFORM_API_BASE_URL}/forms`;
         let response = await axios({
             method: 'post',
             url: url,
@@ -114,7 +116,6 @@ exports.createForm = async function (form) {
         let ret = response.data;
         return ret;
     } catch (err) {
-        //TODO: Handle errors properly
-        console.log(err);
+        throw new TypeformUpdateError(form, err);
     }
 }

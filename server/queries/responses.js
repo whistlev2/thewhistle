@@ -1,7 +1,8 @@
 var _ = require('underscore');
 var pgFormat = require('pg-format');
 
-const db = require('../db.ts')
+const db = require('../db.ts');
+const { DBSelectionError } = require('../utils/errors/errors');
 
 
 exports.storeResponse = async function (payload) {
@@ -37,6 +38,7 @@ function storeQuestionResponses(payload, responseID) {
 
 
 function getQuestionResponses(payload, responseID) {
+    //TODO: Remove if not needed
     const definitions = payload.form_response.definition.fields;
     const answers = payload.form_response.answers;
     let questionRef = '';
@@ -84,35 +86,34 @@ function formatItems(items) {
 
 //Used for /reports pages
 exports.getReportsFromFormSlug = async function (slug, test) {
-    //TODO: NOW - implement
-    //TODO: Edit this or delete if redundant
+    let query = `SELECT reports.id, reports.date, questionresponses.question_ref, questionresponses.value FROM reports JOIN forms ON reports.form = forms.id JOIN questionresponses ON reports.id=questionresponses.report WHERE forms.slug='${slug}' AND reports.test=${test}`;
+    let results = {};
     try {
-        let query = `SELECT reports.id, reports.date, questionresponses.question_ref, questionresponses.value FROM reports JOIN forms ON reports.form = forms.id JOIN questionresponses ON reports.id=questionresponses.report WHERE forms.slug='${slug}' AND reports.test=${test}`
-        let results = await db.query(query);
-        let rows = results.rows;
-        let headers = [];
-        let items = {};
-        for (let i = 0; i < rows.length; i++) {
-            if (!headers.includes(rows[i].question_ref)) {
-                headers.push(rows[i].question_ref);
-            }
-
-            if (!items.hasOwnProperty(rows[i].id)) {
-                items[rows[i].id] = {
-                    url: `/report/${rows[i].id}`,
-                    date: rows[i].date
-                };
-            }
-            items[rows[i].id][rows[i].question_ref] = rows[i].value;
-        }
-        let ret = {
-            headers: formatHeaders(headers),
-            items: formatItems(items)
-        };
-        return ret;
+        results = await db.query(query);
     } catch (err) {
-        console.log(err);
+        throw new DBSelectionError('reports', query, err);
     }
+    let rows = results.rows;
+    let headers = [];
+    let items = {};
+    for (let i = 0; i < rows.length; i++) {
+        if (!headers.includes(rows[i].question_ref)) {
+            headers.push(rows[i].question_ref);
+        }
+
+        if (!items.hasOwnProperty(rows[i].id)) {
+            items[rows[i].id] = {
+                url: `/report/${rows[i].id}`,
+                date: rows[i].date
+            };
+        }
+        items[rows[i].id][rows[i].question_ref] = rows[i].value;
+    }
+    let ret = {
+        headers: formatHeaders(headers),
+        items: formatItems(items)
+    };
+    return ret;
 }
 
 async function getFormResponses(formId) {
@@ -145,6 +146,7 @@ function formatResponses(responses) {
 }
 
 function formatItems(items) {
+    //TODO: Delete one of these similar functions
     let ret = [];
     for (let [_, value] of Object.entries(items)) {
         ret.push(value);

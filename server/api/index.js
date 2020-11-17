@@ -9,8 +9,6 @@ const editForm = require('./editForm.js')
 const organisations = require('./organisations.js')
 const errors = require('./errors.js');
 
-const Surveys = require('../queries/surveys.js')
-
 const router = express.Router()
 // Set up routes
 

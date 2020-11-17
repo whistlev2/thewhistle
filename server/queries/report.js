@@ -1,8 +1,9 @@
 const db = require('../db.ts');
-const { InvalidReporterError } = require('../utils/errors/errors.js');
+const { InvalidReporterError, DBInsertionError, DBSelectionError, DBUpdateError } = require('../utils/errors/errors.js');
 const users = require('./users.js');
 
 async function getFormFromSection(sectionID) {
+    //TODO: Remove if not needed
     const results = await db.query(`SELECT form FROM formsections where id=${sectionID}`)
     const formID = results.rows[0].form;
     return formID;
@@ -11,10 +12,13 @@ async function getFormFromSection(sectionID) {
 async function insertReport(formID, test, reporter) {
     const query = `INSERT INTO reports(form, active, test, date, reporter) VALUES($1, $2, $3, to_timestamp(${Date.now()} / 1000.0), $4) RETURNING id`;
     const values = [formID, true, test, reporter];
-    const results = await db.query(query, values);
-    const reportID = results.rows[0].id;
-
-    return reportID;
+    try {
+        const results = await db.query(query, values);
+        const reportID = results.rows[0].id;
+        return reportID;
+    } catch (err) {
+        throw new DBInsertionError('reports', query, values, err);
+    }
 }
 
 function getValueFromAnswer(answer) {
@@ -44,12 +48,21 @@ function getDefinitionFromID(definitions, fieldID) {
 async function insertQuestionResponse(reportID, sectionID, ref, definition, value) {
     const query = 'INSERT INTO questionresponses(report, section, question_ref, definition, value) VALUES($1, $2, $3, $4, $5)';
     const values = [reportID, sectionID, ref, JSON.stringify(definition), JSON.stringify(value)];
-    await db.query(query, values);
+    try {
+        await db.query(query, values);
+    } catch (err) {
+        throw new DBInsertionError('questionresponses', query, values, err);
+    }
 }
 
 async function validateReporter(formID, reporter) {
-    const results = await db.query(`SELECT id FROM reports WHERE reporter='${reporter}' AND form=${formID}`);
-    return results.rows.length > 0;
+    let query = `SELECT id FROM reports WHERE reporter='${reporter}' AND form=${formID}`;
+    try {
+        const results = await db.query(query);
+        return results.rows.length > 0;
+    } catch (err) {
+        throw new DBSelectionError('reports', query, err);
+    }
 }
 
 async function generateNewReporter() {
@@ -57,9 +70,15 @@ async function generateNewReporter() {
     let reporter = '';
     let results = {};
     let foundNewReporter = false;
+    let query = '';
     while (!foundNewReporter) {
         reporter = Math.floor(100000 + Math.random() * 900000).toString(10);
-        results = await db.query(`SELECT id FROM reports WHERE reporter='${reporter}'`);
+        query = `SELECT id FROM reports WHERE reporter='${reporter}'`;
+        try {
+            results = await db.query(query);
+        } catch (err) {
+            throw new DBSelectionError('reports', query, err)
+        }
         foundNewReporter = results.rows.length == 0;
     }
     return reporter;
@@ -73,30 +92,39 @@ async function insertUsedBefore(reportID, usedBefore) {
     }
     const query = 'INSERT INTO questionresponses(report, question_ref, value, definition) VALUES($1, $2, $3, $4)';
     const values = [reportID, 'Used before?', usedBefore ? 'Yes' : 'No', definition];
-    await db.query(query, values);
+    try {
+        await db.query(query, values);
+    } catch (err) {
+        throw new DBInsertionError('questionresponses', query, values, err)
+    }
 }
 
 exports.startReport = async function (formID, body) {
-    let test = body.test
+    try {
+        let test = body.test
 
-    let reporter = body.reporter;
-    if (reporter) {
-        let validReporter = await validateReporter(formID, reporter);
-        if (!validReporter) {
-            throw new InvalidReporterError(`${reporter} is not a valid reporter number for this form.`);
+        let reporter = body.reporter;
+        if (reporter) {
+            let validReporter = await validateReporter(formID, reporter);
+            if (!validReporter) {
+                throw new InvalidReporterError(`${reporter} is not a valid reporter number for this form.`);
+            }
+        } else {
+            reporter = await generateNewReporter();
         }
-    } else {
-        reporter = await generateNewReporter();
+
+        let reportID = await insertReport(formID, test, reporter);
+
+        await insertUsedBefore(reportID, body.usedBefore);
+
+        return {
+            id: reportID,
+            reporter: reporter
+        };
+    } catch (err) {
+        //Unnecessary try/catch?
+        throw err;
     }
-
-    let reportID = await insertReport(formID, test, reporter);
-
-    await insertUsedBefore(reportID, body.usedBefore);
-
-    return {
-        id: reportID,
-        reporter: reporter
-    };
 }
 
 exports.submitTypeformSection = async function (sectionID, payload) {
@@ -117,33 +145,36 @@ exports.submitTypeformSection = async function (sectionID, payload) {
         }
         Promise.all(promises);
     } catch (err) {
-        console.log('Webhook error', err)
+        //Unnecessary try/catch?
+        throw err;
     }
 }
 
 exports.getResponses = async function (reportID) {
+    let query = `SELECT * FROM questionresponses where report=${reportID}`;
     try {
         //TODO: Check ID change still works
-        const responses = await db.query(`SELECT * FROM questionresponses where report=${reportID}`)
+        const responses = await db.query(query)
         return responses.rows;
     } catch (err) {
-        throw err;
-        //TODO: Handle errors properly
+        throw new DBSelectionError('questionresponses', query, err)
     }
 }
 
 exports.getFormSlug = async function (reportID) {
+    let query = `SELECT slug FROM forms JOIN reports ON reports.form=forms.id WHERE reports.id=${parseInt(reportID)}`;
     try {
-        const slugs = await db.query(`SELECT slug FROM forms JOIN reports ON reports.form=forms.id WHERE reports.id=${parseInt(reportID)}`)
+        const slugs = await db.query(query)
         return slugs.rows[0].slug;
     } catch (err) {
-        //TODO: Handle errors properly
+        throw new DBSelectionError('forms', query, err);
     }
 }
 
 exports.getMetadata = async function (reportID) {
+    let query = `SELECT reports.date, reports.status, reports.tags, reports.active, reports.location, reports.reporter, assigned_to FROM reports WHERE reports.id=${parseInt(reportID)}`;
     try {
-        let metadata = await db.query(`SELECT reports.date, reports.status, reports.tags, reports.active, reports.location, reports.reporter, assigned_to FROM reports WHERE reports.id=${parseInt(reportID)}`);
+        let metadata = await db.query(query);
         if (metadata.rows.length > 0) {
             metadata = metadata.rows[0];
             if (metadata.tags) {
@@ -175,14 +206,14 @@ exports.getMetadata = async function (reportID) {
             }
         }
     } catch (err) {
-        console.log(err)
-        //TODO: Handle errors properly
+        throw new DBSelectionError('reports', query, err);
     }
 }
 
-exports.getNotes = async function (reportID) {
+async function getNotes(reportID) {
+    let query = `SELECT notes.time, notes.comment, CONCAT(users.first_name, ' ', users.surname) AS user FROM notes JOIN users ON notes.user=users.id  WHERE notes.report=${parseInt(reportID)}`;
     try {
-        let notes = await db.query(`SELECT notes.time, notes.comment, CONCAT(users.first_name, ' ', users.surname) AS user FROM notes JOIN users ON notes.user=users.id  WHERE notes.report=${parseInt(reportID)}`);
+        let notes = await db.query(query);
         notes = notes.rows;
         for (let i = 0; i < notes.length; i++) {
             let date = new Date(notes[i].time);
@@ -190,14 +221,16 @@ exports.getNotes = async function (reportID) {
         }
         return notes;
     } catch (err) {
-        console.log('err')
-        //TODO: Handle errors properly
+        throw new DBSelectionError('notes', query, err);
     }
 }
 
-exports.getAudit = async function (reportID) {
+exports.getNotes = getNotes;
+
+async function getAudit(reportID) {
+    let query = `SELECT audit.time, audit.action, CONCAT(users.first_name, ' ', users.surname) AS user FROM audit JOIN users ON audit.user=users.id  WHERE audit.report=${parseInt(reportID)}`;
     try {
-        let audit = await db.query(`SELECT audit.time, audit.action, CONCAT(users.first_name, ' ', users.surname) AS user FROM audit JOIN users ON audit.user=users.id  WHERE audit.report=${parseInt(reportID)}`);
+        let audit = await db.query(query);
         audit = audit.rows;
         for (let i = 0; i < audit.length; i++) {
             let date = new Date(audit[i].time);
@@ -205,10 +238,11 @@ exports.getAudit = async function (reportID) {
         }
         return audit;
     } catch (err) {
-        console.log(err)
-        //TODO: Handle errors properly
+        throw new DBSelectionError('audit', query, err);
     }
 }
+
+exports.getAudit = getAudit;
 
 exports.getFiles = async function (reportID) {
     //TODO: Implement
@@ -229,19 +263,20 @@ exports.getFiles = async function (reportID) {
 
 
 exports.getUserOptions = async function (reportID) {
+    let query = `SELECT users.id, CONCAT(users.first_name, ' ', users.surname) AS name FROM users JOIN userorgs ON users.id=userorgs.user JOIN forms ON forms.organisation=userorgs.organisation JOIN reports ON reports.form=forms.id WHERE reports.id=${parseInt(reportID)}`;
     try {
-        let userOptions = await db.query(`SELECT users.id, CONCAT(users.first_name, ' ', users.surname) AS name FROM users JOIN userorgs ON users.id=userorgs.user JOIN forms ON forms.organisation=userorgs.organisation JOIN reports ON reports.form=forms.id WHERE reports.id=${parseInt(reportID)}`);
+        let userOptions = await db.query(query);
         userOptions = userOptions.rows;
         return userOptions;
     } catch (err) {
-        console.log(err)
-        //TODO: Handle errors properly
+        throw new DBSelectionError('users', query, err);
     }
 }
 
 exports.getReportOptions = async function (reportID) {
+    let query = `SELECT allreports.status, allreports.tags FROM reports allreports JOIN reports onereport ON onereport.form=allreports.form WHERE onereport.id=${parseInt(reportID)}`;
     try {
-        let reportOptions = await db.query(`SELECT allreports.status, allreports.tags FROM reports allreports JOIN reports onereport ON onereport.form=allreports.form WHERE onereport.id=${parseInt(reportID)}`);
+        let reportOptions = await db.query(query);
         reportOptions = reportOptions.rows;
         const statuses = [];
         const tags = [];
@@ -261,108 +296,159 @@ exports.getReportOptions = async function (reportID) {
             tags: tags
         };
     } catch (err) {
-        console.log(err)
-        //TODO: Handle errors properly
+        throw new DBSelectionError('reports', query, err);
+    }
+}
+
+async function addAudit(audit) {
+    let query = `INSERT INTO audit(report, user, time, action) VALUES (${audit.report}, ${audit.user}, to_timestamp(${Date.now()} / 1000.0), '${audit.action}')`;
+    try {
+        await db.query(query);
+    } catch (err) {
+        throw new DBInsertionError('audit', query, [], err);
     }
 }
 
 exports.updateAssigned = async function (report, user, assignedID) {
-    await db.query(`UPDATE reports SET assigned_to='${assignedID}' WHERE id='${report}'`);
-    const assigned = await users.getUser(assignedID);
+    let query = `UPDATE reports SET assigned_to='${assignedID}' WHERE id='${report}'`;
+    try {
+        await db.query(query);
+    } catch (err) {
+        throw new DBUpdateError('reports', query, err);
+    }
+    let assigned = {};
+    try {
+        assigned = await users.getUser(assignedID);
+    } catch (err) {
+        //TODO: remove unnecessary try/catch?
+        throw err;
+    }
     const audit = {
         report: report,
         user: user,
         action: `Assigned report to ${assigned.first_name} ${assigned.surname}`
     }
-    await addAudit(audit);
-    const ret = exports.getAudit(report);
-    return ret;
+    try {
+        await addAudit(audit);
+        const ret = await getAudit(report);
+        return ret;
+    } catch (err) {
+        //TODO: Remove unnecessary try/catch?
+        throw err;
+    }
 }
 
 exports.updateStatus = async function (report, user, status) {
+    let query = `UPDATE reports SET status='${status}' WHERE id='${report}'`;
     try {
-        await db.query(`UPDATE reports SET status='${status}' WHERE id='${report}'`);
-        const audit = {
-            report: report,
-            user: user,
-            action: `Set status to ${status}`
-        }
+        await db.query(query);
+    } catch (err) {
+        throw new DBUpdateError('reports', query, err)
+    }
+    const audit = {
+        report: report,
+        user: user,
+        action: `Set status to ${status}`
+    }
+    try {
         await addAudit(audit);
-        const ret = exports.getAudit(report);
+        const ret = getAudit(report);
         return ret;
     } catch (err) {
+        //TODO: Remove unnecessary try/catch?
+        throw err;
     }
 }
 
 exports.updateLocation = async function (report, user, location) {
+    let query = `UPDATE reports SET location='${location}' WHERE id='${report}'`;
     try {
-        await db.query(`UPDATE reports SET location='${location}' WHERE id='${report}'`);
-        const audit = {
-            report: report,
-            user: user,
-            action: `Set location to ${location}`
-        }
+        await db.query(query);
+    } catch (err) {
+        throw new DBUpdateError('reports', query, err);
+    }
+    const audit = {
+        report: report,
+        user: user,
+        action: `Set location to ${location}`
+    }
+    try {
         await addAudit(audit);
-        const ret = exports.getAudit(report);
+        const ret = getAudit(report);
         return ret;
     } catch (err) {
+        //TODO: Remove unnecessary try/catch?
+        throw err;
     }
 }
 
 exports.updateTags = async function (report, user, tags) {
+    let query = `UPDATE reports SET tags='${tags}' WHERE id='${report}'`;
     try {
-        await db.query(`UPDATE reports SET tags='${tags}' WHERE id='${report}'`);
-        const audit = {
-            report: report,
-            user: user,
-            action: `Set tags to ${tags.join(', ')}`
-        }
+        await db.query(query);
+    } catch (err) {
+        throw new DBUpdateError('reports', query, err)
+    }
+    const audit = {
+        report: report,
+        user: user,
+        action: `Set tags to ${tags.join(', ')}`
+    }
+    try {
         await addAudit(audit);
-        const ret = exports.getAudit(report);
+        const ret = getAudit(report);
         return ret;
     } catch (err) {
+        //TODO: Remove unnecessary try/catch?
+        throw err;
     }
 }
 
 exports.updateActive = async function (report, user, active) {
+    let query = `UPDATE reports SET active=${active} WHERE id='${report}'`;
     try {
-        await db.query(`UPDATE reports SET active=${active} WHERE id='${report}'`);
-        const audit = {
-            report: report,
-            user: user,
-            action: active ? 'Set report to active' : 'Archived report'
-        }
+        await db.query(query);        
+    } catch (err) {
+        throw new DBUpdateError('reports', query, err)
+    }
+    const audit = {
+        report: report,
+        user: user,
+        action: active ? 'Set report to active' : 'Archived report'
+    }
+    try {
         await addAudit(audit);
-        const ret = exports.getAudit(report);
+        const ret = getAudit(report);
         return ret;
     } catch (err) {
+        //TODO: remove unnecessary try/catch?
+        throw err;
     }
 }
 
 exports.addNote = async function (report, user, comment) {
+    let query = `INSERT INTO notes(report, "user", time, comment) VALUES (${report}, ${user}, to_timestamp(${Date.now()} / 1000.0), '${comment}')`;
     try {
-        await db.query(`INSERT INTO notes(report, "user", time, comment) VALUES (${report}, ${user}, to_timestamp(${Date.now()} / 1000.0), '${comment}')`);
-        const audit = {
-            report: report,
-            user: user,
-            action: `Added note ${comment}`
-        }
-        //await addAudit(audit);
-        let auditTrail = await exports.getAudit(report);
-        let notes = await exports.getNotes(report);
+        await db.query(query);
+    } catch (err) {
+        throw new DBInsertionError('notes', query, [], err);
+    }
+    const audit = {
+        report: report,
+        user: user,
+        action: `Added note ${comment}`
+    };
+    try {
+        await addAudit(audit);
+        let auditTrail = await getAudit(report);
+        let notes = await getNotes(report);
         const ret = {
             audit: auditTrail,
             notes: notes
         }
         return ret;
     } catch (err) {
-        console.log(err)
-    }
-}
-
-async function addAudit(audit) {
-    try {
-        await db.query(`INSERT INTO audit(report, user, time, action) VALUES (${audit.report}, ${audit.user}, to_timestamp(${Date.now()} / 1000.0), '${audit.action}')`);
-    } catch (err) {
+        //TODO: Remove unnecessary try/catch?
+        throw err;
     }
 }

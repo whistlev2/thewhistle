@@ -1,6 +1,4 @@
-//TODO: Delete if not needed
-const Subforms = require('../queries/subforms.js');
-const Surveys = require('../queries/surveys.js');
+const Forms = require('../queries/forms.js');
 const Typeform = require('../interfaces/typeform.js');
 
 
@@ -9,7 +7,7 @@ async function updateForm(sectionID, form, type) {
         await Typeform.updateForm(form.id, form);
     }
 
-    let retForm = await Surveys.updateJSON(sectionID, form);
+    let retForm = await Forms.updateJSON(sectionID, form);
     
     return retForm;
 }
@@ -412,7 +410,7 @@ exports.createForm = async function (slug, title, description, org, web) {
             web: web,
             type: web ? 'typeform' : 'sms'
         }
-        await Surveys.insertForm(form);
+        await Forms.insertForm(form);
     } catch (err) {
         console.error(err)
         //TODO: Handle errors properly
@@ -420,7 +418,7 @@ exports.createForm = async function (slug, title, description, org, web) {
 }
 
 exports.updateQuestionTitle = async function(sectionID, questionRef, questionTitle) {
-    let sectionJSON = await Surveys.getSectionJSON(sectionID);
+    let sectionJSON = await Forms.getSectionJSON(sectionID);
     let form = sectionJSON.form;
     let type = sectionJSON.type;
     //TODO: Handle case that the question doesn't exist
@@ -436,7 +434,7 @@ exports.updateQuestionTitle = async function(sectionID, questionRef, questionTit
 
 exports.addFirstQuestion = async function(sectionID, question) {
     try {
-        let sectionJSON = await Surveys.getSectionJSON(sectionID);
+        let sectionJSON = await Forms.getSectionJSON(sectionID);
         let form = sectionJSON.form;
         let type = sectionJSON.type;
         //TODO: Check question ref doesn't already exist
@@ -453,7 +451,7 @@ exports.addFirstQuestion = async function(sectionID, question) {
 }
 
 exports.addQuestionBefore = async function(sectionID, adjacentQuestionRef, question) {
-    let sectionJSON = await Surveys.getSectionJSON(sectionID);
+    let sectionJSON = await Forms.getSectionJSON(sectionID);
     let form = sectionJSON.form;
     let type = sectionJSON.type;
 
@@ -474,7 +472,7 @@ exports.addQuestionBefore = async function(sectionID, adjacentQuestionRef, quest
 }
 
 exports.addQuestionAfter = async function(sectionID, adjacentQuestionRef, question) {
-    let sectionJSON = await Surveys.getSectionJSON(sectionID);
+    let sectionJSON = await Forms.getSectionJSON(sectionID);
     let form = sectionJSON.form;
     let type = sectionJSON.type;
 
@@ -493,7 +491,7 @@ exports.addQuestionAfter = async function(sectionID, adjacentQuestionRef, questi
 }
 
 exports.deleteQuestion = async function (sectionID, questionRef) {
-    let sectionJSON = await Surveys.getSectionJSON(sectionID);
+    let sectionJSON = await Forms.getSectionJSON(sectionID);
     let form = sectionJSON.form;
     let type = sectionJSON.type;
 
@@ -510,7 +508,7 @@ exports.deleteQuestion = async function (sectionID, questionRef) {
 }
 
 exports.updateQuestionJump = async function (sectionID, questionRef, jump) {
-    let sectionJSON = await Surveys.getSectionJSON(sectionID);
+    let sectionJSON = await Forms.getSectionJSON(sectionID);
     let form = sectionJSON.form;
     let type = sectionJSON.type;
 
@@ -550,7 +548,7 @@ exports.updateQuestionJump = async function (sectionID, questionRef, jump) {
 }
 
 exports.addOption = async function (sectionID, questionRef, option) {
-    let sectionJSON = await Surveys.getSectionJSON(sectionID);
+    let sectionJSON = await Forms.getSectionJSON(sectionID);
     let form = sectionJSON.form;
     let type = sectionJSON.type;
 
@@ -570,7 +568,7 @@ exports.addOption = async function (sectionID, questionRef, option) {
 }
 
 exports.updateOptionJump = async function (sectionID, questionRef, optionRef, jump) {
-    let sectionJSON = await Surveys.getSectionJSON(sectionID);
+    let sectionJSON = await Forms.getSectionJSON(sectionID);
     let form = sectionJSON.form;
     let type = sectionJSON.type;
 
@@ -610,7 +608,7 @@ exports.updateOptionJump = async function (sectionID, questionRef, optionRef, ju
 }
 
 exports.deleteOption = async function (sectionID, questionRef, choiceRef) {
-    let sectionJSON = await Surveys.getSectionJSON(sectionID);
+    let sectionJSON = await Forms.getSectionJSON(sectionID);
     let form = sectionJSON.form;
     let type = sectionJSON.type;
 

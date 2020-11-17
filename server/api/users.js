@@ -21,7 +21,7 @@ const form = {
 
 // TODO - BIG - integrate user into user API
 
-
+//TODO: Remove this?
 router.get('/', (req, res) => {
     Users.getAllUsers(res)
 })
@@ -52,8 +52,9 @@ router.post('/create', async (req, res) => {
     }
 })
 
-router.get('/organisation/:id/users', (req, res) => {
-    Users.getOrgUsers(res, req.params.id)
+router.get('/organisation/:id/users', async (req, res) => {
+    let users = await Users.getOrgUsers(req.params.id);
+    res.json(users);
 })
 
 router.get('/organisation/:id/user/:uid', (req, res) => {

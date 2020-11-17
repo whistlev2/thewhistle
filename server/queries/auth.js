@@ -1,22 +1,14 @@
 const bcrypt = require('bcrypt')
 
 const db = require('../db.ts')
-
 const Users = require('./users.js')
-
-const user = {
-    id: 1,
-    name: 'BOB',
-    email: "test@tst.com",
-    org: "TestOrg",
-    password: "bob"
-}
+const { UserAuthenticationError } = require('../utils/errors/errors.js')
 
 exports.serializeUser = function (user, done) {
     return done(null, user.id)
 }
 
-
+//TODO: Redo this function and send new user email etc.
 exports.createNewUser = function (email, password, firstName, surname, organisations) {
     bcrypt.genSalt(10, (err, salt) => {
         if (err) return next(err)
@@ -37,6 +29,7 @@ exports.createNewUser = function (email, password, firstName, surname, organisat
     })
 }
 
+//TODO: Refactor this code
 function addUserOrgs(userID, organisations) {
     const query = 'INSERT INTO userorgs(user, organisation) VALUES($1, $2)';
     for (let i = 0; i < organisations.length; i++) {
@@ -118,7 +111,6 @@ exports.authenticateUser = async function (email, password) {
         user.password = null;
         return match ? user : null;
     } catch (err) {
-        console.log(err);
-        return null;
+        throw new UserAuthenticationError(err);
     }
 }
