@@ -34,7 +34,7 @@ class RawResponse {
         const values = [data]
         db.query(query, values, (error, results) => {
             if (error) {
-                console.error(error);
+                //TODO: Handle errors properly
             }
         });
     }

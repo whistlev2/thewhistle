@@ -412,7 +412,6 @@ exports.createForm = async function (slug, title, description, org, web) {
         }
         await Forms.insertForm(form);
     } catch (err) {
-        console.error(err)
         //TODO: Handle errors properly
     }
 }
@@ -446,7 +445,7 @@ exports.addFirstQuestion = async function(sectionID, question) {
         let retForm = await updateForm(sectionID, form, type);
         return retForm;
     } catch (err) {
-        console.log('Add first question error', err)
+        //Handle properly
     }
 }
 

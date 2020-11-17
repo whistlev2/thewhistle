@@ -16,5 +16,4 @@ var presignedGETURL = s3.getSignedUrl('getObject', {
     Expires: 1000 //time to expire in seconds
 });
 
-console.log(presignedGETURL);
 //heroku pg:backups:restore --app staging-thewhistle --confirm "http://whistlev2.s3.eu-west-2.amazonaws.com/db.dump" DATABASE_URL

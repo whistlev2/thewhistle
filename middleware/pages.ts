@@ -8,7 +8,6 @@ class Pages {
             const form = await axios.get(url);
             return form.data;
         } catch (err) {
-            console.error(err);
             //TODO: Handle error properly
         }
     }

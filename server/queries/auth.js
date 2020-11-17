@@ -19,7 +19,7 @@ exports.createNewUser = function (email, password, firstName, surname, organisat
 
             db.query(query, values, (error, results) => {
                 if (error) {
-                    console.error(error);
+                    //TODO: Handle errors properly
                 } else {
                     const userID = results.rows[0].id;
                     addUserOrgs(userID, organisations);
@@ -36,7 +36,7 @@ function addUserOrgs(userID, organisations) {
         let values = [userID, organisations[i]];
         db.query(query, values, (error, results) => {
             if (error) {
-                console.error(error);
+                //TODO: Handle errors properly
             }
         })
     }

@@ -25,7 +25,6 @@ export default {
                 this.$nuxt.$emit('login');
                 this.$router.push('/');
             }).catch((err) => {
-                console.log('ERROR', err)
                 //TODO: Handle this
             });
         }

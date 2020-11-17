@@ -4,6 +4,5 @@ import HelloWorld from '@/components/HelloWorld.vue'; */
 
 describe('HelloWorld.vue', (): void => {
     it('Test test', (): void => {
-        console.log('TESTING');
     });
 });

@@ -53,7 +53,6 @@ export default {
             try {
                 user = this.$cookies.get('user');
             } catch (err) {
-                console.log(err)
                 return null;
                 //TODO: Redirect to login
             }

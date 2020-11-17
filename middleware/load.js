@@ -33,7 +33,6 @@ export default async function (context) {
     }
 
     /* if (path.startsWith('/edit-form/') && params.hasOwnProperty('form')) {
-        console.log('AM EDITING', params.form);
         //context.form = await Pages.loadEditForm(params.form);
         //context.slug = params.form;
     } */

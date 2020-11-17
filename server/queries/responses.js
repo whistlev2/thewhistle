@@ -18,7 +18,7 @@ async function storeRawResponse(payload) {
     const values = [payload, form_id, date];
     db.query(query, values, (error, results) => {
         if (error) {
-            console.error(error);
+            //TODO: Handle errors properly
         } else {
             storeQuestionResponses(payload, results.rows[0].id);
         }
@@ -31,7 +31,7 @@ function storeQuestionResponses(payload, responseID) {
     const query = pgFormat('INSERT INTO questionresponses(question_ref, definition, raw_response_id, value) VALUES %L', questionResponses);
     db.query(query, (error, results) => {
         if (error) {
-            console.error(error);
+            //TODO: Handle errors properly
         }
     });
 }
