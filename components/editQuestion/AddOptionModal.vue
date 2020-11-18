@@ -10,7 +10,7 @@
                         <v-row>
                             <v-form ref="form" v-model="valid">
                                 <v-col cols="12">
-                                    <v-text-field v-model="$attrs.newOption.ref" :rules="notBlank" label="Option reference" required></v-text-field>
+                                    <v-text-field v-model="$attrs.newOption.ref" :rules="refRules" label="Option reference" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
                                     <v-text-field v-model="$attrs.newOption.text" :rules="notBlank" label="Option text" required></v-text-field>
@@ -39,6 +39,7 @@ export default {
     data() {
         return {
             notBlank: [v => !!v || 'Required'],
+            refRules: [v => !!v || 'Required', v => v.match(/^[\w-]+$/g) || 'Can only contain letters, numbers and hyphens'],
             valid: false
         }
     },

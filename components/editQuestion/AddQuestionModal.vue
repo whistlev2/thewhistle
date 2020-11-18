@@ -18,7 +18,7 @@
                                         label="Question type" required></v-select>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field v-model="$attrs.newQuestion.ref" :rules="notBlank" label="Reference"
+                                    <v-text-field v-model="$attrs.newQuestion.ref" :rules="refRules" label="Reference"
                                         hint="E.g. for 'How old are you?', reference might be 'User age'."
                                         :persistent-hint="true" required></v-text-field>
                                 </v-col>
@@ -27,7 +27,7 @@
                                         label="Allow user to select multiple options"></v-switch>
                                 </v-col>
                                 <v-col cols="12" v-if="$attrs.newQuestion.type=='Multiple choice'">
-                                    <v-text-field v-model="$attrs.newQuestion.optionRef" :rules="notBlank" label="First option reference" :persistent-hint="true" required></v-text-field>
+                                    <v-text-field v-model="$attrs.newQuestion.optionRef" :rules="refRules" label="First option reference" :persistent-hint="true" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12" v-if="$attrs.newQuestion.type=='Multiple choice'">
                                     <v-text-field v-model="$attrs.newQuestion.optionText" :rules="notBlank" label="First option text" :persistent-hint="true" required></v-text-field>
@@ -56,6 +56,7 @@ export default {
     data() {
         return {
             notBlank: [v => !!v || 'Required'],
+            refRules: [v => !!v || 'Required', v => v.match(/^[\w-]+$/g) || 'Can only contain letters, numbers and hyphens'],
             valid: false,
             questionTypes: this.$attrs.web ?
                 ['Statement', 'Agreement', 'Short text', 'Long text', 'Multiple choice', 'Date', 'File upload'] :
