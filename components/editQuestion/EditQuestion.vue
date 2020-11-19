@@ -7,11 +7,36 @@
                         v-on:change="updateQuestionText" :rules="validText"></v-text-field>
                 </v-card-title>
                 <v-row>
-                    <v-col cols="12" md="4">
+                    <v-col cols="12" md="6">
                         Question type: {{ $attrs.question.type }}
                     </v-col>
-                    <v-col cols="12" md="8" v-if="$attrs.question.jumps.length > 0">
+                    <v-col cols="12" md="6" v-if="$attrs.question.jumps.length > 0">
                         Can jump to {{ $attrs.question.jumps.join(', ') }}
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col cols="12" md="6">
+                        <v-switch v-model="$attrs.question.required" class="ma-2"
+                            label="Required?" v-on:change="updateRequired"></v-switch>
+                    </v-col>
+                    <v-col cols="12" md="6">
+                        <v-switch v-model="showDescription" class="ma-2"
+                            label="Show question description?" v-on:change="updateShowDescription"></v-switch>
+                    </v-col>
+                </v-row>
+                <v-row v-if="multipleChoice">
+                    <v-col cols="12" md="6">
+                        <v-switch v-model="$attrs.question.allowMultiple" class="ma-2"
+                            label="Allow user to select multiple options?" v-on:change="updateAllowMultiple"></v-switch>
+                    </v-col>
+                    <v-col cols="12" md="6">
+                        <v-switch v-model="$attrs.question.allowOther" class="ma-2"
+                            label="Other option?" v-on:change="updateAllowOther"></v-switch>
+                    </v-col>
+                </v-row>
+                <v-row v-if="showDescription">
+                    <v-col cols="12" md="6">
+                        <v-text-field outlined v-model="$attrs.question.description" label="Description" v-on:change="updateDescription"></v-text-field>
                     </v-col>
                 </v-row>
                 <v-card-actions>
@@ -99,13 +124,17 @@ export default {
             newOption: {},
             optionToDelete: {},
             valid: false,
-            validText: [ v => !!v || 'Required' ]
+            validText: [ v => !!v || 'Required' ],
+            showDescription: false
         }
     },
     computed: {
         multipleChoice: function () {
             return this.$attrs.question.type == 'dropdown' || this.$attrs.question.type == 'multiple_choice';
-        },
+        }
+    },
+    mounted() {
+        this.showDescription = this.$attrs.question.description ? true : false;
     },
     methods: {
         emitToParent(form) {
@@ -227,6 +256,63 @@ export default {
                 this.emitToParent(response.data.form);  
                 //TODO: Handle errors
             });
+        },
+
+        updateRequired() {
+            let url = `/api/edit-form/${this.$attrs.sectionID}/update-required/${this.$attrs.question.ref}`;
+            let data = {
+                required: this.$attrs.question.required
+            };
+            axios.patch(url, data).then((response) => {
+                this.emitToParent(response.data.form);  
+                //TODO: Handle errors
+            });
+        },
+
+        updateShowDescription() {
+            if (!this.showDescription) {
+                let url = `/api/edit-form/${this.$attrs.sectionID}/delete-description/${this.$attrs.question.ref}`;
+
+                axios.delete(url).then((response) => {
+                    this.emitToParent(response.data.form);  
+                    //TODO: Handle errors
+                });
+            }
+        },
+
+        updateAllowMultiple() {
+            let url = `/api/edit-form/${this.$attrs.sectionID}/update-allow-multiple/${this.$attrs.question.ref}`;
+            let data = {
+                allowMultiple: this.$attrs.question.allowMultiple
+            };
+            axios.patch(url, data).then((response) => {
+                this.emitToParent(response.data.form);  
+                //TODO: Handle errors
+            });
+        },
+
+        updateAllowOther() {
+            let url = `/api/edit-form/${this.$attrs.sectionID}/update-allow-other/${this.$attrs.question.ref}`;
+            let data = {
+                allowOther: this.$attrs.question.allowOther
+            };
+            axios.patch(url, data).then((response) => {
+                this.emitToParent(response.data.form);  
+                //TODO: Handle errors
+            });
+        },
+
+        updateDescription() {
+            if (this.$attrs.question.description.length > 0) {
+                let url = `/api/edit-form/${this.$attrs.sectionID}/update-description/${this.$attrs.question.ref}`;
+                let data = {
+                    description: this.$attrs.question.description
+                };
+                axios.patch(url, data).then((response) => {
+                    this.emitToParent(response.data.form);  
+                    //TODO: Handle errors
+                });
+            }
         }
 
     }

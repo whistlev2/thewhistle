@@ -6,7 +6,6 @@ async function updateForm(sectionID, form, type) {
     if (type == 'typeform') {
         await Typeform.updateForm(form.id, form);
     }
-
     let retForm = await Forms.updateJSON(sectionID, form);
     
     return retForm;
@@ -643,6 +642,111 @@ exports.deleteOption = async function (sectionID, questionRef, choiceRef) {
             }
         }
     }
+    let retForm = await updateForm(sectionID, form, type);
+    return retForm;
+}
+
+exports.updateRequired = async function (sectionID, questionRef, required) {
+    try {
+        let sectionJSON = await Forms.getSectionJSON(sectionID);
+        let form = sectionJSON.form;
+        let type = sectionJSON.type;
+
+        for (let i = 0; i < form.fields.length; i++) {
+            if (form.fields[i].ref == questionRef) {
+                if (form.fields[i].validations) {
+                    form.fields[i].validations.required = required;
+                } else {
+                    form.fields[i].validations = {
+                        required: required
+                    }
+                }
+            }
+        }
+
+        let retForm = await updateForm(sectionID, form, type);
+        return retForm;
+    } catch (err) {
+        throw err
+    }
+}
+
+exports.deleteDescription = async function (sectionID, questionRef) {
+    let sectionJSON = await Forms.getSectionJSON(sectionID);
+    let form = sectionJSON.form;
+    let type = sectionJSON.type;
+
+    for (let i = 0; i < form.fields.length; i++) {
+        if (form.fields[i].ref == questionRef) {
+            if (form.fields[i].properties.description) {
+                delete form.fields[i].properties.description
+            }
+        }
+    }
+
+    let retForm = await updateForm(sectionID, form, type);
+    return retForm;
+}
+
+exports.updateAllowMultiple = async function (sectionID, questionRef, allowMultiple) {
+    let sectionJSON = await Forms.getSectionJSON(sectionID);
+    let form = sectionJSON.form;
+    let type = sectionJSON.type;
+
+    for (let i = 0; i < form.fields.length; i++) {
+        if (form.fields[i].ref == questionRef) {
+            if (form.fields[i].properties) {
+                form.fields[i].properties.allow_multiple_selection = allowMultiple;
+            } else {
+                form.fields[i].properties = {
+                    allow_multiple_selection: allowMultiple
+                }
+            }
+        }
+    }
+
+    let retForm = await updateForm(sectionID, form, type);
+    return retForm;
+}
+
+exports.updateAllowOther = async function (sectionID, questionRef, allowOther) {
+    let sectionJSON = await Forms.getSectionJSON(sectionID);
+    let form = sectionJSON.form;
+    let type = sectionJSON.type;
+
+    for (let i = 0; i < form.fields.length; i++) {
+        if (form.fields[i].ref == questionRef) {
+            if (form.fields[i].properties) {
+                form.fields[i].properties.allow_multiple_choice = allowOther;
+            } else {
+                form.fields[i].properties = {
+                    allow_other_choice: allowOther
+                }
+            }
+        }
+    }
+
+    let retForm = await updateForm(sectionID, form, type);
+    return retForm;
+}
+
+exports.updateDescription = async function (sectionID, questionRef, description) {
+    let sectionJSON = await Forms.getSectionJSON(sectionID);
+    let form = sectionJSON.form;
+    let type = sectionJSON.type;
+
+    for (let i = 0; i < form.fields.length; i++) {
+        if (form.fields[i].ref == questionRef) {
+            if (form.fields[i].properties) {
+                form.fields[i].properties.description = description;
+            } else {
+                form.fields[i].properties = {
+                    description: description
+                }
+            }
+        }
+    }
+
     let retForm = await updateForm(sectionID, form, type);
     return retForm;
 }

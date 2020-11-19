@@ -39,13 +39,19 @@ class UserAuthenticationError extends WhistleError {
 
 class TypeformUpdateError extends WhistleError {
     constructor(form, err) {
-        super(`Error updating form. Form JSON:\n${JSON.stringify(form)}\n${err.message}`)
+        super(`Error updating form. Form JSON:\n${JSON.stringify(form)}\n${err.message}`, 'TypeformUpdateError')
     }
 }
 
 class TypeformWebhookError extends WhistleError {
     constructor(url, err) {
-        super(`Error creating webhook at URL ${url}\n${err.message}`);
+        super(`Error creating webhook at URL ${url}\n${err.message}`, 'TypeformWebhookError');
+    }
+}
+
+class FormAccessError extends WhistleError {
+    constructor(formJSON, err) {
+        super(`Error accessing values in form \n${JSON.stringify(formJSON)}\n${err.message}`, 'FormAccessError');
     }
 }
 
@@ -56,3 +62,4 @@ exports.DBUpdateError = DBUpdateError;
 exports.UserAuthenticationError = UserAuthenticationError;
 exports.TypeformUpdateError = TypeformUpdateError;
 exports.TypeformWebhookError = TypeformWebhookError;
+exports.FormAccessError = FormAccessError;

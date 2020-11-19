@@ -25,6 +25,22 @@ router.patch('/:sectionID/update-option-jump/:questionRef/:choiceRef', updateOpt
 
 router.delete('/:sectionID/delete-option/:questionRef/:choiceRef', deleteOption);
 
+router.patch('/:sectionID/update-required/:questionRef', updateRequired);
+
+router.delete('/:sectionID/delete-description/:questionRef', deleteDescription);
+
+router.patch('/:sectionID/update-allow-multiple/:questionRef', updateAllowMultiple);
+
+router.patch('/:sectionID/update-allow-other/:questionRef', updateAllowOther);
+
+router.patch('/:sectionID/update-description/:questionRef', updateDescription);
+
+
+
+
+
+
+
 async function getForm(req, res, next) {
     try {
         const form = await Forms.getEditFormJSON(req.params.slug);
@@ -152,6 +168,71 @@ async function deleteOption(req, res, next) {
     } catch (err) {
         res.status(500);
         res.send('Could not delete option');
+        next(err);
+    }
+}
+
+async function updateRequired(req, res, next) {
+    try {
+        const form = await FormGen.updateRequired(req.params.sectionID, req.params.questionRef, req.body.required);
+        res.json({
+            form: form
+        });
+    } catch (err) {
+        res.status(500);
+        res.send('Could not update required');
+        next(err);
+    }
+}
+
+async function deleteDescription(req, res, next) {
+    try {
+        const form = await FormGen.deleteDescription(req.params.sectionID, req.params.questionRef);
+        res.json({
+            form: form
+        });
+    } catch (err) {
+        res.status(500);
+        res.send('Could not delete description');
+        next(err);
+    }
+}
+
+async function updateAllowMultiple(req, res, next) {
+    try {
+        const form = await FormGen.updateAllowMultiple(req.params.sectionID, req.params.questionRef, req.body.allowMultiple);
+        res.json({
+            form: form
+        });
+    } catch (err) {
+        res.status(500);
+        res.send('Could not update allow multiple');
+        next(err);
+    }
+}
+
+async function updateAllowOther(req, res, next) {
+    try {
+        const form = await FormGen.updateAllowOther(req.params.sectionID, req.params.questionRef, req.body.allowOther);
+        res.json({
+            form: form
+        });
+    } catch (err) {
+        res.status(500);
+        res.send('Could not update allow other');
+        next(err);
+    }
+}
+
+async function updateDescription(req, res, next) {
+    try {
+        const form = await FormGen.updateDescription(req.params.sectionID, req.params.questionRef, req.body.description);
+        res.json({
+            form: form
+        });
+    } catch (err) {
+        res.status(500);
+        res.send('Could not update description');
         next(err);
     }
 }

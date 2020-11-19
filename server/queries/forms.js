@@ -1,7 +1,7 @@
 const Typeform = require('../interfaces/typeform.js')
 
 const db = require('../db.ts');
-const { DBSelectionError, DBUpdateError, DBInsertionError } = require('../utils/errors/errors.js');
+const { DBSelectionError, DBUpdateError, DBInsertionError, FormAccessError } = require('../utils/errors/errors.js');
 
 async function getOrgForms(organisationID) {
     let query = `SELECT forms.slug, title, published, organisations.name AS organisation FROM forms JOIN organisations ON organisations.id=forms.organisation WHERE organisations.id='${organisationID}'`;
@@ -147,38 +147,88 @@ function getQuestionChoices(typeformJSON, questionRef) {
     };
 }
 
-function generateEditJSON(typeformJSON) {
-    //TODO: Handle all section types
-    if (!typeformJSON.logic) {
-        typeformJSON.logic = [];
+function getRequired(question) {
+    try {
+        return question.validations.required ? true : false;
+    } catch {
+        return false;
     }
-    if (!typeformJSON.fields) {
-        typeformJSON.fields = [];
-    }
-    let formLogic = typeformJSON.logic;
-    let fields = typeformJSON.fields;
-    let question = {};
-    let editJSON = [];
-    let choices = {};
-    for (let i = 0; i < fields.length; i++) {
-        question = {};
-        question.ref = fields[i].ref;
-        question.title = fields[i].title;
-        question.type = fields[i].type;
-        question.jump = formLogic ? getQuestionJump(formLogic, fields[i].ref) : null;
-        question.jumpOptions = getJumpOptions(fields, fields[i].ref);
-        choices = getQuestionChoices(typeformJSON, fields[i].ref);
-        question.choices = choices.choices;
-        if (question.jump) {
-            choices.jumps.push(question.jump);
-        }
-        question.jumps = [...new Set(choices.jumps)]
-        editJSON.push(question);
-    }
-    return editJSON;
 }
 
+function getDescription(question) {
+    try {
+        return question.properties.description;
+    } catch {
+        return null;
+    }
+}
+
+function getAllowMultiple(question) {
+    try {
+        return question.properties.allow_multiple_selection ? true : false;
+    } catch {
+        return false;
+    }
+}
+
+function getAllowOther(question) {
+    try {
+        return question.properties.allow_other_choice ? true : false;
+    } catch {
+        return false;
+    }
+}
+
+function generateEditJSON(typeformJSON) {
+    try {
+        //TODO: Handle all section types
+        if (!typeformJSON.logic) {
+            typeformJSON.logic = [];
+        }
+        if (!typeformJSON.fields) {
+            typeformJSON.fields = [];
+        }
+        let formLogic = typeformJSON.logic;
+        let fields = typeformJSON.fields;
+        let question = {};
+        let editJSON = [];
+        let choices = {};
+        for (let i = 0; i < fields.length; i++) {
+            question = {};
+            question.ref = fields[i].ref;
+            question.title = fields[i].title;
+            question.type = fields[i].type;
+            question.jump = formLogic ? getQuestionJump(formLogic, fields[i].ref) : null;
+            question.jumpOptions = getJumpOptions(fields, fields[i].ref);
+            choices = getQuestionChoices(typeformJSON, fields[i].ref);
+            question.choices = choices.choices;
+            if (question.jump) {
+                choices.jumps.push(question.jump);
+            }
+            question.jumps = [...new Set(choices.jumps)]
+            question.required = getRequired(fields[i]);
+            question.description = getDescription(fields[i]);
+            if (question.type == 'multiple_choice') {
+                question.allowMultiple = getAllowMultiple(fields[i]);
+                question.allowOther = getAllowOther(fields[i]);
+            }
+            editJSON.push(question);
+        }
+        return editJSON;
+    } catch (err) {
+        if (err.name == 'TypeError') {
+            throw new FormAccessError(typeformJSON, err);
+        }
+        else {
+            throw err;
+        }
+    }
+}
+
+
+//Used in edit form
 exports.getEditFormJSON = async function(slug) {
+    //TODO: Move some of this to form gen
     let query = `SELECT test_logic, forms.title AS title, forms.description AS description, forms.web AS web FROM formsectionlogic JOIN forms ON forms.id=formsectionlogic.form WHERE forms.slug='${slug}'`;
     let results = {};
     try {
@@ -214,7 +264,7 @@ exports.getSectionJSON = async function (sectionID) {
     let query = `SELECT test_json, type FROM formsections WHERE id='${sectionID}'`;
     let results = {};
     try {
-        results = await db.query();
+        results = await db.query(query);
     } catch (err) {
         throw new DBSelectionError('formsections', query, err);
     }
