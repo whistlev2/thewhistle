@@ -191,7 +191,7 @@ function generateDateField(question) {
             required: false
         },
         properties: {
-            structure: 'MMDDYYYY',
+            structure: 'DDMMYYYY',
             separator: '/' 
         },
         type: 'date'
