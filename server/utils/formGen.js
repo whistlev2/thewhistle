@@ -11,10 +11,14 @@ async function updateForm(sectionID, form, type) {
     return retForm;
 }
 
+function generateJumpTo(jump) {
+    return jump == 'End of form' ? {type: 'thankyou', value: 'default_tys'} : {type: 'field', value: jump};
+}
+
 function changeQuestionRefs(actions, oldQuestionRef, newQuestionRef) {
     for (let i = 0; i < actions.length; i++) {
         if (actions[i].details.to.value == oldQuestionRef) {
-            actions[i].details.to.value = newQuestionRef
+            actions[i].details.to = generateJumpTo(newQuestionRef);
         }
     }
     return actions;
@@ -50,13 +54,11 @@ function addQuestionLogic(formLogic, questionRef) {
 }
 
 function generateAlwaysAction(toQuestionRef) {
+    let to = generateJumpTo(toQuestionRef);
     return {
         action: 'jump',
         details: {
-            to: {
-                type: 'field',
-                value: toQuestionRef
-            }
+            to: to
         },
         condition: {
             op: 'always',
@@ -72,7 +74,7 @@ function setQuestionJump(formLogic, fromQuestionRef, toQuestionRef) {
         if (formLogic[i].ref == fromQuestionRef) {
             for (let j = 0; j < formLogic[i].actions.length; j++) {
                 if (formLogic[i].actions[j].condition.op == 'always') {
-                    formLogic[i].actions[j].details.to.value = toQuestionRef;
+                    formLogic[i].actions[j].details.to = generateJumpTo(toQuestionRef);
                     updatedJump = true;
                     break;
                 }
@@ -258,7 +260,7 @@ function addQuestionAfterLogic(formLogic, oldQuestionRef, newQuestionRef) {
                         ]
                     });
 
-                    formLogic[i].actions[j].details.to.value = newQuestionRef;
+                    formLogic[i].actions[j].details.to = generateJumpTo(newQuestionRef);
 
                     break;
                 }
@@ -293,7 +295,7 @@ function deleteQuestionFromActions(actions, questionRef, questionJump) {
     for (let i = actions.length - 1; i >= 0; i--) {
         if (actions[i].details.to.value == questionRef) {
             if (questionJump) {
-                actions[i].details.to.value = questionJump;
+                actions[i].details.to = generateJumpTo(questionJump);
             } else {
                 actions.splice(i, 1);
             }
@@ -386,7 +388,7 @@ function generateNewTypeformJSON(title) {
         thankyou_screens: [
             {
                 ref: "default_tys",
-                title: "Done! Your information was sent perfectly.",
+                title: "Thank you. Your report has been submitted.",
                 properties: {
                     show_button: false,
                     share_icons: false
@@ -521,7 +523,7 @@ exports.updateQuestionJump = async function (sectionID, questionRef, jump) {
         if (form.logic[i].ref == questionRef) {
             for (let j = 0; j < form.logic[i].actions.length; j++) {
                 if (form.logic[i].actions[j].condition.op == 'always') {
-                    form.logic[i].actions[j].details.to.value = jump;
+                    form.logic[i].actions[j].details.to = generateJumpTo(jump)
                     updated = true;
                     break;
                 }
@@ -582,7 +584,7 @@ exports.updateOptionJump = async function (sectionID, questionRef, optionRef, ju
             for (let j = 0; j < form.logic[i].actions.length; j++) {
                 if (form.logic[i].actions[j].condition.op == 'is'
                     && form.logic[i].actions[j].condition.vars[1].value == optionRef) {
-                    form.logic[i].actions[j].details.to.value = jump;
+                    form.logic[i].actions[j].details.to = generateJumpTo(jump)
                     updated = true;
                     break;
                 }

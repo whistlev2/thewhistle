@@ -60,13 +60,17 @@ exports.getUserForms = async function(userID) {
     return forms;
 }
 
+function getJumpToText(value) {
+    return value == 'default_tys' ? 'End of form' : value;
+}
+
 function getQuestionJump(formLogic, questionRef) {
     for (let i = 0; i < formLogic.length; i++) {
         if (formLogic[i].ref == questionRef) {
             let actions = formLogic[i].actions;
             for (let j = 0; j < actions.length; j++) {
                 if (actions[j].condition.op == 'always') {
-                    return actions[j].details.to.value;
+                    return getJumpToText(actions[j].details.to.value)
                 }
             }
         }
@@ -84,6 +88,7 @@ function getJumpOptions(fields, questionRef) {
             passedRef = true;
         }   
     }
+    jumpOptions.push('End of form');
     return jumpOptions;
 }
 
@@ -106,13 +111,13 @@ function getChoiceJump(questionLogic, choice) {
                 const logicValue = questionLogic[i].condition.vars[1].value;
                 const choiceValue = choice.label;
                 if (logicValue == choiceValue) {
-                    return questionLogic[i].details.to.value;
+                    return getJumpToText(questionLogic[i].details.to.value);
                 }
             } else if (questionLogic[i].condition.op == 'is') {
                 const logicValue = questionLogic[i].condition.vars[1].value;
                 const choiceValue = choice.ref;
                 if (logicValue == choiceValue) {
-                    return questionLogic[i].details.to.value;
+                    return getJumpToText(questionLogic[i].details.to.value);
                 }
             }
         }
