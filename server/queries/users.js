@@ -7,7 +7,7 @@ const { DBSelectionError, DBInsertionError } = require('../utils/errors/errors')
 
 
 exports.getUserOrgs = async function (userID) {
-    let query = `SELECT organisations.id, organisations.name, organisations.active, userorgs.role FROM organisations JOIN userorgs ON organisations.id=userorgs.organisation WHERE userorgs.user=${userID}`;
+    let query = `SELECT organisations.id, organisations.name, organisations.active, organisations.slug, userorgs.role FROM organisations JOIN userorgs ON organisations.id=userorgs.organisation WHERE userorgs.user=${userID}`;
     try {
         const results = await db.query(query)
         return results.rows;

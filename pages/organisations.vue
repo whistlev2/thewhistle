@@ -2,7 +2,7 @@
     <div>
         <v-data-table :headers="headers" :items="orgs" :items-per-page="10" class="elevation-1"></v-data-table>
         <v-btn v-on:click="showCreateModal = true" style="position: absolute; right: 18px; margin-top: 10px; background-color:#033549; color:white;" text>Create Organisation</v-btn>
-        <CreateOrganisationModal :show="showCreateModal" @close="closeCreateModal" @submit="createOrg" :org="newOrg" />
+        <CreateOrganisationModal :show="showCreateModal" @close="closeCreateModal" @submit="createOrg" :org="newOrg" :allOrgs="orgs" />
     </div>
 </template>
 
