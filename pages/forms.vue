@@ -7,7 +7,7 @@
             </v-card-actions>
         </v-card>
         <v-btn v-on:click="showCreateFormModal = true" class="blueBtn" text>Create New Form</v-btn>
-        <CreateFormModal :show="showCreateFormModal" :newForm="newForm" @close="closeCreateFormModal" @submit="createForm" />
+        <CreateFormModal :show="showCreateFormModal" :newForm="newForm" :allForms="forms" @close="closeCreateFormModal" @submit="createForm" />
     </div>
 </template>
 <style scoped>
