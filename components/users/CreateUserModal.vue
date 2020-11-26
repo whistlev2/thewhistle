@@ -45,9 +45,9 @@ export default {
     data() {
         return {
             notBlank: [v => !!v || 'Required'],
-            validName: [v => !!v || 'Required', v => v.match(/^[a-zA-Z' -]+$/g) || 'Can only contain letters, apostrophes, hyphens and spaces'],
-            validEmail: [v => !!v || 'Required', v => v.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g) || 'Invalid email address'],
-            validPassword: [v => !!v || 'Required',  v => v.match(/^\S+$/g) || 'Invalid password', v => v.length > 7 && v.length < 21 || 'Password must be between 8 and 20 characters.'],
+            validName: [v => !!v || 'Required', v => (new RegExp(/^[a-zA-Z' -]+$/g)).test(v) || 'Can only contain letters, apostrophes, hyphens and spaces'],
+            validEmail: [v => !!v || 'Required', v => (new RegExp(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g)).test(v) || 'Invalid email address'],
+            validPassword: [v => !!v || 'Required',  v => (new RegExp(/^\S+$/g)).test(v) || 'Invalid password', v => v.length > 7 && v.length < 21 || 'Password must be between 8 and 20 characters.'],
             valid: false
         }
     },

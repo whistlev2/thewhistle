@@ -23,10 +23,6 @@
                                         :persistent-hint="true" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12" v-if="$attrs.newQuestion.type=='Multiple choice'">
-                                    <v-switch v-model="$attrs.newQuestion.multipleSelection" class="ma-2"
-                                        label="Allow user to select multiple options"></v-switch>
-                                </v-col>
-                                <v-col cols="12" v-if="$attrs.newQuestion.type=='Multiple choice'">
                                     <v-text-field v-model="$attrs.newQuestion.optionRef" :rules="refRules" label="First option reference" :persistent-hint="true" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12" v-if="$attrs.newQuestion.type=='Multiple choice'">
@@ -56,7 +52,7 @@ export default {
     data() {
         return {
             notBlank: [v => !!v || 'Required'],
-            refRules: [v => !!v || 'Required', v => v.match(/^[\w-]+$/g) || 'Can only contain letters, numbers and hyphens'],
+            refRules: [v => (!!v || 'Required'), v => (new RegExp(/^[\w-]+$/g)).test(v) || 'Can only contain letters, numbers and hyphens', v => !this.$attrs.allRefs.includes(v.toLowerCase()) || 'Question ref already taken'],
             valid: false,
             questionTypes: this.$attrs.web ?
                 ['Statement', 'Agreement', 'Short text', 'Long text', 'Multiple choice', 'Date', 'File upload'] :

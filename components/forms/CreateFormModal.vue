@@ -58,7 +58,7 @@ export default {
             notBlank: [v => !!v || 'Required'],
             validTitle: [ v => !!v || 'Required', v => (v.length > 2 && v.length < 21) || 'Length must be between 3 and 20 characters', v => !this.formTitles.includes(v.toLowerCase()) || 'Form title already taken'],
             validDescription: [ v => !!v || 'Required'],
-            validSlug: [ v => !!v || 'Required', v => v.match(/^[\w-]+$/g) || 'Can only contain letters, numbers and hyphens', v => (v.length > 2 && v.length < 21) || 'Length must be between 3 and 20 characters', v => !this.formSlugs.includes(v.toLowerCase()) || 'Form abbreviation already taken'],
+            validSlug: [ v => !!v || 'Required', v => (new RegExp(/^[\w-]+$/g)).test(v) || 'Can only contain letters, numbers and hyphens', v => (v.length > 2 && v.length < 21) || 'Length must be between 3 and 20 characters', v => !this.formSlugs.includes(v.toLowerCase()) || 'Form abbreviation already taken'],
             valid: false
         }
     },

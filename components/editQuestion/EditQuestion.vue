@@ -82,7 +82,7 @@
                 </div>
             </v-expand-transition>
         </v-card>
-        <AddQuestionModal :show="showAddQuestionModal" :web="$attrs.web" @close="closeAddQuestionModal" @submit="addQuestion" :newQuestion="newQuestion" />
+        <AddQuestionModal :show="showAddQuestionModal" :web="$attrs.web" @close="closeAddQuestionModal" @submit="addQuestion" :newQuestion="newQuestion" :allRefs="$attrs.allRefs" />
         <DeleteQuestionModal :show="showDeleteQuestionModal" :web="$attrs.web" @close="closeDeleteQuestionModal" @submit="deleteQuestion" :questionText="$attrs.question.title" />
         <AddOptionModal :show="showAddOptionModal" @close="closeAddOptionModal" @submit="addOption" :newOption="newOption" />
         <DeleteOptionModal :show="showDeleteOptionModal" @close="closeDeleteOptionModal" @submit="deleteOption" :option="optionToDelete" />
@@ -120,7 +120,12 @@ export default {
             showDeleteQuestionModal: false,
             showAddOptionModal: false,
             showDeleteOptionModal: false,
-            newQuestion: {},
+            newQuestion: {
+                type: '',
+                ref: '',
+                title: '',
+                optionRef: '',
+            },
             newOption: {},
             optionToDelete: {},
             valid: false,

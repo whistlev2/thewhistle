@@ -35,8 +35,8 @@ export default {
     data() {
         return {
             valid: false,
-            validName: [ v => !!v || 'Required', v => v.match(/^[\w' ]+$/g) || 'Can only contain letters, numbers, apostrophes and spaces', v => !this.orgNames.includes(v.toLowerCase()) || 'Organisation name already taken' ],
-            validSlug: [ v => !!v || 'Required', v => v.match(/^[\w-]+$/g) || 'Can only contain letters, numbers and hyphens', v => v.length < 9 || 'Must be under 8 characters', v => !this.orgSlugs.includes(v.toLowerCase()) || 'Organisation abbreviation already taken' ]
+            validName: [ v => !!v || 'Required', v => (new RegExp(/^[\w' ]+$/g)).test(v) || 'Can only contain letters, numbers, apostrophes and spaces', v => !this.orgNames.includes(v.toLowerCase()) || 'Organisation name already taken' ],
+            validSlug: [ v => !!v || 'Required', v => (new RegExp(/^[\w-]+$/g)).test(v) || 'Can only contain letters, numbers and hyphens', v => v.length < 9 || 'Must be under 8 characters', v => !this.orgSlugs.includes(v.toLowerCase()) || 'Organisation abbreviation already taken' ]
         }
     },
     computed: {

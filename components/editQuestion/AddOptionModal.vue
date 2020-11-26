@@ -39,7 +39,7 @@ export default {
     data() {
         return {
             notBlank: [v => !!v || 'Required'],
-            refRules: [v => !!v || 'Required', v => v.match(/^[\w-]+$/g) || 'Can only contain letters, numbers and hyphens'],
+            refRules: [v => !!v || 'Required', v => (new RegExp(/^[\w-]+$/g)).test(v) || 'Can only contain letters, numbers and hyphens'],
             valid: false
         }
     },
