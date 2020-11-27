@@ -18,12 +18,12 @@
                                         label="Question type" required></v-select>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field v-model="$attrs.newQuestion.ref" :rules="refRules" label="Reference"
+                                    <v-text-field v-model="$attrs.newQuestion.ref" :rules="questionRefRules" label="Reference"
                                         hint="E.g. for 'How old are you?', reference might be 'user-age'."
                                         :persistent-hint="true" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12" v-if="$attrs.newQuestion.type=='Multiple choice'">
-                                    <v-text-field v-model="$attrs.newQuestion.optionRef" :rules="refRules" label="First option reference" :persistent-hint="true" required></v-text-field>
+                                    <v-text-field v-model="$attrs.newQuestion.optionRef" :rules="optionRefRules" label="First option reference" :persistent-hint="true" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12" v-if="$attrs.newQuestion.type=='Multiple choice'">
                                     <v-text-field v-model="$attrs.newQuestion.optionText" :rules="notBlank" label="First option text" :persistent-hint="true" required></v-text-field>
@@ -52,7 +52,8 @@ export default {
     data() {
         return {
             notBlank: [v => !!v || 'Required'],
-            refRules: [v => (!!v || 'Required'), v => (new RegExp(/^[\w-]+$/g)).test(v) || 'Can only contain letters, numbers and hyphens', v => !this.$attrs.allRefs.includes(v.toLowerCase()) || 'Question ref already taken'],
+            optionRefRules: [v => (!!v || 'Required'), v => (new RegExp(/^[\w-]+$/g)).test(v) || 'Can only contain letters, numbers and hyphens'],
+            questionRefRules: [v => (!!v || 'Required'), v => (new RegExp(/^[\w-]+$/g)).test(v) || 'Can only contain letters, numbers and hyphens', v => !this.$attrs.allRefs.includes(v.toLowerCase()) || 'Question ref already taken'],
             valid: false,
             questionTypes: this.$attrs.web ?
                 ['Statement', 'Agreement', 'Short text', 'Long text', 'Multiple choice', 'Date', 'File upload'] :

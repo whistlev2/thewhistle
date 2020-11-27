@@ -720,7 +720,7 @@ exports.updateAllowOther = async function (sectionID, questionRef, allowOther) {
     for (let i = 0; i < form.fields.length; i++) {
         if (form.fields[i].ref == questionRef) {
             if (form.fields[i].properties) {
-                form.fields[i].properties.allow_multiple_choice = allowOther;
+                form.fields[i].properties.allow_other_choice = allowOther;
             } else {
                 form.fields[i].properties = {
                     allow_other_choice: allowOther

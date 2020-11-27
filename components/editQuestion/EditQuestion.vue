@@ -15,7 +15,7 @@
                     </v-col>
                 </v-row>
                 <v-row>
-                    <v-col cols="12" md="6">
+                    <v-col cols="12" md="6" v-if="$attrs.question.type != 'statement'">
                         <v-switch v-model="$attrs.question.required" class="ma-2"
                             label="Required?" v-on:change="updateRequired"></v-switch>
                     </v-col>
