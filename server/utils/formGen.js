@@ -12,7 +12,7 @@ async function updateForm(sectionID, form, type) {
 }
 
 function generateJumpTo(jump) {
-    return jump == 'End of form' ? {type: 'thankyou', value: 'default_tys'} : {type: 'field', value: jump};
+    return jump == 'End of form' || jump == 'default_tys' ? {type: 'thankyou', value: 'default_tys'} : {type: 'field', value: jump};
 }
 
 function changeQuestionRefs(actions, oldQuestionRef, newQuestionRef) {
