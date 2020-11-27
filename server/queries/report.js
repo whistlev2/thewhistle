@@ -301,7 +301,7 @@ exports.getReportOptions = async function (reportID) {
 }
 
 async function addAudit(audit) {
-    let query = `INSERT INTO audit(report, user, time, action) VALUES (${audit.report}, ${audit.user}, to_timestamp(${Date.now()} / 1000.0), '${audit.action}')`;
+    let query = `INSERT INTO audit(report, "user", time, action) VALUES (${audit.report}, ${audit.user}, to_timestamp(${Date.now()} / 1000.0), '${audit.action}')`;
     try {
         await db.query(query);
     } catch (err) {
