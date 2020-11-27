@@ -3,7 +3,7 @@
         <h1>{{ title }}</h1>
         <p>{{ description }}</p>
         <v-btn outlined :to="`/submit-test-report/${$route.params.form}`" class="blueBtn">View test form</v-btn>
-
+        <br /><br />
         <!-- TODO: Add multiple sections -->
         <template v-if="editJSON.length == 0">
             <v-btn x-large outlined v-on:click="openAddQuestionModal" class="blueBtn">Add first question</v-btn>
