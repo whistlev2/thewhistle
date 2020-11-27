@@ -80,10 +80,11 @@ function setQuestionJump(formLogic, fromQuestionRef, toQuestionRef) {
                 }
             }
             if (!updatedJump) {
-                formLogic[i].actions.push(generateAlwaysAction(toQuestionRef));
+                let action = generateAlwaysAction(toQuestionRef);
+                formLogic[i].actions.push(action);
             }
-        }
-        break;
+            break;
+        } 
     }
     return formLogic;
 }

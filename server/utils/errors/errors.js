@@ -39,7 +39,14 @@ class UserAuthenticationError extends WhistleError {
 
 class TypeformUpdateError extends WhistleError {
     constructor(form, err) {
-        super(`Error updating form. Form JSON:\n${JSON.stringify(form)}\n${err.message}`, 'TypeformUpdateError')
+        let message = '';
+        let name = 'TypeformUpdateError';
+        try {
+            message = `Error updating form. Status ${err.response.status} - ${err.response.statusText}.\n${err.response.data.code} - ${err.response.data.details[0].in}${err.response.data.details[0].field} ${err.response.data.details[0].description}\nForm JSON:\n${JSON.stringify(form)}`;
+        } catch {
+            message = 'Error updating form.'
+        }
+        super(message, name);
     }
 }
 

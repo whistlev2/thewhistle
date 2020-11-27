@@ -19,7 +19,7 @@
                                 </v-col>
                                 <v-col cols="12">
                                     <v-text-field v-model="$attrs.newQuestion.ref" :rules="refRules" label="Reference"
-                                        hint="E.g. for 'How old are you?', reference might be 'User age'."
+                                        hint="E.g. for 'How old are you?', reference might be 'user-age'."
                                         :persistent-hint="true" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12" v-if="$attrs.newQuestion.type=='Multiple choice'">
