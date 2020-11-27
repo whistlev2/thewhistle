@@ -28,11 +28,12 @@
 
   "staging": {
     "driver": "pg",
-    "user": "postgres",
-    "password": "postgres",
-    "host": "localhost",
-    "database": "thewhistle",
-    "schema": "my_schema"
+    "user": { "ENV": "STAGING_DATABASE_USER" },
+    "password": { "ENV": "STAGING_DATABASE_PASSWORD" },
+    "host": { "ENV": "STAGING_DATABASE_HOST" },
+    "database": { "ENV": "STAGING_DATABASE_NAME" },
+    "schema": "my_schema",
+    "ssl": "true"
   },
 
   "test": {
