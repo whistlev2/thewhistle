@@ -100,7 +100,7 @@ exports.deserializeUser = function (id, done) {
 
 exports.authenticateUser = async function (email, password) {
     try {
-        const results = await db.query(`SELECT * FROM users WHERE email='${email}'`);
+        const results = await db.query(`SELECT * FROM users WHERE email='${email.toLowerCase()}'`);
         const user = results.rows[0];
         if (!user) {
             return null;
