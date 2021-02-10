@@ -1,28 +1,14 @@
 <template>
     <div>
         <div v-if="!startedReport">
-            <v-radio-group v-model="usedBefore" required>
-                Have you used this report form before?
-                <v-radio label="Yes" :value="true"></v-radio>
-                <v-radio label="No" :value="false"></v-radio>
-            </v-radio-group>
-            <template v-if="usedBefore">
-                <v-radio-group v-model="hasReporter">
-                    Do you know your anonymous reporter number?
-                    <v-radio label="Yes" :value="true"></v-radio>
-                    <v-radio label="No" :value="false"></v-radio>
-                </v-radio-group>
-            </template>
-            <template v-if="usedBefore && hasReporter">
-                <v-text-field v-model="reporter" label="Reporter number" v-on:change="noReporterMatchInDB=false" :rules="[() => validReporterNumber || 'Invalid reporter number.']" outlined></v-text-field>
-                <p v-if="noReporterMatchInDB" class="err">Incorrect reporter number. Please try again.</p>
-            </template>
-            <v-btn v-if="validReporterInfo" outlined v-on:click="startReport" class="blueBtn">Next</v-btn>
+            {{ $attrs.form.description }}
+            <v-btn outlined v-on:click="startReport" class="blueBtn">Start Report</v-btn>
         </div>
         <div v-else>
             <!-- TODO: Put in report ID as hidden field -->
-            Your anonymous reporter number is {{ reporter }}. Please take note of this for future reference if you can.
-            <Typeform :typeformID="$attrs.typeformID" :reportID="reportID"></Typeform>
+            <Questions v-if="currentSection.type == 'questions'" :section="currentSection" :sessionID="sessionID" @complete="showNextSection"></Questions>//TODO: Change to session ID?
+            <EmailVerification v-if="currentSection.type == 'emailverification'" :section="currentSection" :sessionID="sessionID" @complete="showNextSection"></EmailVerification>
+            <ReporterNumber v-if="currentSection.type == 'reporternumber'" :section="currentSection" :sessionID="sessionID" @complete="showNextSection"></ReporterNumber>
         </div>
     </div>
 </template>
@@ -39,34 +25,20 @@
 
 //TODO: Sort broken refresh
 
-import Typeform from './Typeform.vue'
-
+//import Typeform from './Typeform.vue'
+//TODO: Do imports
 import axios from 'axios';
 
 export default {
     components: {
-        Typeform
+        //Typeform TODO: Sort components
     },
 
     data() {
         return {
             startedReport: false,
-            usedBefore: true,
-            hasReporter: true,
-            reporter: '',
-            reportID: '',
-            noReporterMatchInDB: false
-        }
-    },
-
-    computed: {
-        validReporterInfo: function () {
-            return !this.usedBefore || !this.hasReporter || this.validReporterNumber;
-        },
-
-        validReporterNumber: function () {
-            let regex = new RegExp("^\\d{6}$");
-            return regex.test(this.reporter);
+            sessionID: '',
+            currentSection: {}
         }
     },
 
@@ -74,24 +46,24 @@ export default {
         startReport() {
             //TODO: Get form
             let url = `/api/report/start/${this.$attrs.form}`;
-
+            
             let data = {
-                test: this.$attrs.test,
-                usedBefore: this.usedBefore
+                test: this.$attrs.test
             };
-            if (this.usedBefore && this.hasReporter) {
-                data.reporter = this.reporter;
-            }
+
             axios.post(url, data)
                 .then((response) => {
-                    this.reporter = response.data.reporter;
-                    this.reportID = response.data.id;
+                    this.sessionID = response.data.sessionID; //TODO: Make this session ID instead of report ID
                     this.startedReport = true;
+                    this.currentSection = response.data.nextSection //TODO: Implement this
                 })
                 .catch((response) => {
                     //TODO: Check response
-                    this.noReporterMatchInDB = true;
                 })
+        },
+
+        showNextSection(section) {
+            this.currentSection = section;
         }
     }
 

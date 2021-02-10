@@ -99,32 +99,40 @@ async function insertUsedBefore(reportID, usedBefore) {
     }
 }
 
-exports.startReport = async function (formID, body) {
+exports.startReport = async function (formID, test) {
     try {
-        let test = body.test
-
-        let reporter = body.reporter;
-        if (reporter) {
-            let validReporter = await validateReporter(formID, reporter);
-            if (!validReporter) {
-                throw new InvalidReporterError(`${reporter} is not a valid reporter number for this form.`);
-            }
-        } else {
-            reporter = await generateNewReporter();
-        }
-
-        let reportID = await insertReport(formID, test, reporter);
-
-        await insertUsedBefore(reportID, body.usedBefore);
+        let reportID = await insertReport(formID, test); //TODO: Edit so it doesn't include reporter
 
         return {
-            id: reportID,
-            reporter: reporter
+            sessionID: sessionID,
+            nextSection: nextSection
         };
     } catch (err) {
         //Unnecessary try/catch?
         throw err;
     }
+}
+
+exports.submitSection = async function (sessionID, body) {
+
+}
+
+exports.submitReporterSection = async function (sessionID, body) {
+    let reporter = body.reporter;
+    if (reporter) {
+        let validReporter = await validateReporter(formID, reporter);
+        if (!validReporter) {
+            throw new InvalidReporterError(`${reporter} is not a valid reporter number for this form.`);
+        }
+    } else {
+        reporter = await generateNewReporter();
+    }
+    //TODO: Make session file
+    await session.addReporter(sessionID, reporter, body.usedBefore); //TODO: Implement this
+
+    let nextSection = await session.getNextSection(sessionID); //TODO: Implement this
+
+    return nextSection;
 }
 
 exports.submitTypeformSection = async function (sectionID, payload) {

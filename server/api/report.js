@@ -5,9 +5,13 @@ const router = express.Router()
 
 router.post('/start/:form', startReport);
 
+router.post('/submit-section/:session', submitSection);
+
 router.post('/typeform-webhook/:section', postWebhook);
 
 router.get('/:id', getReport);
+
+router.get('/next-section/:sessionID', getNextSection);
 
 router.post('/assigned/:id', postAssigned);
 
@@ -23,16 +27,42 @@ router.post('/note/:id', postNote);
 
 async function startReport(req, res, next) {
     try {
-        let reportData = await report.startReport(req.params.form, req.body);
+        let reportID = await report.startReport(req.params.form, req.body.test); //TODO: Implement this without reporter
+        let sessionID = await session.startSession(reportID); //TODO: Implement this
+        let firstSection = await session.getNextSection(sessionID) //TODO: Implement this
         res.status(200);
-        res.json(reportData);
+        res.json(firstSection);
+    } catch (err) {
+        res.status(500);
+        res.send('Could not start report');
+        next(err);
+    }
+}
+
+async function submitSection(req, res, next) {
+    try {
+        let nextSection = {};
+        switch(req.body.type) {
+            case 'reporter':
+                nextSection = await session.submitReporterSection(req.params.session); //TODO: Implement this
+                break;
+            case 'email-verification':
+                nextSection = await session.submitEmailVerificationSection(req.params.session, req.body.email); //TODO: Implement this
+                break;
+            default:
+                res.status(400);
+                res.send('Could not determine section type');
+                next(err);
+        }
+        res.status(200);
+        res.json(nextSection);
     } catch (err) {
         if (err.name == 'InvalidReporterError') {
             res.status(404);
             res.send(err.message);
         } else {
             res.status(500);
-            res.send('Could not start report');
+            res.send('Could not submit section');
             next(err);
         }
     }
@@ -84,6 +114,17 @@ function getReport(req, res, next) {
     } catch (err) {
         res.status(500)
         res.send('Could not get report data');
+        next(err);
+    }
+}
+
+async function getNextSection(req, res, next) {
+    try {
+        let nextSection = await session.getNextSection(req.params.sessionID); //TODO: Implement this
+        res.json(nextSection);
+    } catch (err) {
+        res.status(500);
+        res.send('Could not get next section');
         next(err);
     }
 }

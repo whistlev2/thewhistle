@@ -1,10 +1,10 @@
 <template>
     <div>
         <h1>{{ form.title }} Test</h1>
-        <div v-if="form.sections[0].type=='typeform'">
+        <div v-if="form.web"> //TODO: Change to webforms
             <no-ssr style="height: 100%">
                 <!-- TODO: Make work for multiple sections and other section types -->
-                <Webform :test="true" :form="form.id" :typeformID="form.sections[0].json.id"></Webform>
+                <Webform :test="true" :form="form"></Webform>
             </no-ssr>
         </div>
         <div v-else-if="form.sections[0].type=='sms'">
