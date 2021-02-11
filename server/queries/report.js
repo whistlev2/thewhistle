@@ -9,9 +9,9 @@ async function getFormFromSection(sectionID) {
     return formID;
 }
 
-async function insertReport(formID, test, reporter) {
-    const query = `INSERT INTO reports(form, active, test, date, reporter) VALUES($1, $2, $3, to_timestamp(${Date.now()} / 1000.0), $4) RETURNING id`;
-    const values = [formID, true, test, reporter];
+async function insertReport(formID, test) {
+    const query = `INSERT INTO reports(form, active, test, date) VALUES($1, $2, $3, to_timestamp(${Date.now()} / 1000.0)) RETURNING id`;
+    const values = [formID, true, test];
     try {
         const results = await db.query(query, values);
         const reportID = results.rows[0].id;
@@ -101,7 +101,7 @@ async function insertUsedBefore(reportID, usedBefore) {
 
 exports.startReport = async function (formID, test) {
     try {
-        let reportID = await insertReport(formID, test); //TODO: Edit so it doesn't include reporter
+        let sessionID = await insertReport(formID, test);
 
         return {
             sessionID: sessionID,
@@ -128,9 +128,9 @@ exports.submitReporterSection = async function (sessionID, body) {
         reporter = await generateNewReporter();
     }
     //TODO: Make session file
-    await session.addReporter(sessionID, reporter, body.usedBefore); //TODO: Implement this
+    await session.addReporter(sessionID, reporter, body.usedBefore); //TODO: 10/02/2021 Implement this
 
-    let nextSection = await session.getNextSection(sessionID); //TODO: Implement this
+    let nextSection = await session.getNextSection(sessionID); //TODO: 10/02/2021 Implement this
 
     return nextSection;
 }

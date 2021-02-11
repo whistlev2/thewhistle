@@ -22,11 +22,25 @@ exports.up = function(db: any, callback: any): any {
                 primaryKey: true,
                 autoIncrement: true
             },
+            current_section: 'int', //eslint-disable-line
             stack: 'json',
             verification_code: 'string' //eslint-disable-line 
         },
-        callback
+        addSectionForeignKey
     );
+
+    function addSectionForeignKey(err: any): any {
+        if (err) {
+            callback(err);
+            return;
+        }
+        db.addForeignKey('reportsessions', 'formsections', 'current_section', {
+            'current_section': 'id'
+        }, {
+            onDelete: 'CASCADE',
+            onUpdate: 'RESTRICT'
+        }, callback);
+    }
 };
 
 exports.down = function(db: any, callback: any): any {

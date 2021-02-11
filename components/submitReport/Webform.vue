@@ -55,7 +55,7 @@ export default {
                 .then((response) => {
                     this.sessionID = response.data.sessionID; //TODO: Make this session ID instead of report ID
                     this.startedReport = true;
-                    this.currentSection = response.data.nextSection //TODO: Implement this
+                    this.currentSection = response.data.nexWtSection //TODO: Implement this
                 })
                 .catch((response) => {
                     //TODO: Check response

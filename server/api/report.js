@@ -27,9 +27,9 @@ router.post('/note/:id', postNote);
 
 async function startReport(req, res, next) {
     try {
-        let reportID = await report.startReport(req.params.form, req.body.test); //TODO: Implement this without reporter
-        let sessionID = await session.startSession(reportID); //TODO: Implement this
-        let firstSection = await session.getNextSection(sessionID) //TODO: Implement this
+        let reportID = await report.startReport(req.params.form, req.body.test);
+        let sessionID = await session.startSession(reportID); //TODO: 10/02/2021 Implement this
+        let firstSection = await session.getNextSection(sessionID) //TODO: 10/02/2021 Implement this
         res.status(200);
         res.json(firstSection);
     } catch (err) {
@@ -44,10 +44,10 @@ async function submitSection(req, res, next) {
         let nextSection = {};
         switch(req.body.type) {
             case 'reporter':
-                nextSection = await session.submitReporterSection(req.params.session); //TODO: Implement this
+                nextSection = await session.submitReporterSection(req.params.session); //TODO: 10/02/2021 Implement this
                 break;
             case 'email-verification':
-                nextSection = await session.submitEmailVerificationSection(req.params.session, req.body.email); //TODO: Implement this
+                nextSection = await session.submitEmailVerificationSection(req.params.session, req.body.email); //TODO: 10/02/2021 Implement this
                 break;
             default:
                 res.status(400);
