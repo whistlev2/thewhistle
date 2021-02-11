@@ -25,8 +25,7 @@ async function updateQueue(sessionID, queue, currentSection) {
 
 
 async function addReporter(sectionID, sessionID, reporterNumber, usedBefore) {
-    let allReports = await FormSections.getForAllReports(sectionID);
-    let reports = allReports ? await this.getReports() : [ await this.getCurrentReport(sessionID) ];
+    let reports = await this.getReportsToUpdate(sectionID, sessionID);
     
     let promises = [];
     for (let i = 0; i < reports.length; i++) {
@@ -64,6 +63,12 @@ async function generateNewReporter() {
         foundNewReporter = results.rows.length == 0;
     }
     return reporter;
+}
+
+exports.getReportsToUpdate = async function (sectionID, sessionID) {
+    let allReports = await FormSections.getForAllReports(sectionID);
+    let reports = allReports ? await this.getReports() : [ await this.getCurrentReport(sessionID) ];
+    return reports;
 }
 
 exports.startSession = async function (reportID, sectionQueue) {

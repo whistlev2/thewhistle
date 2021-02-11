@@ -73,7 +73,8 @@ exports.startReport = async function (formID, test) {
 exports.submitTypeformSection = async function (sectionID, payload) {
     try {
         let hiddenFields = payload.form_response.hidden;
-        let reportID = hiddenFields.report;
+        let sessionID = hiddenFields.sessionID;
+        let reports = session.getReportsToUpdate(sectionID, sessionID);
         const definitions = payload.form_response.definition.fields;
         const answers = payload.form_response.answers;
         let promises = [];
@@ -84,7 +85,9 @@ exports.submitTypeformSection = async function (sectionID, payload) {
             value = getValueFromAnswer(answers[i]);
             definition = getDefinitionFromID(definitions, answers[i].field.id);
             ref = definition.ref;
-            promises.push(this.insertQuestionResponse(reportID, sectionID, ref, definition, value))
+            for (let j = 0; j < reports.length; j++) {
+                promises.push(this.insertQuestionResponse(reports[j], sectionID, ref, definition, value));
+            }
         }
         Promise.all(promises);
     } catch (err) {
