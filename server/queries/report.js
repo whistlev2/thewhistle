@@ -1,6 +1,7 @@
 const db = require('../db.ts');
 const { InvalidReporterError, DBInsertionError, DBSelectionError, DBUpdateError } = require('../utils/errors/errors.js');
 const users = require('./users.js');
+const session = require('./session.js');
 
 async function getFormFromSection(sectionID) {
     //TODO: Remove if not needed
