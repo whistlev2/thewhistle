@@ -1,9 +1,12 @@
 const express = require('express');
-const report = require('../queries/report.js')
+const report = require('../queries/report.js');
+const session = require('../queries/session.js');
 
 const router = express.Router()
 
 router.post('/start/:form', startReport);
+
+router.post('/send-email-verification/:session', sendEmailVerification);
 
 router.post('/submit-section/:session', submitSection);
 
@@ -39,6 +42,18 @@ async function startReport(req, res, next) {
     }
 }
 
+async function sendEmailVerification(req, res, next) {
+    try {
+        await session.sendEmailVerification(req.params.session, req.body.email);
+        res.status(200);
+        res.send('Email verified');
+    } catch (err) {
+        res.status(500);
+        res.send('Could not send verification email');
+        next(err);
+    }
+}
+
 async function submitSection(req, res, next) {
     try {
         let nextSection = {};
@@ -47,7 +62,7 @@ async function submitSection(req, res, next) {
                 nextSection = await session.submitReporterSection(req.params.session); //TODO: 10/02/2021 Implement this
                 break;
             case 'email-verification':
-                nextSection = await session.submitEmailVerificationSection(req.params.session, req.body.email); //TODO: 10/02/2021 Implement this
+                nextSection = await session.submitEmailVerificationSection(req.params.session, req.body.verificationCode); //TODO: 10/02/2021 Implement this
                 break;
             default:
                 res.status(400);
@@ -58,6 +73,9 @@ async function submitSection(req, res, next) {
         res.json(nextSection);
     } catch (err) {
         if (err.name == 'InvalidReporterError') {
+            res.status(404);
+            res.send(err.message);
+        } else if (err.name == 'InvalidVerificationCode') {
             res.status(404);
             res.send(err.message);
         } else {

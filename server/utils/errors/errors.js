@@ -62,6 +62,12 @@ class FormAccessError extends WhistleError {
     }
 }
 
+class InvalidVerificationCode extends WhistleError {
+    constructor() {
+        super('Invalid verification code.', 'InvalidVerificationCode');
+    }
+}
+
 exports.InvalidReporterError = InvalidReporterError;
 exports.DBInsertionError = DBInsertionError;
 exports.DBSelectionError = DBSelectionError;
@@ -70,3 +76,4 @@ exports.UserAuthenticationError = UserAuthenticationError;
 exports.TypeformUpdateError = TypeformUpdateError;
 exports.TypeformWebhookError = TypeformWebhookError;
 exports.FormAccessError = FormAccessError;
+exports.InvalidVerificationCode = InvalidVerificationCode;
