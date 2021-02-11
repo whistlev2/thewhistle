@@ -46,57 +46,13 @@ function getDefinitionFromID(definitions, fieldID) {
     return {};
 }
 
-async function insertQuestionResponse(reportID, sectionID, ref, definition, value) {
+exports.insertQuestionResponse = async function (reportID, sectionID, ref, definition, value) {
     const query = 'INSERT INTO questionresponses(report, section, question_ref, definition, value) VALUES($1, $2, $3, $4, $5)';
     const values = [reportID, sectionID, ref, JSON.stringify(definition), JSON.stringify(value)];
     try {
         await db.query(query, values);
     } catch (err) {
         throw new DBInsertionError('questionresponses', query, values, err);
-    }
-}
-
-async function validateReporter(formID, reporter) {
-    let query = `SELECT id FROM reports WHERE reporter='${reporter}' AND form=${formID}`;
-    try {
-        const results = await db.query(query);
-        return results.rows.length > 0;
-    } catch (err) {
-        throw new DBSelectionError('reports', query, err);
-    }
-}
-
-async function generateNewReporter() {
-    //Note potential (but unlikely) race condition here.
-    let reporter = '';
-    let results = {};
-    let foundNewReporter = false;
-    let query = '';
-    while (!foundNewReporter) {
-        reporter = Math.floor(100000 + Math.random() * 900000).toString(10);
-        query = `SELECT id FROM reports WHERE reporter='${reporter}'`;
-        try {
-            results = await db.query(query);
-        } catch (err) {
-            throw new DBSelectionError('reports', query, err)
-        }
-        foundNewReporter = results.rows.length == 0;
-    }
-    return reporter;
-}
-
-async function insertUsedBefore(reportID, usedBefore) {
-    const definition = {
-        title: 'Used report form before?',
-        type: 'boolean',
-        ref: 'Used before?'
-    }
-    const query = 'INSERT INTO questionresponses(report, question_ref, value, definition) VALUES($1, $2, $3, $4)';
-    const values = [reportID, 'Used before?', usedBefore ? 'Yes' : 'No', definition];
-    try {
-        await db.query(query, values);
-    } catch (err) {
-        throw new DBInsertionError('questionresponses', query, values, err)
     }
 }
 
@@ -114,28 +70,6 @@ exports.startReport = async function (formID, test) {
     }
 }
 
-exports.submitSection = async function (sessionID, body) {
-
-}
-
-exports.submitReporterSection = async function (sessionID, body) {
-    let reporter = body.reporter;
-    if (reporter) {
-        let validReporter = await validateReporter(formID, reporter);
-        if (!validReporter) {
-            throw new InvalidReporterError(`${reporter} is not a valid reporter number for this form.`);
-        }
-    } else {
-        reporter = await generateNewReporter();
-    }
-    //TODO: Make session file
-    await session.addReporter(sessionID, reporter, body.usedBefore); //TODO: 10/02/2021 Implement this
-
-    let nextSection = await session.getNextSection(sessionID); //TODO: 10/02/2021 Implement this
-
-    return nextSection;
-}
-
 exports.submitTypeformSection = async function (sectionID, payload) {
     try {
         let hiddenFields = payload.form_response.hidden;
@@ -150,7 +84,7 @@ exports.submitTypeformSection = async function (sectionID, payload) {
             value = getValueFromAnswer(answers[i]);
             definition = getDefinitionFromID(definitions, answers[i].field.id);
             ref = definition.ref;
-            promises.push(insertQuestionResponse(reportID, sectionID, ref, definition, value))
+            promises.push(this.insertQuestionResponse(reportID, sectionID, ref, definition, value))
         }
         Promise.all(promises);
     } catch (err) {

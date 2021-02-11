@@ -412,6 +412,32 @@ exports.insertForm = async function (form) {
     }
 }
 
+exports.generateInitialSectionQueue = async function (formID, test) {
+    let logicField = test ? 'test_logic' : 'logic'
+    let query = `SELECT ${logicField} FROM formsectionlogic WHERE form='${formID}'`;
+    let results = {};
+
+    try {
+        results = await db.query(query);
+    } catch (err) {
+        throw new DBSelectionError('formsections', query, err);
+    }
+
+    let sections = results.rows[0][logicField].sections;
+
+    let sectionQueue = [];
+
+    for (let i = 0; i < sections.length; i++) {
+        if (sections[i].sectionLogic.default) {
+            sectionQueue.push(sections[i].sectionID);
+        } else {
+            break;
+        }
+    }
+
+    return sectionQueue;
+}
+
 //TODO: Delete if not needed
 /* updateSurvey = function (slug, survey) {
     db.query(`UPDATE subforms SET form_json='${JSON.stringify(survey)}' WHERE slug='${slug}'`, (error, results) => {

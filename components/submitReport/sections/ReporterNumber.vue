@@ -59,6 +59,7 @@ export default {
             let url = `/api/report/submit-section/${this.$attrs.sessionID}`;
             
             let data = {
+                section: this.$attrs.section.id,
                 usedBefore: this.usedBefore,
                 type: 'reporter'
             };

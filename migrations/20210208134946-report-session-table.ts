@@ -23,7 +23,7 @@ exports.up = function(db: any, callback: any): any {
                 autoIncrement: true
             },
             current_report: 'int', //eslint-disable-line
-            stack: 'json',
+            queue: 'json',
             verification_code: 'string' //eslint-disable-line 
         },
         addReportForeignKey

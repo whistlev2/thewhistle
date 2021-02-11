@@ -1,7 +1,7 @@
 const express = require('express');
 const report = require('../queries/report.js');
 const session = require('../queries/session.js');
-
+const forms = require('../queries/forms.js')
 const router = express.Router()
 
 router.post('/start/:form', startReport);
@@ -31,10 +31,14 @@ router.post('/note/:id', postNote);
 async function startReport(req, res, next) {
     try {
         let reportID = await report.startReport(req.params.form, req.body.test);
-        let sessionID = await session.startSession(reportID); //TODO: 10/02/2021 Implement this
-        let firstSection = await session.getNextSection(sessionID) //TODO: 10/02/2021 Implement this
+        let sectionQueue = await forms.generateInitialSectionQueue(req.params.form, req.body.test);
+        let sessionID = await session.startSession(reportID, sectionQueue);
+        let firstSection = await session.shiftNextSection(sessionID); //TODO: 10/02/2021 Implement this
         res.status(200);
-        res.json(firstSection);
+        res.json({
+            sessionID: sessionID,
+            nextSection: firstSection
+        });
     } catch (err) {
         res.status(500);
         res.send('Could not start report');
@@ -59,7 +63,7 @@ async function submitSection(req, res, next) {
         let nextSection = {};
         switch(req.body.type) {
             case 'reporter':
-                nextSection = await session.submitReporterSection(req.params.session); //TODO: 10/02/2021 Implement this
+                nextSection = await session.submitReporterSection(req.body.section, req.params.session, req.body.reporter, req.body.usedBefore); //TODO: 10/02/2021 Implement this
                 break;
             case 'email-verification':
                 nextSection = await session.submitEmailVerificationSection(req.params.session, req.body.verificationCode); //TODO: 10/02/2021 Implement this
@@ -75,7 +79,7 @@ async function submitSection(req, res, next) {
         if (err.name == 'InvalidReporterError') {
             res.status(404);
             res.send(err.message);
-        } else if (err.name == 'InvalidVerificationCode') {
+        } else if (err.name == 'InvalidVerificationCodeError') {
             res.status(404);
             res.send(err.message);
         } else {

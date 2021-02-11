@@ -62,9 +62,9 @@ class FormAccessError extends WhistleError {
     }
 }
 
-class InvalidVerificationCode extends WhistleError {
+class InvalidVerificationCodeError extends WhistleError {
     constructor() {
-        super('Invalid verification code.', 'InvalidVerificationCode');
+        super('Invalid verification code.', 'InvalidVerificationCodeError');
     }
 }
 
@@ -76,4 +76,4 @@ exports.UserAuthenticationError = UserAuthenticationError;
 exports.TypeformUpdateError = TypeformUpdateError;
 exports.TypeformWebhookError = TypeformWebhookError;
 exports.FormAccessError = FormAccessError;
-exports.InvalidVerificationCode = InvalidVerificationCode;
+exports.InvalidVerificationCodeError = InvalidVerificationCodeError;
