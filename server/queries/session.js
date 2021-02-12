@@ -65,8 +65,27 @@ async function generateNewReporter() {
     return reporter;
 }
 
+async function getReporterNumberFromSession(sessionID) {
+    let query = `SELECT reporter FROM reports JOIN reportsessions ON reportsessions.current_report = reports.id WHERE reportsessions.id='${sessionID}'`;
+    try {
+        const results = await db.query(query);
+        return results.rows[0].reporter;
+    } catch (err) {
+        throw new DBSelectionError('reports', query, err);
+    }
+}
+
 function generateEmailVerificationBody(verificationCode, reporterNumber) {
     return `Hello!\n\nThank you so much for your interest in reporting an incident of racism to the End Everyday Racism project.\n\nYour verification code is ${verificationCode}. This code helps us verify that you are a member of the Cambridge community. Since we do not store your email address, you will need to generate a new authentication code every time you submit a report.\n\nYour reporter number is ${reporterNumber}. You can use this number to report multiple incidents. That lets us know that a set of reports all come from the same source.\n\nThank you again for participating in this project.\n\nEnd Everyday Racism Team`;
+}
+
+async function updateVerificationCode(sessionID, verificationCode) {
+    const query = `UPDATE reportsessions SET verification_code='${verificationCode}' WHERE id='${sessionID}'`;
+    try {
+        await db.query(query);
+    } catch (err) {
+        throw new DBUpdateError('reportsessions', query, err);
+    }
 }
 
 exports.getReportsToUpdate = async function (sectionID, sessionID) {
@@ -132,10 +151,10 @@ exports.sendEmailVerification = async function (sessionID, email) {
     //TODO: Validate email back-end
     let verificationCode = Math.random().toString(36).substring(1, 7);
     let emailTitle = 'End Everyday Racism Email Verification'
-    let reporterNumber = getReporterNumberFromSession(sessionID); //TODO: Implement this
+    let reporterNumber = await getReporterNumberFromSession(sessionID);
     let emailBody = generateEmailVerificationBody(verificationCode, reporterNumber);
     Email.send(email, emailTitle, emailBody); //TODO: Implement this (note: it's async)
-    updateVerificationCode(sessionID, verificationCode) //TODO: Implement this
+    updateVerificationCode(sessionID, verificationCode);
 }
 
 exports.submitEmailVerificationSection = async function (sessionID, testVerificationCode) {
