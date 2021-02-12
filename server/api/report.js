@@ -33,7 +33,7 @@ async function startReport(req, res, next) {
         let reportID = await report.startReport(req.params.form, req.body.test);
         let sectionQueue = await forms.generateInitialSectionQueue(req.params.form, req.body.test);
         let sessionID = await session.startSession(reportID, sectionQueue);
-        let firstSection = await session.shiftNextSection(sessionID); //TODO: 10/02/2021 Implement this
+        let firstSection = await session.shiftNextSection(sessionID);
         res.status(200);
         res.json({
             sessionID: sessionID,
@@ -63,10 +63,10 @@ async function submitSection(req, res, next) {
         let nextSection = {};
         switch(req.body.type) {
             case 'reporter':
-                nextSection = await session.submitReporterSection(req.body.section, req.params.session, req.body.reporter, req.body.usedBefore); //TODO: 10/02/2021 Implement this
+                nextSection = await session.submitReporterSection(req.body.section, req.params.session, req.body.reporter, req.body.usedBefore);
                 break;
             case 'email-verification':
-                nextSection = await session.submitEmailVerificationSection(req.params.session, req.body.verificationCode); //TODO: 10/02/2021 Implement this
+                nextSection = await session.submitEmailVerificationSection(req.params.session, req.body.verificationCode);
                 break;
             default:
                 res.status(400);
@@ -142,7 +142,7 @@ function getReport(req, res, next) {
 
 async function getNextSection(req, res, next) {
     try {
-        let nextSection = await session.getNextSection(req.params.sessionID); //TODO: Implement this
+        let nextSection = await session.shiftNextSection(req.params.sessionID);
         res.json(nextSection);
     } catch (err) {
         res.status(500);

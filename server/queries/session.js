@@ -65,6 +65,10 @@ async function generateNewReporter() {
     return reporter;
 }
 
+function generateEmailVerificationBody(verificationCode, reporterNumber) {
+    return `Hello!\n\nThank you so much for your interest in reporting an incident of racism to the End Everyday Racism project.\n\nYour verification code is ${verificationCode}. This code helps us verify that you are a member of the Cambridge community. Since we do not store your email address, you will need to generate a new authentication code every time you submit a report.\n\nYour reporter number is ${reporterNumber}. You can use this number to report multiple incidents. That lets us know that a set of reports all come from the same source.\n\nThank you again for participating in this project.\n\nEnd Everyday Racism Team`;
+}
+
 exports.getReportsToUpdate = async function (sectionID, sessionID) {
     let allReports = await FormSections.getForAllReports(sectionID);
     let reports = allReports ? await this.getReports() : [ await this.getCurrentReport(sessionID) ];
@@ -125,9 +129,13 @@ exports.submitReporterSection = async function (sectionID, sessionID, body) {
 }
 
 exports.sendEmailVerification = async function (sessionID, email) {
-    //Generate verification code
-    //Send in email
-    //Add to database
+    //TODO: Validate email back-end
+    let verificationCode = Math.random().toString(36).substring(1, 7);
+    let emailTitle = 'End Everyday Racism Email Verification'
+    let reporterNumber = getReporterNumberFromSession(sessionID); //TODO: Implement this
+    let emailBody = generateEmailVerificationBody(verificationCode, reporterNumber);
+    Email.send(email, emailTitle, emailBody); //TODO: Implement this (note: it's async)
+    updateVerificationCode(sessionID, verificationCode) //TODO: Implement this
 }
 
 exports.submitEmailVerificationSection = async function (sessionID, testVerificationCode) {
@@ -142,7 +150,7 @@ exports.submitEmailVerificationSection = async function (sessionID, testVerifica
 
     let verificationCode = results.rows[0].verification_code;
 
-    if (testVerificationCode == verificationCode) {
+    if (testVerificationCode.toLowerCase() == verificationCode) {
         let nextSection = await this.shiftNextSection(sessionID);
         return nextSection;
     } else {
