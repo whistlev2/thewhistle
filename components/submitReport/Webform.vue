@@ -2,13 +2,14 @@
     <div>
         <div v-if="!startedReport">
             {{ $attrs.form.description }}
+            <br>
             <v-btn outlined v-on:click="startReport" class="blueBtn">Start Report</v-btn>
         </div>
         <div v-else>
             <!-- TODO: Put in report ID as hidden field -->
-            <Questions v-if="currentSection.type == 'questions'" :section="currentSection" :sessionID="sessionID" @complete="showNextSection"></Questions>//TODO: Change to session ID?
-            <EmailVerification v-if="currentSection.type == 'emailverification'" :section="currentSection" :sessionID="sessionID" @complete="showNextSection"></EmailVerification>
-            <ReporterNumber v-if="currentSection.type == 'reporternumber'" :section="currentSection" :sessionID="sessionID" @complete="showNextSection"></ReporterNumber>
+            <Questions v-if="currentSection.type == 'Questions'" :section="currentSection" :sessionID="sessionID" @complete="showNextSection"></Questions>
+            <EmailVerification v-if="currentSection.type == 'Email Verification'" :section="currentSection" :sessionID="sessionID" @complete="showNextSection"></EmailVerification>
+            <ReporterNumber v-if="currentSection.type == 'Reporter Number'" :section="currentSection" :sessionID="sessionID" @complete="showNextSection"></ReporterNumber>
         </div>
     </div>
 </template>
@@ -45,7 +46,7 @@ export default {
     methods: {
         startReport() {
             //TODO: Get form
-            let url = `/api/report/start/${this.$attrs.form}`;
+            let url = `/api/report/start/${this.$attrs.form.id}`;
             
             let data = {
                 test: this.$attrs.test
@@ -59,7 +60,7 @@ export default {
                 })
                 .catch((response) => {
                     //TODO: Check response
-                })
+                });
         },
 
         showNextSection(section) {

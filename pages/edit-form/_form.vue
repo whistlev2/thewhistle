@@ -1,15 +1,29 @@
 <template>
     <div>
+        
         <h1>{{ title }}</h1>
         <p>{{ description }}</p>
         <v-btn outlined :to="`/submit-test-report/${$route.params.form}`" class="blueBtn">View test form</v-btn>
+        <v-btn v-if="editJSON.length == 0" x-large outlined v-on:click="openAddSectionModal(0)" class="blueBtn">Add first section</v-btn>
+        <v-tabs align-with-title v-model="tab">
+            <v-tabs-slider color="yellow"></v-tabs-slider>
+            <v-tab v-for="section in editJSON" :key="section.sectionID">
+                {{ section.title }}
+            </v-tab>
+        </v-tabs>
+        <v-tabs-items v-model="tab">
+            <v-tab-item v-for="section in editJSON" :key="section.sectionID">
+                <v-card flat>
+                    <v-card-text>Oh</v-card-text>
+                    <v-card-actions>
+                        <v-btn v-if="section.questions.length == 0" x-large outlined v-on:click="openAddQuestionModal" class="blueBtn">Add first question</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-tab-item>
+        </v-tabs-items>
         <br /><br />
         <!-- TODO: Add multiple sections -->
-        <template v-if="editJSON.length == 0">
-            <v-btn x-large outlined v-on:click="openAddQuestionModal" class="blueBtn">Add first question</v-btn>
-            <AddQuestionModal :show="showAddQuestionModal" :web="web" @close="closeAddQuestionModal" @submit="addQuestion" :newQuestion="newQuestion" :allRefs="allRefs" />
-        </template>
-        <EditQuestion v-for="question in editJSON" :sectionID="sectionID" :question="question" :web="web" :key="question.ref" v-on:questionChange="updateEditJSON" :allRefs="allRefs" />      
+        <AddSectionModal :show="showAddSectionModal" :newSection="newSection" :web="web" @close="closeAddSectionModal" @submit="addSection" />
     </div>
 </template>
 
@@ -21,38 +35,32 @@
 </style>
 
 <script>
-// TODO - L - Form editing
-import EditQuestion from '../../components/editQuestion/EditQuestion.vue'
-import AddQuestionModal from '../../components/editQuestion/AddQuestionModal.vue';
+import EditQuestionSection from '../../components/editForm/EditQuestionSection.vue';
+import AddSectionModal from '../../components/editForm/AddSectionModal.vue';
 
 import axios from 'axios';
 
 export default {
     components: {
-        EditQuestion,
-        AddQuestionModal
+        EditQuestionSection,
+        AddSectionModal
     },
     
     data() {
         return {
-            showAddQuestionModal: false,
-            newQuestion: {
-                type: '',
-                ref: '',
-                optionRef: '',
-                title: ''
-            },
             title: '',
             description: '',
             web: false,
             editJSON: {},
-            sectionID: 0
-        }
-    },
-
-    computed: {
-        allRefs: function () {
-            return this.editJSON.map(q => q.ref);
+            tab: null,
+            showAddSectionModal: false,
+            newSection: {
+                title: '',
+                type: '',
+                default: true,
+                allReports: true,
+                index: 0
+            }
         }
     },
 
@@ -68,32 +76,35 @@ export default {
                 this.title = d.data.title;
                 this.description = d.data.description;
                 this.web = d.data.web;
-                this.editJSON = d.data.sectionLogic[0].editJSON;
-                this.sectionID = d.data.sectionLogic[0].sectionID;
+                this.editJSON = d.data.sectionLogic;
             })
-        },
-
-        addQuestion() {
-            let url = `/api/edit-form/${this.sectionID}/add-first-question`;
-            let data = {
-                question: this.newQuestion
-            };
-            axios.post(url, data).then((response) => {
-                this.updateEditJSON(response.data.form);  
-                //TODO: Handle errors
-            });
         },
 
         updateEditJSON(editJSON) {
             this.editJSON = editJSON;
         },
 
-        openAddQuestionModal() {
-            this.showAddQuestionModal = true;
+        openAddSectionModal(index) {
+            this.newSection = {
+                title: '',
+                type: '',
+                default: true,
+                allReports: true,
+                index: index
+            }
+            this.showAddSectionModal = true;
         },
 
-        closeAddQuestionModal() {
-            this.showAddQuestionModal = false;
+        closeAddSectionModal() {
+            this.showAddSectionModal = false;
+        },
+
+        addSection() {
+            let url = `/api/edit-form/${this.$route.params.form}/add-section`;
+            axios.post(url, this.newSection).then((response) => {
+                this.updateEditJSON(response.data);
+                //TODO: Handle errors
+            });
         }
     }
 

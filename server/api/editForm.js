@@ -9,6 +9,8 @@ router.get('/:slug', getForm);
 
 router.post('/:slug/create', createForm);
 
+router.post('/:slug/add-section', addSection);
+
 router.patch('/:sectionID/update-question-title/:questionRef', updateQuestionTitle);
 
 router.post('/:sectionID/add-first-question', addFirstQuestion)
@@ -36,14 +38,10 @@ router.patch('/:sectionID/update-allow-other/:questionRef', updateAllowOther);
 router.patch('/:sectionID/update-description/:questionRef', updateDescription);
 
 
-
-
-
-
-
 async function getForm(req, res, next) {
     try {
         const form = await Forms.getEditFormJSON(req.params.slug);
+        console.log('OW OW OW', form);
         res.json(form);
     } catch (err) {
         res.status(500);
@@ -65,11 +63,25 @@ async function createForm(req, res, next) {
     }
 }
 
+async function addSection(req, res, next) {
+    try {
+        //TODO: Input validations
+        const section = await FormGen.addSection(req.params.slug, req.body);
+        res.json({
+            section: section
+        });
+    } catch (err) {
+        res.status(500);
+        res.send('Could not add section');
+        next(err);
+    }
+}
+
 async function updateQuestionTitle(req, res, next) {
     try {
-        const form = await FormGen.updateQuestionTitle(req.params.sectionID, req.params.questionRef, req.body.title);
+        const section = await FormGen.updateQuestionTitle(req.params.sectionID, req.params.questionRef, req.body.title);
         res.json({
-            form: form
+            section: section
         });
     } catch (err) {
         res.status(500);
@@ -80,9 +92,9 @@ async function updateQuestionTitle(req, res, next) {
 
 async function addFirstQuestion(req, res, next) {
     try {
-        const form = await FormGen.addFirstQuestion(req.params.sectionID, req.body.question);
+        const section = await FormGen.addFirstQuestion(req.params.sectionID, req.body.question);
         res.json({
-            form: form
+            section: section
         });
     } catch (err) {
         res.status(500);
@@ -93,12 +105,12 @@ async function addFirstQuestion(req, res, next) {
 
 async function addQuestion(req, res, next) {
     try {
-        const form = req.body.before ?
+        const section = req.body.before ?
             await FormGen.addQuestionBefore(req.params.sectionID, req.params.questionRef, req.body.question) :
             await FormGen.addQuestionAfter(req.params.sectionID, req.params.questionRef, req.body.question);
         
         res.json({
-            form: form
+            section: section
         });
     } catch (err) {
         res.status(500);
@@ -109,9 +121,9 @@ async function addQuestion(req, res, next) {
 
 async function deleteQuestion(req, res, next) {
     try {
-        const form = await FormGen.deleteQuestion(req.params.sectionID, req.params.questionRef);
+        const section = await FormGen.deleteQuestion(req.params.sectionID, req.params.questionRef);
         res.json({
-            form: form
+            section: section
         });
     } catch (err) {
         res.status(500);
@@ -122,9 +134,9 @@ async function deleteQuestion(req, res, next) {
 
 async function updateQuestionJump(req, res, next) {
     try {
-        const form = await FormGen.updateQuestionJump(req.params.sectionID, req.params.questionRef, req.body.jump);
+        const section = await FormGen.updateQuestionJump(req.params.sectionID, req.params.questionRef, req.body.jump);
         res.json({
-            form: form
+            section: section
         });
     } catch (err) {
         res.status(500);
@@ -135,9 +147,9 @@ async function updateQuestionJump(req, res, next) {
 
 async function addOption(req, res, next) {
     try {
-        const form = await FormGen.addOption(req.params.sectionID, req.params.questionRef, req.body.option);
+        const section = await FormGen.addOption(req.params.sectionID, req.params.questionRef, req.body.option);
         res.json({
-            form: form
+            section: section
         });
     } catch (err) {
         res.status(500);
@@ -148,9 +160,9 @@ async function addOption(req, res, next) {
 
 async function updateOptionJump(req, res, next) {
     try {
-        const form = await FormGen.updateOptionJump(req.params.sectionID, req.params.questionRef, req.params.choiceRef, req.body.jump);
+        const section = await FormGen.updateOptionJump(req.params.sectionID, req.params.questionRef, req.params.choiceRef, req.body.jump);
         res.json({
-            form: form
+            section: section
         });
     } catch (err) {
         res.status(500);
@@ -161,9 +173,9 @@ async function updateOptionJump(req, res, next) {
 
 async function deleteOption(req, res, next) {
     try {
-        const form = await FormGen.deleteOption(req.params.sectionID, req.params.questionRef, req.params.choiceRef);
+        const section = await FormGen.deleteOption(req.params.sectionID, req.params.questionRef, req.params.choiceRef);
         res.json({
-            form: form
+            section: section
         });
     } catch (err) {
         res.status(500);
@@ -174,9 +186,9 @@ async function deleteOption(req, res, next) {
 
 async function updateRequired(req, res, next) {
     try {
-        const form = await FormGen.updateRequired(req.params.sectionID, req.params.questionRef, req.body.required);
+        const section = await FormGen.updateRequired(req.params.sectionID, req.params.questionRef, req.body.required);
         res.json({
-            form: form
+            section: section
         });
     } catch (err) {
         res.status(500);
@@ -187,9 +199,9 @@ async function updateRequired(req, res, next) {
 
 async function deleteDescription(req, res, next) {
     try {
-        const form = await FormGen.deleteDescription(req.params.sectionID, req.params.questionRef);
+        const section = await FormGen.deleteDescription(req.params.sectionID, req.params.questionRef);
         res.json({
-            form: form
+            section: section
         });
     } catch (err) {
         res.status(500);
@@ -200,9 +212,9 @@ async function deleteDescription(req, res, next) {
 
 async function updateAllowMultiple(req, res, next) {
     try {
-        const form = await FormGen.updateAllowMultiple(req.params.sectionID, req.params.questionRef, req.body.allowMultiple);
+        const section = await FormGen.updateAllowMultiple(req.params.sectionID, req.params.questionRef, req.body.allowMultiple);
         res.json({
-            form: form
+            section: section
         });
     } catch (err) {
         res.status(500);
@@ -213,9 +225,9 @@ async function updateAllowMultiple(req, res, next) {
 
 async function updateAllowOther(req, res, next) {
     try {
-        const form = await FormGen.updateAllowOther(req.params.sectionID, req.params.questionRef, req.body.allowOther);
+        const section = await FormGen.updateAllowOther(req.params.sectionID, req.params.questionRef, req.body.allowOther);
         res.json({
-            form: form
+            section: section
         });
     } catch (err) {
         res.status(500);
@@ -226,9 +238,9 @@ async function updateAllowOther(req, res, next) {
 
 async function updateDescription(req, res, next) {
     try {
-        const form = await FormGen.updateDescription(req.params.sectionID, req.params.questionRef, req.body.description);
+        const section = await FormGen.updateDescription(req.params.sectionID, req.params.questionRef, req.body.description);
         res.json({
-            form: form
+            section: section
         });
     } catch (err) {
         res.status(500);

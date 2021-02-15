@@ -34,6 +34,9 @@ async function startReport(req, res, next) {
         let sectionQueue = await forms.generateInitialSectionQueue(req.params.form, req.body.test);
         let sessionID = await session.startSession(reportID, sectionQueue);
         let firstSection = await session.shiftNextSection(sessionID);
+        console.log('id', sessionID);
+        console.log('FIRST', firstSection);
+        console.log('Q', sectionQueue);
         res.status(200);
         res.json({
             sessionID: sessionID,

@@ -1,14 +1,15 @@
 const Forms = require('../queries/forms.js');
+const FormSections = require('../queries/formsections.js');
 const Typeform = require('../interfaces/typeform.js');
 
 
-async function updateForm(sectionID, form, type) {
-    if (type == 'typeform') {
-        await Typeform.updateForm(form.id, form);
+async function updateSection(sectionID, section, type) {
+    if (type == 'Questions') {
+        await Typeform.updateForm(section.id, section); //Note: Here, section.id is typeformID
     }
-    let retForm = await Forms.updateJSON(sectionID, form);
+    let retSection = await Forms.updateJSON(sectionID, section);
     
-    return retForm;
+    return retSection;
 }
 
 function generateJumpTo(jump) {
@@ -365,7 +366,21 @@ function generateNewSMSFormJSON(title) {
     }
 }
 
+function generateReporterSection(title) {
+    return {
+        title: title
+    };
+}
+
+function generateEmailVerificationSection(title) {
+    return {
+        title: title,
+        allowedEndings: []
+    };
+}
+
 function generateNewTypeformJSON(title) {
+    /* eslint-disable */
     return {
         title: title,
         workspace: {
@@ -382,7 +397,7 @@ function generateNewTypeformJSON(title) {
             show_typeform_branding: true,
         },
         hidden: [
-            "report"
+            "session"
         ],
         fields: [],
         logic: [],
@@ -397,7 +412,36 @@ function generateNewTypeformJSON(title) {
             }
         ]
     }
+    /* eslint-enable */
 }
+
+async function generateInitialSectionJSON(type, title) {
+    let form = {};
+    let actualJSON = {};
+    let testJSON = {};
+    switch (type) {
+        case 'Questions':
+            form = generateNewTypeformJSON(title);
+            actualJSON = await Typeform.createForm(form);
+            testJSON = await Typeform.createForm(form);
+            break;
+        case 'Reporter Number':
+            actualJSON = generateReporterSection(title);
+            testJSON = actualJSON;
+            break;
+        case 'Email Verification':
+            actualJSON = generateEmailVerificationSection(title);
+            testJSON = actualJSON;
+            break;
+        default:
+            //TODO: Throw error
+    }
+    return {
+        actual: actualJSON,
+        test: testJSON
+    };
+}
+
 
 exports.createForm = async function (slug, title, description, org, web) {
     try {
@@ -409,8 +453,7 @@ exports.createForm = async function (slug, title, description, org, web) {
             title: title,
             description: description,
             org: org,
-            web: web,
-            type: web ? 'typeform' : 'sms'
+            web: web
         }
         await Forms.insertForm(form);
     } catch (err) {
@@ -418,34 +461,44 @@ exports.createForm = async function (slug, title, description, org, web) {
     }
 }
 
+exports.addSection = async function (formSlug, newSection) {
+    let json = await generateInitialSectionJSON(newSection.type, newSection.title);
+    let formID = await Forms.getFormIDFromSlug(formSlug);
+    let sectionID = await FormSections.insertSection(formID, newSection.type, json.actual, json.test, newSection.allReports); //TODO: Implement this
+    await Forms.addFormSectionLogicSection(newSection.index, formID, sectionID, newSection.default); //TODO: Implement this
+    console.log('jsonoff', json)
+    let retSection = Forms.generateEditJSON(json.test);
+    return retSection;
+}
+
 exports.updateQuestionTitle = async function(sectionID, questionRef, questionTitle) {
     let sectionJSON = await Forms.getSectionJSON(sectionID);
-    let form = sectionJSON.form;
+    let section = sectionJSON.form;
     let type = sectionJSON.type;
     //TODO: Handle case that the question doesn't exist
     for (let i = 0; i < form.fields.length; i++) {
-        if (form.fields[i].ref == questionRef) {
-            form.fields[i].title = questionTitle;
+        if (section.fields[i].ref == questionRef) {
+            section.fields[i].title = questionTitle;
             break;
         }
     }
-    let retForm = await updateForm(sectionID, form, type);
-    return retForm;
+    let retSection = await updateSection(sectionID, section, type);
+    return retSection;
 }
 
 exports.addFirstQuestion = async function(sectionID, question) {
     try {
         let sectionJSON = await Forms.getSectionJSON(sectionID);
-        let form = sectionJSON.form;
+        let section = sectionJSON.form;
         let type = sectionJSON.type;
         //TODO: Check question ref doesn't already exist
-        if (!form.logic) {
-            form.logic = [];
+        if (!section.logic) {
+            section.logic = [];
         }
         let formattedQuestion = formatQuestion(question);
-        form.fields = [ formattedQuestion ];
-        let retForm = await updateForm(sectionID, form, type);
-        return retForm;
+        section.fields = [ formattedQuestion ];
+        let retSection = await updateSection(sectionID, section, type);
+        return retSection;
     } catch (err) {
         //Handle properly
     }
@@ -453,84 +506,84 @@ exports.addFirstQuestion = async function(sectionID, question) {
 
 exports.addQuestionBefore = async function(sectionID, adjacentQuestionRef, question) {
     let sectionJSON = await Forms.getSectionJSON(sectionID);
-    let form = sectionJSON.form;
+    let section = sectionJSON.form;
     let type = sectionJSON.type;
 
     //TODO: Check question ref doesn't already exist
 
-    if (!form.logic) {
-        form.logic = [];
+    if (!section.logic) {
+        section.logic = [];
     }
 
-    form.logic = addQuestionBeforeLogic(form.logic, adjacentQuestionRef, question.ref);
+    section.logic = addQuestionBeforeLogic(section.logic, adjacentQuestionRef, question.ref);
 
     let formattedQuestion = formatQuestion(question);
-    let index = getQuestionPosition(form.fields, adjacentQuestionRef);
-    form.fields = insertQuestion(form.fields, formattedQuestion, index);
+    let index = getQuestionPosition(section.fields, adjacentQuestionRef);
+    section.fields = insertQuestion(section.fields, formattedQuestion, index);
 
-    let retForm = await updateForm(sectionID, form, type);
-    return retForm;
+    let retSection = await updateSection(sectionID, section, type);
+    return retSection;
 }
 
 exports.addQuestionAfter = async function(sectionID, adjacentQuestionRef, question) {
     let sectionJSON = await Forms.getSectionJSON(sectionID);
-    let form = sectionJSON.form;
+    let section = sectionJSON.form;
     let type = sectionJSON.type;
 
     //TODO: Check question ref doesn't already exist
 
-    if (!form.logic) {
-        form.logic = [];
+    if (!section.logic) {
+        section.logic = [];
     }
 
-    form.logic = addQuestionAfterLogic(form.logic, adjacentQuestionRef, question.ref);
+    section.logic = addQuestionAfterLogic(section.logic, adjacentQuestionRef, question.ref);
     let formattedQuestion = formatQuestion(question);
-    let index = getQuestionPosition(form.fields, adjacentQuestionRef) + 1;
-    form.fields = insertQuestion(form.fields, formattedQuestion, index);
-    let retForm = await updateForm(sectionID, form, type);
-    return retForm;
+    let index = getQuestionPosition(section.fields, adjacentQuestionRef) + 1;
+    section.fields = insertQuestion(section.fields, formattedQuestion, index);
+    let retSection = await updateSection(sectionID, section, type);
+    return retSection;
 }
 
 exports.deleteQuestion = async function (sectionID, questionRef) {
     let sectionJSON = await Forms.getSectionJSON(sectionID);
-    let form = sectionJSON.form;
+    let section = sectionJSON.form;
     let type = sectionJSON.type;
 
     //TODO: Check if question exists
 
-    form.fields = deleteQuestionFromFields(form.fields, questionRef);
+    section.fields = deleteQuestionFromFields(section.fields, questionRef);
 
-    if (form.logic) {
-        form.logic = deleteQuestionFromLogic(form.logic, questionRef);
+    if (section.logic) {
+        section.logic = deleteQuestionFromLogic(section.logic, questionRef);
     }
 
-    let retForm = await updateForm(sectionID, form, type);
-    return retForm;
+    let retSection = await updateSection(sectionID, section, type);
+    return retSection;
 }
 
 exports.updateQuestionJump = async function (sectionID, questionRef, jump) {
     let sectionJSON = await Forms.getSectionJSON(sectionID);
-    let form = sectionJSON.form;
+    let section = sectionJSON.form;
     let type = sectionJSON.type;
 
     //TODO: Check if both questions exist
 
-    if (!form.logic) {
-        form.logic = [];
+    if (!section.logic) {
+        section.logic = [];
     }
 
     let updated = false;
-    for (let i = 0; i < form.logic.length; i++) {
-        if (form.logic[i].ref == questionRef) {
-            for (let j = 0; j < form.logic[i].actions.length; j++) {
-                if (form.logic[i].actions[j].condition.op == 'always') {
-                    form.logic[i].actions[j].details.to = generateJumpTo(jump)
+    for (let i = 0; i < section.logic.length; i++) {
+        if (section.logic[i].ref == questionRef) {
+            for (let j = 0; j < section.logic[i].actions.length; j++) {
+                if (section.logic[i].actions[j].condition.op == 'always') {
+                    section.logic[i].actions[j].details.to = generateJumpTo(jump)
                     updated = true;
                     break;
                 }
             }
             if (!updated) {
-                form.logic[i].push(generateAlwaysAction(jump));
+                section.logic[i].push(generateAlwaysAction(jump));
                 updated = true;
             }
             break;
@@ -540,58 +593,58 @@ exports.updateQuestionJump = async function (sectionID, questionRef, jump) {
     if (!updated) {
         let questionLogic = generateQuestionLogic(questionRef);
         questionLogic.actions.push(generateAlwaysAction(jump));
-        form.logic.push(questionLogic);
+        section.logic.push(questionLogic);
         updated = true;
     }
 
-    let retForm = await updateForm(sectionID, form, type);
-    return retForm;
+    let retSection = await updateSection(sectionID, section, type);
+    return retSection;
 }
 
 exports.addOption = async function (sectionID, questionRef, option) {
     let sectionJSON = await Forms.getSectionJSON(sectionID);
-    let form = sectionJSON.form;
+    let section = sectionJSON.form;
     let type = sectionJSON.type;
 
     //TODO: Check if question exists and is multiple choice/dropdown
 
-    for (let i = 0; i < form.fields.length; i++) {
-        if (form.fields[i].ref == questionRef) {
-            if (!form.fields[i].properties.choices) {
-                form.fields[i].properties.choices = [];
+    for (let i = 0; i < section.fields.length; i++) {
+        if (section.fields[i].ref == questionRef) {
+            if (!section.fields[i].properties.choices) {
+                section.fields[i].properties.choices = [];
             }
-            form.fields[i].properties.choices.push(generateNewChoice(option));
+            section.fields[i].properties.choices.push(generateNewChoice(option));
         }
     }
 
-    let retForm = await updateForm(sectionID, form, type);
-    return retForm;
+    let retSection = await updateSection(sectionID, section, type);
+    return retSection;
 }
 
 exports.updateOptionJump = async function (sectionID, questionRef, optionRef, jump) {
     let sectionJSON = await Forms.getSectionJSON(sectionID);
-    let form = sectionJSON.form;
+    let section = sectionJSON.form;
     let type = sectionJSON.type;
 
     //TODO: Check questions and jump exist
 
-    if (!form.logic) {
-        form.logic = [];
+    if (!section.logic) {
+        section.logic = [];
     }
 
     let updated = false;
-    for (let i = 0; i < form.logic.length; i++) {
-        if (form.logic[i].ref == questionRef) {
-            for (let j = 0; j < form.logic[i].actions.length; j++) {
-                if (form.logic[i].actions[j].condition.op == 'is'
-                    && form.logic[i].actions[j].condition.vars[1].value == optionRef) {
-                    form.logic[i].actions[j].details.to = generateJumpTo(jump)
+    for (let i = 0; i < section.logic.length; i++) {
+        if (section.logic[i].ref == questionRef) {
+            for (let j = 0; j < section.logic[i].actions.length; j++) {
+                if (section.logic[i].actions[j].condition.op == 'is'
+                    && section.logic[i].actions[j].condition.vars[1].value == optionRef) {
+                    section.logic[i].actions[j].details.to = generateJumpTo(jump)
                     updated = true;
                     break;
                 }
             }
             if (!updated) {
-                form.logic[i].actions.push(generateIsAction(questionRef, optionRef, jump));
+                section.logic[i].actions.push(generateIsAction(questionRef, optionRef, jump));
                 updated = true;
             }
             break;
@@ -601,26 +654,26 @@ exports.updateOptionJump = async function (sectionID, questionRef, optionRef, ju
     if (!updated) {
         let questionLogic = generateQuestionLogic(questionRef);
         questionLogic.actions.push(generateIsAction(optionRef, jump));
-        form.logic.push(questionLogic);
+        section.logic.push(questionLogic);
     }
 
-    let retForm = await updateForm(sectionID, form, type);
-    return retForm;
+    let retSection = await updateSection(sectionID, section, type);
+    return retSection;
 }
 
 exports.deleteOption = async function (sectionID, questionRef, choiceRef) {
     let sectionJSON = await Forms.getSectionJSON(sectionID);
-    let form = sectionJSON.form;
+    let section = sectionJSON.form;
     let type = sectionJSON.type;
 
     //TODO: Check question and option exist
 
     //Remove choice from fields
-    for (let i = 0; i < form.fields.length; i++) {
-        if (form.fields[i].ref == questionRef) {
-            for (let j = 0; j < form.fields[i].properties.choices.length; j++) {
-                if (form.fields[i].properties.choices[j].ref == choiceRef) {
-                    form.fields[i].properties.choices.splice(j, 1);
+    for (let i = 0; i < section.fields.length; i++) {
+        if (section.fields[i].ref == questionRef) {
+            for (let j = 0; j < section.fields[i].properties.choices.length; j++) {
+                if (section.fields[i].properties.choices[j].ref == choiceRef) {
+                    section.fields[i].properties.choices.splice(j, 1);
                     break;
                 }
             }
@@ -629,15 +682,15 @@ exports.deleteOption = async function (sectionID, questionRef, choiceRef) {
     }
 
     //Remove choice from logic
-    if (form.logic) {
-        for (let i = 0; i < form.logic.length; i++) {
-            if (form.logic[i].ref == questionRef) {
-                for (let j = 0; j < form.logic[i].actions.length; j++) {
-                    for (let k = 0; k < form.logic[i].actions[j].condition.vars.length; k++) {
-                        if (form.logic[i].actions[j].condition.vars[k].type == 'choice' && form.logic[i].actions[j].condition.vars[k].value == choiceRef) {
-                            form.logic[i].actions.splice(j, 1);
-                            if (form.logic[i].actions.length == 0) {
-                                form.logic.splice(i, 1);
+    if (section.logic) {
+        for (let i = 0; i < section.logic.length; i++) {
+            if (section.logic[i].ref == questionRef) {
+                for (let j = 0; j < section.logic[i].actions.length; j++) {
+                    for (let k = 0; k < section.logic[i].actions[j].condition.vars.length; k++) {
+                        if (section.logic[i].actions[j].condition.vars[k].type == 'choice' && section.logic[i].actions[j].condition.vars[k].value == choiceRef) {
+                            section.logic[i].actions.splice(j, 1);
+                            if (section.logic[i].actions.length == 0) {
+                                section.logic.splice(i, 1);
                             }
                         }
                     }
@@ -645,30 +698,30 @@ exports.deleteOption = async function (sectionID, questionRef, choiceRef) {
             }
         }
     }
-    let retForm = await updateForm(sectionID, form, type);
-    return retForm;
+    let retSection = await updateSection(sectionID, section, type);
+    return retSection;
 }
 
 exports.updateRequired = async function (sectionID, questionRef, required) {
     try {
         let sectionJSON = await Forms.getSectionJSON(sectionID);
-        let form = sectionJSON.form;
+        let section = sectionJSON.form;
         let type = sectionJSON.type;
 
-        for (let i = 0; i < form.fields.length; i++) {
-            if (form.fields[i].ref == questionRef) {
-                if (form.fields[i].validations) {
-                    form.fields[i].validations.required = required;
+        for (let i = 0; i < section.fields.length; i++) {
+            if (section.fields[i].ref == questionRef) {
+                if (section.fields[i].validations) {
+                    section.fields[i].validations.required = required;
                 } else {
-                    form.fields[i].validations = {
+                    section.fields[i].validations = {
                         required: required
                     }
                 }
             }
         }
 
-        let retForm = await updateForm(sectionID, form, type);
-        return retForm;
+        let retSection = await updateSection(sectionID, section, type);
+        return retSection;
     } catch (err) {
         throw err
     }
@@ -676,80 +729,80 @@ exports.updateRequired = async function (sectionID, questionRef, required) {
 
 exports.deleteDescription = async function (sectionID, questionRef) {
     let sectionJSON = await Forms.getSectionJSON(sectionID);
-    let form = sectionJSON.form;
+    let section = sectionJSON.form;
     let type = sectionJSON.type;
 
-    for (let i = 0; i < form.fields.length; i++) {
-        if (form.fields[i].ref == questionRef) {
-            if (form.fields[i].properties.description) {
-                delete form.fields[i].properties.description
+    for (let i = 0; i < section.fields.length; i++) {
+        if (section.fields[i].ref == questionRef) {
+            if (section.fields[i].properties.description) {
+                delete section.fields[i].properties.description
             }
         }
     }
 
-    let retForm = await updateForm(sectionID, form, type);
-    return retForm;
+    let retSection = await updateSection(sectionID, section, type);
+    return retSection;
 }
 
 exports.updateAllowMultiple = async function (sectionID, questionRef, allowMultiple) {
     let sectionJSON = await Forms.getSectionJSON(sectionID);
-    let form = sectionJSON.form;
+    let section = sectionJSON.form;
     let type = sectionJSON.type;
 
-    for (let i = 0; i < form.fields.length; i++) {
-        if (form.fields[i].ref == questionRef) {
-            if (form.fields[i].properties) {
-                form.fields[i].properties.allow_multiple_selection = allowMultiple;
+    for (let i = 0; i < section.fields.length; i++) {
+        if (section.fields[i].ref == questionRef) {
+            if (section.fields[i].properties) {
+                section.fields[i].properties.allow_multiple_selection = allowMultiple;
             } else {
-                form.fields[i].properties = {
+                section.fields[i].properties = {
                     allow_multiple_selection: allowMultiple
                 }
             }
         }
     }
 
-    let retForm = await updateForm(sectionID, form, type);
-    return retForm;
+    let retSection = await updateSection(sectionID, section, type);
+    return retSection;
 }
 
 exports.updateAllowOther = async function (sectionID, questionRef, allowOther) {
     let sectionJSON = await Forms.getSectionJSON(sectionID);
-    let form = sectionJSON.form;
+    let section = sectionJSON.form;
     let type = sectionJSON.type;
 
-    for (let i = 0; i < form.fields.length; i++) {
-        if (form.fields[i].ref == questionRef) {
-            if (form.fields[i].properties) {
-                form.fields[i].properties.allow_other_choice = allowOther;
+    for (let i = 0; i < section.fields.length; i++) {
+        if (section.fields[i].ref == questionRef) {
+            if (section.fields[i].properties) {
+                section.fields[i].properties.allow_other_choice = allowOther;
             } else {
-                form.fields[i].properties = {
+                section.fields[i].properties = {
                     allow_other_choice: allowOther
                 }
             }
         }
     }
 
-    let retForm = await updateForm(sectionID, form, type);
-    return retForm;
+    let retSection = await updateSection(sectionID, section, type);
+    return retSection;
 }
 
 exports.updateDescription = async function (sectionID, questionRef, description) {
     let sectionJSON = await Forms.getSectionJSON(sectionID);
-    let form = sectionJSON.form;
+    let section = sectionJSON.form;
     let type = sectionJSON.type;
 
-    for (let i = 0; i < form.fields.length; i++) {
-        if (form.fields[i].ref == questionRef) {
-            if (form.fields[i].properties) {
-                form.fields[i].properties.description = description;
+    for (let i = 0; i < section.fields.length; i++) {
+        if (section.fields[i].ref == questionRef) {
+            if (section.fields[i].properties) {
+                section.fields[i].properties.description = description;
             } else {
-                form.fields[i].properties = {
+                section.fields[i].properties = {
                     description: description
                 }
             }
         }
     }
 
-    let retForm = await updateForm(sectionID, form, type);
-    return retForm;
+    let retSection = await updateSection(sectionID, section, type);
+    return retSection;
 }

@@ -1,11 +1,5 @@
 const nodemailer = require('nodemailer');
 
-
-
-
-
-
-
 exports.send = async function(toAddress, title, body) {
     let fromAddress = process.env.EMAIL;
     let password = process.env.EMAIL_PASSWORD;

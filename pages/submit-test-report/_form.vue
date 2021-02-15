@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1>{{ form.title }} Test</h1>
-        <div v-if="form.web"> //TODO: Change to webforms
+        <div v-if="form.web">
             <no-ssr style="height: 100%">
                 <!-- TODO: Make work for multiple sections and other section types -->
                 <Webform :test="true" :form="form"></Webform>

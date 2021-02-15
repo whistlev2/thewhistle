@@ -81,7 +81,7 @@ function adaptForm(form) {
     return form;
 }
 
-exports.updateForm = async function (formID, form) {
+exports.updateForm = async function (typeformID, form) {
     form = adaptForm(form);
     const url = `https://${TYPEFORM_API_BASE_URL}/forms/${formID}`;
     const data = JSON.stringify(form);
@@ -100,13 +100,14 @@ exports.updateForm = async function (formID, form) {
 
 exports.createForm = async function (form) {
     const url = `https://${TYPEFORM_API_BASE_URL}/forms`;
+    console.log('CREATE FORM', form);
     try {
         let response = await axios({
             method: 'post',
             url: url,
             headers: headers,
             data: form
-        })
+        });
         let ret = response.data;
         return ret;
     } catch (err) {

@@ -25,7 +25,7 @@ export default {
     },
 
     mounted() {
-        const url = `https://admin.typeform.com/to/${this.$attrs.section.json.id}?sessionID=${this.$attrs.sessionID}`;
+        const url = `https://admin.typeform.com/to/${this.$attrs.section.json.id}?session=${this.$attrs.sessionID}`;
         var el = document.getElementById("my-embedded-typeform");
         //TODO: Make this run on start report event
         // When instantiating a widget embed, you must provide the DOM element

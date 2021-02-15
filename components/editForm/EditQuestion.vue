@@ -3,6 +3,7 @@
         <v-card style="padding: 50px; margin: 10px">
             <v-form v-model="valid">
                 <v-card-title>
+                    CUNT
                     <v-text-field :label="$attrs.question.ref" outlined v-model="$attrs.question.title"
                         v-on:change="updateQuestionText" :rules="validText"></v-text-field>
                 </v-card-title>

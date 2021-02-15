@@ -58,12 +58,8 @@ exports.insertQuestionResponse = async function (reportID, sectionID, ref, defin
 
 exports.startReport = async function (formID, test) {
     try {
-        let sessionID = await insertReport(formID, test);
-
-        return {
-            sessionID: sessionID,
-            nextSection: nextSection
-        };
+        let reportID = await insertReport(formID, test);
+        return reportID;
     } catch (err) {
         //Unnecessary try/catch?
         throw err;

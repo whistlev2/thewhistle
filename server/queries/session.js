@@ -110,7 +110,7 @@ exports.startSession = async function (reportID, sectionQueue) {
     return sessionID;
 }
 
-exports.shiftNextSection = async function (sessionID) {
+exports.shiftNextSection = async function (sessionID, test) {
     let query = `SELECT queue FROM reportsessions WHERE id='${sessionID}'`;
     let results = {};
 
@@ -122,9 +122,11 @@ exports.shiftNextSection = async function (sessionID) {
 
     let queue = results.rows[0].queue.value;
 
-    let nextSection = queue.shift();
+    let nextSectionID = queue.shift();
 
-    await updateQueue(sessionID, queue, nextSection);
+    await updateQueue(sessionID, queue, nextSectionID);
+
+    let nextSection = await FormSections.getSection(nextSectionID, test);
 
     return nextSection;
 }

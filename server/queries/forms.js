@@ -230,11 +230,24 @@ function generateEditJSON(typeformJSON) {
     }
 }
 
+async function getSectionLogicFromForm(formID, test) {
+    let logicField = test ? 'test_logic' : 'logic'
+    let query = `SELECT ${logicField} FROM formsectionlogic WHERE form='${formID}'`;
+    let results = {};
+
+    try {
+        results = await db.query(query);
+    } catch (err) {
+        throw new DBSelectionError('formsections', query, err);
+    }
+
+    return results.rows[0][logicField];
+}
 
 //Used in edit form
 exports.getEditFormJSON = async function(slug) {
     //TODO: Move some of this to form gen
-    let query = `SELECT test_logic, forms.title AS title, forms.description AS description, forms.web AS web FROM formsectionlogic JOIN forms ON forms.id=formsectionlogic.form WHERE forms.slug='${slug}'`;
+    let query = `SELECT test_logic AS logic, forms.title AS title, forms.description AS description, forms.web AS web FROM formsectionlogic JOIN forms ON forms.id=formsectionlogic.form WHERE forms.slug='${slug}'`;
     let results = {};
     try {
         results = await db.query(query);
@@ -244,16 +257,19 @@ exports.getEditFormJSON = async function(slug) {
     const title = results.rows[0].title;
     const description = results.rows[0].description;
     const web = results.rows[0].web;
-    const sectionLogic = results.rows[0].test_logic.sections;
+    const sectionLogic = results.rows[0].logic.sections;
     for (let i = 0; i < sectionLogic.length; i++) {
-        query = `SELECT type, test_json FROM formsections WHERE id=${sectionLogic[i].sectionID}`;
+        query = `SELECT type, test_json AS json FROM formsections WHERE id=${sectionLogic[i].sectionID}`;
         try {
             results = await db.query(query);
         } catch (err) {
             throw new DBSelectionError('formsections', query, err);
         }
+        sectionLogic[i].title = results.rows[0].json.title;
         sectionLogic[i].type = results.rows[0].type;
-        sectionLogic[i].editJSON = generateEditJSON(results.rows[0].test_json);
+        console.log('THIS', results.rows[0].json)
+        sectionLogic[i].editJSON = generateEditJSON(results.rows[0].json);
+        console.log('WORD', sectionLogic[i].editJSON)
     }
 
     return {
@@ -281,14 +297,16 @@ exports.getSectionJSON = async function (sectionID) {
 
 //Used to get /submit-report pages
 exports.getFormFromSlug = async function (slug, test) {
-    let query = `SELECT logic, test_logic, forms.title AS title, forms.id AS form_id FROM formsectionlogic JOIN forms ON forms.id=formsectionlogic.form WHERE forms.slug='${slug}'`;
+    let query = `SELECT logic, test_logic, forms.web AS web, forms.title AS title, forms.description AS description, forms.id AS form_id FROM formsectionlogic JOIN forms ON forms.id=formsectionlogic.form WHERE forms.slug='${slug}'`;
     let results = {};
     try {
         results = await db.query(query);
     } catch (err) {
         throw new DBSelectionError('formsectionlogic', query, err);
     }
+    const web = results.rows[0].web;
     const title = results.rows[0].title;
+    const description = results.rows[0].description;
     const formID = results.rows[0].form_id;
     const sectionLogic = test ? results.rows[0].test_logic.sections : results.rows[0].logic.sections;
     for (let i = 0; i < sectionLogic.length; i++) {
@@ -302,9 +320,11 @@ exports.getFormFromSlug = async function (slug, test) {
         sectionLogic[i].json = test ? results.rows[0].test_json : results.rows[0].json;
     }
     return {
+        web: web,
         id: formID,
         slug: slug,
         title: title,
+        description: description,
         sections: sectionLogic
     }
 }
@@ -321,13 +341,43 @@ exports.updateJSON = async function(sectionID, form) {
     return retForm;
 }
 
+exports.getFormIDFromSlug = async function (slug) {
+    let query = `SELECT id FROM forms WHERE slug='${slug}'`;
+    let results = {};
+    try {
+        results = await db.query(query);
+    } catch (err) {
+        throw new DBSelectionError('forms', query, err);
+    }
+    return results.rows[0].id;
+}
+
+exports.addFormSectionLogicSection = async function (index, formID, sectionID, defaultSection) {
+    let sectionLogic = await getSectionLogicFromForm(formID, true);
+    console.log('SEC TON', sectionID);
+    let newSection = {
+        sectionID: sectionID,
+        sectionLogic: {
+            default: defaultSection
+        }
+    };
+    sectionLogic.sections.splice(index, 0, newSection);
+    console.log('lo gi', sectionLogic);
+    let query = `UPDATE formsectionlogic SET test_logic='${JSON.stringify(sectionLogic)}' WHERE form='${formID}'`;
+    try {
+        await db.query(query);
+    } catch (err) {
+        throw new DBUpdateError('formsections', query, err);
+    }
+}
+
 function generateSectionLogic(sectionID) {
     //TODO: Add section logic
     return {
         sections: [
             {
                 sectionID: sectionID,
-                sectionLogic: {},
+                sectionLogic: { default: true },
             }
         ]
     }
@@ -353,7 +403,7 @@ async function insertIntoFormSections(form) {
 
     //TODO: Add other types
     switch (form.type) {
-        case 'typeform':
+        case 'Questions':
             try {
                 actualJSON = await Typeform.createForm(form.json);
                 testJSON = await Typeform.createForm(form.json);
@@ -390,8 +440,9 @@ async function insertIntoFormSections(form) {
     return sectionID;
 }
 
-async function insertIntoFormSectionLogic(form, sectionID) {
-    let logic = generateSectionLogic(sectionID);
+async function insertIntoFormSectionLogic(form) {
+    //let logic = generateSectionLogic(sectionID)
+    let logic = { sections: [] };
     const query = 'INSERT INTO formsectionlogic (form, logic, test_logic) VALUES ($1, $2, $3)';
     const values = [form.id, logic, logic];
     try {
@@ -404,8 +455,8 @@ async function insertIntoFormSectionLogic(form, sectionID) {
 exports.insertForm = async function (form) {
     try {
         form.id = await insertIntoForms(form);
-        const sectionID = await insertIntoFormSections(form);
-        await insertIntoFormSectionLogic(form, sectionID);
+        //const sectionID = await insertIntoFormSections(form);
+        await insertIntoFormSectionLogic(form);
     } catch (err) {
         //TODO: Remove unnecessary try/catch?
         throw err
@@ -413,18 +464,8 @@ exports.insertForm = async function (form) {
 }
 
 exports.generateInitialSectionQueue = async function (formID, test) {
-    let logicField = test ? 'test_logic' : 'logic'
-    let query = `SELECT ${logicField} FROM formsectionlogic WHERE form='${formID}'`;
-    let results = {};
-
-    try {
-        results = await db.query(query);
-    } catch (err) {
-        throw new DBSelectionError('formsections', query, err);
-    }
-
-    let sections = results.rows[0][logicField].sections;
-
+    let sectionLogic = await getSectionLogicFromForm(formID, test);
+    let sections = sectionLogic.sections;
     let sectionQueue = [];
 
     for (let i = 0; i < sections.length; i++) {
@@ -437,6 +478,8 @@ exports.generateInitialSectionQueue = async function (formID, test) {
 
     return sectionQueue;
 }
+
+exports.generateEditJSON = generateEditJSON;
 
 //TODO: Delete if not needed
 /* updateSurvey = function (slug, survey) {
