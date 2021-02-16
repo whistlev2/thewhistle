@@ -16,7 +16,7 @@
                 <v-card flat>
                     <v-card-text>Oh</v-card-text>
                     <v-card-actions>
-                        <v-btn v-if="section.questions.length == 0" x-large outlined v-on:click="openAddQuestionModal" class="blueBtn">Add first question</v-btn>
+                        <v-btn v-if="section.editJSON.length == 0" x-large outlined v-on:click="openAddQuestionModal" class="blueBtn">Add first question</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-tab-item>
@@ -102,7 +102,8 @@ export default {
         addSection() {
             let url = `/api/edit-form/${this.$route.params.form}/add-section`;
             axios.post(url, this.newSection).then((response) => {
-                this.updateEditJSON(response.data);
+                this.updateEditJSON(response.data.section);
+                section = this.newSection.index;
                 //TODO: Handle errors
             });
         }
