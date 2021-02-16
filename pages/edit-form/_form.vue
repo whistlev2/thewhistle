@@ -4,12 +4,10 @@
         <h1>{{ title }}</h1>
         <p>{{ description }}</p>
         <v-btn outlined :to="`/submit-test-report/${$route.params.form}`" class="blueBtn">View test form</v-btn>
-        <v-btn v-if="editJSON.length == 0" x-large outlined v-on:click="openAddSectionModal(0)" class="blueBtn">Add first section</v-btn>
-        <br><br>
-        
-        <v-tabs align-with-title v-model="currentTab" @change="changeTab">
+        <v-btn v-if="editJSON.length == 0" outlined v-on:click="openAddSectionModal(0)" class="blueBtn">Add first section</v-btn>
+        <v-tabs v-else align-with-title v-model="currentTab">
             <v-tabs-slider color="yellow"></v-tabs-slider>
-            <v-tab v-for="tab in tabs" :key="tab.key">
+            <v-tab v-for="tab in tabs" :key="tab.key" @click="changeTab(tab)">
                 <template v-if="tab.isSection">
                     {{ tab.title }}
                 </template>
@@ -20,13 +18,12 @@
             </v-tab>
             <v-tabs-items v-model="currentTab">
                 <v-tab-item v-for="tab in tabs" :key="tab.key">
-                    <EditQuestionSection v-if="tab.isSection && tab.section.type == 'Questions'" :section="tab.section" :web="tab.web" />
+                    <EditQuestionSection v-if="tab.isSection && tab.section.type == 'Questions'" :section="tab.section" :web="web" />
                 </v-tab-item>
             </v-tabs-items>
         </v-tabs>
         
         <br /><br />
-        <!-- TODO: Add multiple sections -->
         <AddSectionModal :show="showAddSectionModal" :newSection="newSection" :web="web" @close="closeAddSectionModal" @submit="addSection" />
     </div>
 </template>
@@ -88,7 +85,7 @@ export default {
         },
 
         openAddSectionModal(index) {
-            console.log('ADDDDD', index)
+            console.log('OPEN MODAL', index);
             this.newSection = {
                 title: '',
                 type: '',
@@ -112,15 +109,18 @@ export default {
                 section.title = this.newSection.title;
                 section.type = this.newSection.type;
                 this.editJSON.splice(this.newSection.index, 0, section);
+                if (this.editJSON.length == 1) {
+                    this.currentTab = 1;
+                }
                 //TODO: Handle errors
             });
         },
 
-        changeTab(tabIndex) {
-            if (!this.tabs[tabIndex].isSection) {
-                this.openAddSectionModal(this.tabs[tabIndex].index);
+        changeTab(tab) {
+            if (!tab.isSection) {
+                this.openAddSectionModal(tab.index);
             } else {
-                this.currentSection = tabIndex;
+                this.currentSection = tab.index;
             }
         }
     },

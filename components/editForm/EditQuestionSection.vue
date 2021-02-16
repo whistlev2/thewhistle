@@ -1,7 +1,7 @@
 <template>
     <div>
         <template v-if="$attrs.section.questions.length == 0">
-            <v-btn x-large outlined v-on:click="openAddQuestionModal" class="blueBtn">Add first question</v-btn>
+            <v-btn outlined v-on:click="openAddQuestionModal" class="blueBtn">Add first question</v-btn>
             <AddQuestionModal :show="showAddQuestionModal" :web="$attrs.web" @close="closeAddQuestionModal" @submit="addQuestion" :newQuestion="newQuestion" :allRefs="allRefs" />
         </template>
         <EditQuestion v-for="question in $attrs.section.questions" :sectionID="$attrs.section.sectionID" :question="question" :web="$attrs.web" :key="question.ref" v-on:questionChange="updateSectionQuestions" :allRefs="allRefs" />
