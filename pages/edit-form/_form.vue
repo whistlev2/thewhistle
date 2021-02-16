@@ -7,13 +7,13 @@
         <v-btn v-if="editJSON.length == 0" x-large outlined v-on:click="openAddSectionModal(0)" class="blueBtn">Add first section</v-btn>
         <br><br>
         
-        <v-tabs align-with-title v-model="currentTab">
+        <v-tabs align-with-title v-model="currentTab" @change="changeTab">
             <v-tabs-slider color="yellow"></v-tabs-slider>
             <v-tab v-for="tab in tabs" :key="tab.key">
                 <template v-if="tab.isSection">
                     {{ tab.title }}
                 </template>
-                <template v-else @click="openAddSectionModal(key)">
+                <template v-else>
                     <v-icon>mdi-plus-circle</v-icon>
                 </template>
                 
@@ -64,7 +64,8 @@ export default {
                 default: true,
                 allReports: true,
                 index: 0
-            }
+            },
+            currentSection: null
         }
     },
 
@@ -82,6 +83,7 @@ export default {
                 this.web = d.data.web;
                 this.editJSON = d.data.sectionLogic;
                 this.currentTab = this.editJSON.length > 0 ? 1 : 0;
+                this.currentSection = this.currentTab;
             })
         },
 
@@ -98,6 +100,7 @@ export default {
         },
 
         closeAddSectionModal() {
+            this.currentTab = this.currentSection;
             this.showAddSectionModal = false;
         },
 
@@ -111,6 +114,14 @@ export default {
                 this.editJSON.splice(this.newSection.index, 0, section);
                 //TODO: Handle errors
             });
+        },
+
+        changeTab(tabIndex) {
+            if (!this.tabs[tabIndex].isSection) {
+                this.openAddSectionModal(this.tabs[tabIndex].index);
+            } else {
+                this.currentSection = tabIndex;
+            }
         }
     },
 
@@ -118,7 +129,8 @@ export default {
         tabs: function () {
             let ret = [{
                 isSection: false,
-                key: 0
+                key: 0,
+                index: 0
             }];
             for (let i = 0; i < this.editJSON.length; i++) {
                 ret.push({
@@ -129,7 +141,8 @@ export default {
                 });
                 ret.push({
                     isSection: false,
-                    key: i + 1
+                    key: 'addsection' + (i + 1),
+                    index: i + 1
                 });
             }
 
