@@ -5,17 +5,26 @@
         <p>{{ description }}</p>
         <v-btn outlined :to="`/submit-test-report/${$route.params.form}`" class="blueBtn">View test form</v-btn>
         <v-btn v-if="editJSON.length == 0" x-large outlined v-on:click="openAddSectionModal(0)" class="blueBtn">Add first section</v-btn>
-        <v-tabs align-with-title v-model="tab">
+        <br><br>
+        
+        <v-tabs align-with-title v-model="currentTab">
             <v-tabs-slider color="yellow"></v-tabs-slider>
-            <v-tab v-for="section in editJSON" :key="section.sectionID">
-                {{ section.title }}
+            <v-tab v-for="tab in tabs" :key="tab.key">
+                <template v-if="tab.isSection">
+                    {{ tab.title }}
+                </template>
+                <template v-else @click="openAddSectionModal(key)">
+                    <v-icon>mdi-plus-circle</v-icon>
+                </template>
+                
             </v-tab>
+            <v-tabs-items v-model="currentTab">
+                <v-tab-item v-for="tab in tabs" :key="tab.key">
+                    <EditQuestionSection v-if="tab.isSection && tab.section.type == 'Questions'" :section="tab.section" :web="tab.web" />
+                </v-tab-item>
+            </v-tabs-items>
         </v-tabs>
-        <v-tabs-items v-model="tab">
-            <v-tab-item v-for="section in editJSON" :key="section.sectionID">
-                <EditQuestionSection v-if="section.type == 'Questions'" :section="section" :web="web" />
-            </v-tab-item>
-        </v-tabs-items>
+        
         <br /><br />
         <!-- TODO: Add multiple sections -->
         <AddSectionModal :show="showAddSectionModal" :newSection="newSection" :web="web" @close="closeAddSectionModal" @submit="addSection" />
@@ -47,7 +56,7 @@ export default {
             description: '',
             web: false,
             editJSON: [],
-            tab: null,
+            currentTab: null,
             showAddSectionModal: false,
             newSection: {
                 title: '',
@@ -72,10 +81,12 @@ export default {
                 this.description = d.data.description;
                 this.web = d.data.web;
                 this.editJSON = d.data.sectionLogic;
+                this.currentTab = this.editJSON.length > 0 ? 1 : 0;
             })
         },
 
         openAddSectionModal(index) {
+            console.log('ADDDDD', index)
             this.newSection = {
                 title: '',
                 type: '',
@@ -100,6 +111,29 @@ export default {
                 this.editJSON.splice(this.newSection.index, 0, section);
                 //TODO: Handle errors
             });
+        }
+    },
+
+    computed: {
+        tabs: function () {
+            let ret = [{
+                isSection: false,
+                key: 0
+            }];
+            for (let i = 0; i < this.editJSON.length; i++) {
+                ret.push({
+                    isSection: true,
+                    key: this.editJSON[i].sectionID,
+                    title: this.editJSON[i].title,
+                    section: this.editJSON[i]
+                });
+                ret.push({
+                    isSection: false,
+                    key: i + 1
+                });
+            }
+
+            return ret;
         }
     }
 
