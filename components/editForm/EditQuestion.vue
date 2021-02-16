@@ -3,7 +3,6 @@
         <v-card style="padding: 50px; margin: 10px">
             <v-form v-model="valid">
                 <v-card-title>
-                    CUNT
                     <v-text-field :label="$attrs.question.ref" outlined v-model="$attrs.question.title"
                         v-on:change="updateQuestionText" :rules="validText"></v-text-field>
                 </v-card-title>
@@ -196,7 +195,7 @@ export default {
                     title: this.$attrs.question.title
                 };
                 axios.patch(url, data).then((response) => {
-                    this.emitToParent(response.data.form);  
+                    this.emitToParent(response.data.section);  
                     //TODO: Handle errors
                 });
             }
@@ -209,7 +208,7 @@ export default {
                 question: this.newQuestion
             };
             axios.post(url, data).then((response) => {
-                this.emitToParent(response.data.form);  
+                this.emitToParent(response.data.section);  
                 //TODO: Handle errors
             });
         },
@@ -217,7 +216,7 @@ export default {
         deleteQuestion() {
             let url = `/api/edit-form/${this.$attrs.sectionID}/delete-question/${this.$attrs.question.ref}`;
             axios.delete(url).then((response) => {
-                this.emitToParent(response.data.form);  
+                this.emitToParent(response.data.section);  
                 //TODO: Handle errors
             });
         },
@@ -228,7 +227,7 @@ export default {
                 jump: this.$attrs.question.jump
             };
             axios.patch(url, data).then((response) => {
-                this.emitToParent(response.data.form);  
+                this.emitToParent(response.data.section);  
                 //TODO: Handle errors
             });
         },
@@ -239,7 +238,7 @@ export default {
                 option: this.newOption
             };
             axios.post(url, data).then((response) => {
-                this.emitToParent(response.data.form);  
+                this.emitToParent(response.data.section);  
                 //TODO: Handle errors
             });
         },
@@ -250,7 +249,7 @@ export default {
                 jump: choice.jump
             };
             axios.patch(url, data).then((response) => {
-                this.emitToParent(response.data.form);  
+                this.emitToParent(response.data.section);  
                 //TODO: Handle errors
             });
         },
@@ -259,7 +258,7 @@ export default {
             let url = `/api/edit-form/${this.$attrs.sectionID}/delete-option/${this.$attrs.question.ref}/${choiceRef}`;
 
             axios.delete(url).then((response) => {
-                this.emitToParent(response.data.form);  
+                this.emitToParent(response.data.section);  
                 //TODO: Handle errors
             });
         },
@@ -270,7 +269,7 @@ export default {
                 required: this.$attrs.question.required
             };
             axios.patch(url, data).then((response) => {
-                this.emitToParent(response.data.form);  
+                this.emitToParent(response.data.section);  
                 //TODO: Handle errors
             });
         },
@@ -280,7 +279,7 @@ export default {
                 let url = `/api/edit-form/${this.$attrs.sectionID}/delete-description/${this.$attrs.question.ref}`;
 
                 axios.delete(url).then((response) => {
-                    this.emitToParent(response.data.form);  
+                    this.emitToParent(response.data.section);  
                     //TODO: Handle errors
                 });
             }
@@ -292,7 +291,7 @@ export default {
                 allowMultiple: this.$attrs.question.allowMultiple
             };
             axios.patch(url, data).then((response) => {
-                this.emitToParent(response.data.form);  
+                this.emitToParent(response.data.section);  
                 //TODO: Handle errors
             });
         },
@@ -303,7 +302,7 @@ export default {
                 allowOther: this.$attrs.question.allowOther
             };
             axios.patch(url, data).then((response) => {
-                this.emitToParent(response.data.form);  
+                this.emitToParent(response.data.section);  
                 //TODO: Handle errors
             });
         },
@@ -315,7 +314,7 @@ export default {
                     description: this.$attrs.question.description
                 };
                 axios.patch(url, data).then((response) => {
-                    this.emitToParent(response.data.form);  
+                    this.emitToParent(response.data.section);  
                     //TODO: Handle errors
                 });
             }

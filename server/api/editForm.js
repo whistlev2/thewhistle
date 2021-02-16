@@ -41,7 +41,6 @@ router.patch('/:sectionID/update-description/:questionRef', updateDescription);
 async function getForm(req, res, next) {
     try {
         const form = await Forms.getEditFormJSON(req.params.slug);
-        console.log('OW OW OW', form);
         res.json(form);
     } catch (err) {
         res.status(500);

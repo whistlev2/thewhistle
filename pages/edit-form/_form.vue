@@ -13,12 +13,7 @@
         </v-tabs>
         <v-tabs-items v-model="tab">
             <v-tab-item v-for="section in editJSON" :key="section.sectionID">
-                <v-card flat>
-                    <v-card-text>Oh</v-card-text>
-                    <v-card-actions>
-                        <v-btn v-if="section.editJSON.length == 0" x-large outlined v-on:click="openAddQuestionModal" class="blueBtn">Add first question</v-btn>
-                    </v-card-actions>
-                </v-card>
+                <EditQuestionSection v-if="section.type == 'Questions'" :section="section" :web="web" />
             </v-tab-item>
         </v-tabs-items>
         <br /><br />
@@ -51,7 +46,7 @@ export default {
             title: '',
             description: '',
             web: false,
-            editJSON: {},
+            editJSON: [],
             tab: null,
             showAddSectionModal: false,
             newSection: {
@@ -80,10 +75,6 @@ export default {
             })
         },
 
-        updateEditJSON(editJSON) {
-            this.editJSON = editJSON;
-        },
-
         openAddSectionModal(index) {
             this.newSection = {
                 title: '',
@@ -102,8 +93,11 @@ export default {
         addSection() {
             let url = `/api/edit-form/${this.$route.params.form}/add-section`;
             axios.post(url, this.newSection).then((response) => {
-                this.updateEditJSON(response.data.section);
-                section = this.newSection.index;
+                let section = response.data.section;
+                section.sectionLogic = { default: this.newSection.default };
+                section.title = this.newSection.title;
+                section.type = this.newSection.type;
+                this.editJSON.splice(this.newSection.index, 0, section);
                 //TODO: Handle errors
             });
         }

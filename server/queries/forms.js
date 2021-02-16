@@ -267,9 +267,7 @@ exports.getEditFormJSON = async function(slug) {
         }
         sectionLogic[i].title = results.rows[0].json.title;
         sectionLogic[i].type = results.rows[0].type;
-        console.log('THIS', results.rows[0].json)
-        sectionLogic[i].editJSON = generateEditJSON(results.rows[0].json);
-        console.log('WORD', sectionLogic[i].editJSON)
+        sectionLogic[i].questions = generateEditJSON(results.rows[0].json);
     }
 
     return {
@@ -294,6 +292,8 @@ exports.getSectionJSON = async function (sectionID) {
         type: results.rows[0].type
     }
 }
+
+exports.getSectionJSON()
 
 //Used to get /submit-report pages
 exports.getFormFromSlug = async function (slug, test) {
@@ -354,7 +354,6 @@ exports.getFormIDFromSlug = async function (slug) {
 
 exports.addFormSectionLogicSection = async function (index, formID, sectionID, defaultSection) {
     let sectionLogic = await getSectionLogicFromForm(formID, true);
-    console.log('SEC TON', sectionID);
     let newSection = {
         sectionID: sectionID,
         sectionLogic: {
@@ -362,7 +361,6 @@ exports.addFormSectionLogicSection = async function (index, formID, sectionID, d
         }
     };
     sectionLogic.sections.splice(index, 0, newSection);
-    console.log('lo gi', sectionLogic);
     let query = `UPDATE formsectionlogic SET test_logic='${JSON.stringify(sectionLogic)}' WHERE form='${formID}'`;
     try {
         await db.query(query);

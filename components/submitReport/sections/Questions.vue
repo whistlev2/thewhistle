@@ -45,7 +45,6 @@ export default {
         onSectionComplete(event) {
             let responseID = event.response_id;
             this.sectionComplete = true;
-            console.log('NEW RESPONSE: ', responseID);
 
             let url = `/api/report/next-section/${this.$attrs.sessionID}`; //TODO: Implement this
             

@@ -20,7 +20,7 @@ exports.send = async function(toAddress, title, body) {
     transporter.sendMail(mailOptions, function(error, info){
         if (error) {
             //TODO: Handle errors properly
-            console.log(error);
+            console.error(error);
         } else {
             console.log('Email sent: ' + info.response);
         }

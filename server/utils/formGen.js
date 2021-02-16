@@ -8,7 +8,6 @@ async function updateSection(sectionID, section, type) {
         await Typeform.updateForm(section.id, section); //Note: Here, section.id is typeformID
     }
     let retSection = await Forms.updateJSON(sectionID, section);
-    
     return retSection;
 }
 
@@ -466,9 +465,11 @@ exports.addSection = async function (formSlug, newSection) {
     let formID = await Forms.getFormIDFromSlug(formSlug);
     let sectionID = await FormSections.insertSection(formID, newSection.type, json.actual, json.test, newSection.allReports); //TODO: Implement this
     await Forms.addFormSectionLogicSection(newSection.index, formID, sectionID, newSection.default); //TODO: Implement this
-    console.log('jsonoff', json)
     let retSection = Forms.generateEditJSON(json.test);
-    return retSection;
+    return {
+        sectionID: sectionID,
+        questions: retSection
+    };
 }
 
 exports.updateQuestionTitle = async function(sectionID, questionRef, questionTitle) {

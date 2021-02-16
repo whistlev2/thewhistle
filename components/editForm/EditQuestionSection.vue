@@ -2,9 +2,9 @@
     <div>
         <template v-if="$attrs.section.questions.length == 0">
             <v-btn x-large outlined v-on:click="openAddQuestionModal" class="blueBtn">Add first question</v-btn>
-            <AddQuestionModal :show="showAddQuestionModal" :web="web" @close="closeAddQuestionModal" @submit="addQuestion" :newQuestion="newQuestion" :allRefs="allRefs" />
+            <AddQuestionModal :show="showAddQuestionModal" :web="$attrs.web" @close="closeAddQuestionModal" @submit="addQuestion" :newQuestion="newQuestion" :allRefs="allRefs" />
         </template>
-        <EditQuestion v-for="question in $attrs.section.questions" :sectionID="$attrs.section.sectionID" :question="question" :web="web" :key="question.ref" v-on:questionChange="updateEditJSON" :allRefs="allRefs" />
+        <EditQuestion v-for="question in $attrs.section.questions" :sectionID="$attrs.section.sectionID" :question="question" :web="$attrs.web" :key="question.ref" v-on:questionChange="updateSectionQuestions" :allRefs="allRefs" />
     </div>
 </template>
 <style scoped>
@@ -14,7 +14,7 @@
 }
 </style>
 <script>
-// TODO - L - Form editing
+
 import EditQuestion from './EditQuestion.vue'
 import AddQuestionModal from './AddQuestionModal.vue';
 
@@ -28,31 +28,36 @@ export default {
     
     data() {
         return {
-            showAddQuestionModal: false
+            showAddQuestionModal: false,
+            newQuestion: {
+                type: '',
+                ref: '',
+                title: '',
+                optionRef: '',
+            }
         }
     },
 
     computed: {
         allRefs: function () {
-            return this.$attrs.section.map(q => q.ref);
+            return this.$attrs.section.questions.map(q => q.ref);
         }
     },
 
     methods: {
-
         addQuestion() {
-            let url = `/api/edit-form/${this.sectionID}/add-first-question`;
+            let url = `/api/edit-form/${this.$attrs.section.sectionID}/add-first-question`;
             let data = {
                 question: this.newQuestion
             };
             axios.post(url, data).then((response) => {
-                this.updateEditJSON(response.data.form);  
+                this.updateSectionQuestions(response.data.section);  
                 //TODO: Handle errors
             });
         },
 
-        onFormChange(form) {
-            this.$emit('formChange', form);
+        updateSectionQuestions(questions) {
+            this.$attrs.section.questions = questions;
         },
 
         openAddQuestionModal() {
