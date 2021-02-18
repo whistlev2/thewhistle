@@ -64,8 +64,8 @@ export default {
                 this.$router.push('/');
                 this.error = null;
             }).catch((err) => {
-                if (err.status == 401) {
-                    if (err.message == 'Too many attempts') {
+                if (err.response.status == 401) {
+                    if (err.response.data == 'Too many attempts') {
                         this.error = 'You have sent entered an incorrect verification code too many times.';
                         this.requireResend = true;
                     } else {

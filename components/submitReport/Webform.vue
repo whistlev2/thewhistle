@@ -48,7 +48,7 @@ export default {
         startReport() {
             //TODO: Get form
             let url = `/api/report/start/${this.$attrs.form.id}`;
-            
+
             let data = {
                 test: this.$attrs.test                                                                   
             };

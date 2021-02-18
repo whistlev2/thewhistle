@@ -105,8 +105,8 @@ async function authenticateVerificationCode(req, res, next) {
         } else {
             res.status(401);
             res.send('Could not authorise you, please try again.');
+            next(err);
         }
-        next(err);
     }
 }
 

@@ -11,7 +11,7 @@
 
         <v-btn
             @click="authenticate(verificationCode)"
-            :disabled="!valid && !$attrs.requireResend"
+            :disabled="!valid || $attrs.requireResend"
             >Verify</v-btn
         >
     </v-form>

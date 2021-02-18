@@ -116,7 +116,8 @@ exports.authenticateUser = async function (email, password) {
         if (!user) {
             return null;
         }
-        const match = await bcrypt.compare(password, user.password)
+        const match = await bcrypt.compare(password, user.password);
+        user.orgs = await Users.getUserOrgs(user.id);
         user.verification_code = null;
         user.login_attempts = null;
         user.password = null;
@@ -143,7 +144,6 @@ exports.authenticate2FA = async function (userID, testVerificationCode) {
             return false;
         }
         if (user.verification_code.length == 6 && testVerificationCode == user.verification_code) {
-            user.orgs = await Users.getUserOrgs(user.id);
             return true;
         } else {
             await Users.setAttempts(userID, user.login_attempts + 1);
@@ -153,6 +153,9 @@ exports.authenticate2FA = async function (userID, testVerificationCode) {
             return false;
         }
     } catch (err) {
+        if (err.name == 'MaxIncorrect2FAError') {
+            throw err;
+        }
         throw new UserAuthenticationError(err);
     }
 }

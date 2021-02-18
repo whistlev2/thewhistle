@@ -9,7 +9,9 @@ function requiresVerification(path) {
         return false;
     } else if (path == '/api/auth/verification-code') {
         return false;
-    } else if (path == '/favicon.ico') {
+    } else if (path == '/api/auth/resend-code') {
+        return false;
+    }else if (path == '/favicon.ico') {
         return false;
     } else if (path.startsWith('/_nuxt/')) {
         return false;

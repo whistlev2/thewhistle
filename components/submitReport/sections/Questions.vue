@@ -38,11 +38,11 @@ export default {
             opacity: 0
         });
 
-        typeformEmbed.makePopup(url, { onSubmit: this.onSectionComplete });
+        //typeformEmbed.makePopup(url, { onSubmit: this.onSectionComplete });
     },
 
     methods: {
-        onSectionComplete(event) {
+        /* onSectionComplete(event) {
             let responseID = event.response_id;
             this.sectionComplete = true;
 
@@ -60,7 +60,7 @@ export default {
                     //TODO: Check response
                 })
             
-        },
+        }, */
     }
 }
 </script>
