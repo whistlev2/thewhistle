@@ -28,7 +28,7 @@ router.post('/login', async (req, res, next) => {
         await Auth.send2FAEmail(user);
 
         res.status(200);
-        res.send();
+        res.send('Correct email/password combination.');
     } catch (err) {
         res.status(401);
         res.send('Could not authorise you, please try again.');
@@ -36,26 +36,33 @@ router.post('/login', async (req, res, next) => {
     }
 })
 
-router.post('/2fa/:user', async (req, res, next) => {
+router.post('/2fa', async (req, res, next) => {
     try {
-        const user = await Auth.authenticate2FA(req.params.user, req.body.verificationCode);
+        const user = await Auth.authenticateUser(req.body.email, req.body.password);
         if (!user) {
             //TODO: Make max attempts (+ captcha?)
+            res.status(401);
+            res.send('Could not authorise user');
+            return;
+        }
+        let verified = await Auth.authenticate2FA(user.id, req.body.verificationCode);
+        
+        if (verified) {
+            //Logout after 1 week
+            const token = await jwt.sign({ user: user }, process.env.JWT_SECRET_KEY, { expiresIn: "7d" });
+            //Store token here
+            //TODO: Cookie expiration
+            //TODO: Sign cookies
+            const week = 7 * 24 * 60 * 60 * 1000;
+            res.cookie('authtoken', token, { maxAge: week });
+            res.cookie('user', JSON.stringify(user), { maxAge: week });
+            res.status(200);
+            res.json(user);
+        } else {
             res.status(401);
             res.send('Incorrect verification code');
             return;
         }
-
-        //Logout after 1 week
-        const token = await jwt.sign({ user: user }, process.env.JWT_SECRET_KEY, { expiresIn: "7d" });
-        //Store token here
-        //TODO: Cookie expiration
-        //TODO: Sign cookies
-        const week = 7 * 24 * 60 * 60 * 1000;
-        res.cookie('authtoken', token, { maxAge: week });
-        res.cookie('user', JSON.stringify(user), { maxAge: week });
-        res.status(200);
-        res.json(user);
     } catch (err) {
         if (err.name == 'MaxIncorrect2FAError') {
             res.status(401);

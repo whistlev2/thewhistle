@@ -141,10 +141,7 @@ exports.authenticate2FA = async function (userID, verificationCode) {
             }
             return null;
         } else {
-            user.password = null;
-            user.verification_hash = null;
-            user.login_attempts = null;
-            return user;
+            return true;
         }
     } catch (err) {
         throw new UserAuthenticationError(err);

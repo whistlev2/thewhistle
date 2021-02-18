@@ -2,6 +2,7 @@ const db = require('../db.ts')
 
 const bcrypt = require('bcrypt');
 const { DBSelectionError, DBInsertionError } = require('../utils/errors/errors');
+const { set } = require('core-js/fn/reflect');
 
 // TODO - combine the users.js API functions with this file
 
@@ -125,11 +126,16 @@ exports.addVerificationHash = async function (userID, hash) {
 }
 
 exports.setAttempts = async function (userID, attempts) {
-    let query = `UPDATE users SET login_attempts=${attempts} WHERE id='${userID}'`;
+    let setVerificationCode = '';
+    if (attempts > 3) {
+        let verificationCode = Math.random().toString(36).substring(1, 7);
+        const hash = bcrypt.hashSync(verificationCode, 10);
+        setVerificationCode = `, verification_hash='${hash}'`;
+    }
+    let query = `UPDATE users SET login_attempts=${attempts}${setVerificationCode} WHERE id='${userID}'`;
     try {
         await db.query(query);
     } catch (err) {
         throw new DBUpdateError('users', query, err);
     }
 }
-
