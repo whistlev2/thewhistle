@@ -61,7 +61,8 @@ export default {
             let data = {
                 section: this.$attrs.section.id,
                 usedBefore: this.usedBefore,
-                type: 'reporter'
+                type: 'reporter',
+                test: this.$attrs.test
             };
 
             if (this.usedBefore && this.hasReporter) {

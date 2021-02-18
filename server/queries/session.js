@@ -1,5 +1,5 @@
 const db = require('../db.ts');
-const { InvalidVerificationCodeError, InvalidReporterError } = require('../utils/errors/errors');
+const { InvalidVerificationCodeError, InvalidReporterError, DBSelectionError, DBInsertionError, DBUpdateError } = require('../utils/errors/errors');
 const FormSections = require('./formsections.js');
 const Report = require('./report.js');
 
@@ -88,15 +88,43 @@ async function updateVerificationCode(sessionID, verificationCode) {
     }
 }
 
-exports.getReportsToUpdate = async function (sectionID, sessionID) {
-    let allReports = await FormSections.getForAllReports(sectionID);
-    let reports = allReports ? await this.getReports() : [ await this.getCurrentReport(sessionID) ];
+async function getReports(sessionID) {
+    let query = `SELECT report FROM reportsessionrelation WHERE session='${sessionID}'`;
+    let results = {};
+
+    try {
+        results = await db.query(query);
+    } catch (err) {
+        throw new DBSelectionError('reportsessions', query, err);
+    }
+
+    let reports = results.rows.map((item) => item.report);
+
     return reports;
 }
 
-exports.startSession = async function (reportID, sectionQueue) {
+async function getCurrentReport(sessionID) {
+    let query = `SELECT current_report FROM reportsessions WHERE id='${sessionID}'`;
+    let results = {};
+
+    try {
+        results = await db.query(query);
+    } catch (err) {
+        throw new DBSelectionError('reportsessions', query, err);
+    }
+
+    return results.rows[0].current_report;
+}
+
+exports.getReportsToUpdate = async function (sectionID, sessionID) {
+    let allReports = await FormSections.getForAllReports(sectionID);
+    let reports = allReports ? await getReports(sessionID) : [ await getCurrentReport(sessionID) ];
+    return reports;
+}
+
+exports.startSession = async function (reportID, sectionQueue, completed) {
     const query = 'INSERT INTO reportsessions(current_report, queue) VALUES($1, $2) RETURNING id'
-    const values = [reportID, { value: sectionQueue }];
+    const values = [reportID, { value: sectionQueue, completed: completed }];
     let results = {};
     try {
         results = await db.query(query, values);
@@ -122,17 +150,15 @@ exports.shiftNextSection = async function (sessionID, test) {
 
     let queue = results.rows[0].queue.value;
 
-    let nextSectionID = queue.shift();
+    let nextSectionID = queue.length > 0 ? queue.shift() : results.rows[0].queue.completed;
 
     await updateQueue(sessionID, queue, nextSectionID);
 
     let nextSection = await FormSections.getSection(nextSectionID, test);
-
     return nextSection;
 }
 
-exports.submitReporterSection = async function (sectionID, sessionID, body) {
-    let reporter = body.reporter;
+exports.submitReporterSection = async function (sectionID, sessionID, reporter, usedBefore, test) {
     if (reporter) {
         let validReporter = await validateReporter(formID, reporter);
         if (!validReporter) {
@@ -142,9 +168,9 @@ exports.submitReporterSection = async function (sectionID, sessionID, body) {
         reporter = await generateNewReporter();
     }
 
-    await addReporter(sectionID, sessionID, reporter, body.usedBefore);
+    await addReporter(sectionID, sessionID, reporter, usedBefore);
 
-    let nextSection = await this.shiftNextSection(sessionID);
+    let nextSection = await this.shiftNextSection(sessionID, test);
 
     return nextSection;
 }
@@ -159,7 +185,7 @@ exports.sendEmailVerification = async function (sessionID, email) {
     updateVerificationCode(sessionID, verificationCode);
 }
 
-exports.submitEmailVerificationSection = async function (sessionID, testVerificationCode) {
+exports.submitEmailVerificationSection = async function (sessionID, testVerificationCode, test) {
     let query = `SELECT verification_code FROM reportsessions WHERE id='${sessionID}'`;
     let results = {};
 
@@ -172,24 +198,9 @@ exports.submitEmailVerificationSection = async function (sessionID, testVerifica
     let verificationCode = results.rows[0].verification_code;
 
     if (testVerificationCode.toLowerCase() == verificationCode) {
-        let nextSection = await this.shiftNextSection(sessionID);
+        let nextSection = await this.shiftNextSection(sessionID, test);
         return nextSection;
     } else {
         throw new InvalidVerificationCodeError();
     }
-}
-
-exports.getReports = async function (sessionID) {
-    let query = `SELECT report FROM reportsessionrelation WHERE session='${sessionID}'`;
-    let results = {};
-
-    try {
-        results = await db.query(query);
-    } catch (err) {
-        throw new DBSelectionError('reportsessions', query, err);
-    }
-
-    let reports = results.rows.map((item) => item.report);
-
-    return reports;
 }

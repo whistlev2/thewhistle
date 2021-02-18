@@ -394,6 +394,20 @@ async function insertIntoForms(form) {
     return formID;
 }
 
+async function insertCompletedSection(formID) {
+    let json = {
+        text: 'Form complete',
+        allowDownload: true
+    };
+    const query = 'INSERT INTO formsections (form, type, json, test_json) VALUES ($1, $2, $3, $4) RETURNING id';
+    const values = [formID, 'completed', JSON.stringify(json), JSON.stringify(json)];
+    try {
+        await db.query(query, values);
+    } catch (err) {
+        throw new DBInsertionError('formsections', query, values, err);
+    }
+}
+
 async function insertIntoFormSections(form) {
     //TODO: Handle errors
     let actualJSON = {};
@@ -453,6 +467,7 @@ async function insertIntoFormSectionLogic(form) {
 exports.insertForm = async function (form) {
     try {
         form.id = await insertIntoForms(form);
+        await insertCompletedSection(form.id);
         //const sectionID = await insertIntoFormSections(form);
         await insertIntoFormSectionLogic(form);
     } catch (err) {
@@ -475,6 +490,19 @@ exports.generateInitialSectionQueue = async function (formID, test) {
     }
 
     return sectionQueue;
+}
+
+exports.getCompleted = async function (formID, test) {
+    let query = `SELECT id FROM formsections WHERE form='${formID}' AND type='completed'`;
+    let results = {};
+
+    try {
+        results = await db.query(query);
+    } catch (err) {
+        throw new DBSelectionError('formsections', query, err);
+    }
+
+    return results.rows[0].id
 }
 
 exports.generateEditJSON = generateEditJSON;

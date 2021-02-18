@@ -2,7 +2,7 @@
     <div style="margin: 0 auto; width: 600px;">
         <!-- TODO - ensure height works -->
         <div style="width: 100%; height: 500px;" id="my-embedded-typeform"></div>
-        <v-btn :disabled="!sectionComplete" x-large outlined @click="next" class="blueBtn">Remove option</v-btn>
+        <v-btn v-if="sectionComplete" outlined @click="next" class="blueBtn">Next</v-btn>
     </div>
 </template>
 
@@ -25,7 +25,7 @@ export default {
     },
 
     mounted() {
-        const url = `https://admin.typeform.com/to/${this.$attrs.section.json.id}?session=${this.$attrs.sessionID}`;
+        const url = `${this.$attrs.section.json._links.display}?session=${this.$attrs.sessionID}`;
         var el = document.getElementById("my-embedded-typeform");
         //TODO: Make this run on start report event
         // When instantiating a widget embed, you must provide the DOM element
@@ -46,9 +46,12 @@ export default {
             let responseID = event.response_id;
             this.sectionComplete = true;
 
-            let url = `/api/report/next-section/${this.$attrs.sessionID}`; //TODO: Implement this
+            let url = `/api/report/next-section/${this.$attrs.sessionID}`;
             
-            axios.get(url)
+            let body = {
+                test: this.$attrs.test
+            }
+            axios.get(url, body)
                 .then((response) => {
                     let section = response.data;
                     this.$emit('complete', section);

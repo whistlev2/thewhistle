@@ -42,7 +42,7 @@ exports.createWebhook = async function (typeformID, sectionID, test) {
             url: url,
             headers: headers,
             data: data
-        })
+        });
     } catch (err) {
         throw new TypeformWebhookError(data.url, err);
     }

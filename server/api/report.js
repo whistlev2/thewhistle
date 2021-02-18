@@ -32,12 +32,13 @@ async function startReport(req, res, next) {
     try {
         let reportID = await report.startReport(req.params.form, req.body.test);
         let sectionQueue = await forms.generateInitialSectionQueue(req.params.form, req.body.test);
-        let sessionID = await session.startSession(reportID, sectionQueue);
-        let firstSection = await session.shiftNextSection(sessionID);
+        let completedSection = await forms.getCompleted(req.params.form, req.body.test);
+        let sessionID = await session.startSession(reportID, sectionQueue, completedSection);
+        let firstSection = await session.shiftNextSection(sessionID, req.body.test);
         res.status(200);
         res.json({
             sessionID: sessionID,
-            nextSection: firstSection
+            nextSection: firstSection[0]
         });
     } catch (err) {
         res.status(500);
@@ -63,10 +64,10 @@ async function submitSection(req, res, next) {
         let nextSection = {};
         switch(req.body.type) {
             case 'reporter':
-                nextSection = await session.submitReporterSection(req.body.section, req.params.session, req.body.reporter, req.body.usedBefore);
+                nextSection = await session.submitReporterSection(req.body.section, req.params.session, req.body.reporter, req.body.usedBefore, req.body.test);
                 break;
             case 'email-verification':
-                nextSection = await session.submitEmailVerificationSection(req.params.session, req.body.verificationCode);
+                nextSection = await session.submitEmailVerificationSection(req.params.session, req.body.verificationCode, req.body.test);
                 break;
             default:
                 res.status(400);
@@ -142,7 +143,11 @@ function getReport(req, res, next) {
 
 async function getNextSection(req, res, next) {
     try {
-        let nextSection = await session.shiftNextSection(req.params.sessionID);
+        //TODO: Check questionresponses to see if anything from the typeform section has been submitted
+        //Send final section
+        //Can use reportsessions.queue json and add completed sections field
+        //await session.waitForTypeformSubmission(req.params.sessionID, req.body.sectionID);
+        let nextSection = await session.shiftNextSection(req.params.sessionID, req.body.test);
         res.json(nextSection);
     } catch (err) {
         res.status(500);

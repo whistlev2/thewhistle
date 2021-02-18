@@ -6,10 +6,10 @@
             <v-btn outlined v-on:click="startReport" class="blueBtn">Start Report</v-btn>
         </div>
         <div v-else>
-            <!-- TODO: Put in report ID as hidden field -->
-            <Questions v-if="currentSection.type == 'Questions'" :section="currentSection" :sessionID="sessionID" @complete="showNextSection"></Questions>
-            <EmailVerification v-if="currentSection.type == 'Email Verification'" :section="currentSection" :sessionID="sessionID" @complete="showNextSection"></EmailVerification>
-            <ReporterNumber v-if="currentSection.type == 'Reporter Number'" :section="currentSection" :sessionID="sessionID" @complete="showNextSection"></ReporterNumber>
+            <Questions v-if="currentSection.type == 'Questions'" :section="currentSection" :sessionID="sessionID" :test="$attrs.test" @complete="showNextSection"></Questions>
+            <EmailVerification v-if="currentSection.type == 'Email Verification'" :section="currentSection" :sessionID="sessionID" :test="$attrs.test" @complete="showNextSection"></EmailVerification>
+            <ReporterNumber v-if="currentSection.type == 'Reporter Number'" :section="currentSection" :sessionID="sessionID" :test="$attrs.test" @complete="showNextSection"></ReporterNumber>
+            <Completed v-if="currentSection.type == 'completed'" :section="currentSection" :sessionID="sessionID"></Completed>
         </div>
     </div>
 </template>
@@ -27,12 +27,13 @@
 //TODO: Sort broken refresh
 
 //import Typeform from './Typeform.vue'
+import Questions from './sections/Questions.vue'
 //TODO: Do imports
 import axios from 'axios';
 
 export default {
     components: {
-        //Typeform TODO: Sort components
+        Questions
     },
 
     data() {
@@ -49,7 +50,7 @@ export default {
             let url = `/api/report/start/${this.$attrs.form.id}`;
             
             let data = {
-                test: this.$attrs.test
+                test: this.$attrs.test                                                                   
             };
 
             axios.post(url, data)
