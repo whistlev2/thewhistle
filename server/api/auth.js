@@ -16,66 +16,11 @@ async function checkToken(token) {
     
 }
 
-router.post('/login', async (req, res, next) => {
-    try {
-        const user = await Auth.authenticateUser(req.body.email, req.body.password);
-        if (!user) {
-            res.status(401)
-            res.send('Incorrect email/password')
-            return;
-        }
+router.post('/login', sendVerificationEmail);
 
-        await Auth.send2FAEmail(user);
+router.post('/resend-code', sendVerificationEmail);
 
-        res.status(200);
-        res.send('Correct email/password combination.');
-    } catch (err) {
-        res.status(401);
-        res.send('Could not authorise you, please try again.');
-        next(err);
-    }
-})
-
-router.post('/2fa', async (req, res, next) => {
-    try {
-        const user = await Auth.authenticateUser(req.body.email, req.body.password);
-        if (!user) {
-            //TODO: Make max attempts (+ captcha?)
-            res.status(401);
-            res.send('Could not authorise user');
-            return;
-        }
-        let verified = await Auth.authenticate2FA(user.id, req.body.verificationCode);
-        
-        if (verified) {
-            //Logout after 1 week
-            const token = await jwt.sign({ user: user }, process.env.JWT_SECRET_KEY, { expiresIn: "7d" });
-            //Store token here
-            //TODO: Cookie expiration
-            //TODO: Sign cookies
-            const week = 7 * 24 * 60 * 60 * 1000;
-            res.cookie('authtoken', token, { maxAge: week });
-            res.cookie('user', JSON.stringify(user), { maxAge: week });
-            res.status(200);
-            res.json(user);
-        } else {
-            res.status(401);
-            res.send('Incorrect verification code');
-            return;
-        }
-    } catch (err) {
-        if (err.name == 'MaxIncorrect2FAError') {
-            res.status(401);
-            res.send('Too many attempts');
-        } else {
-            res.status(401);
-            res.send('Could not authorise you, please try again.');
-        }
-        next(err);
-    }
-})
-
-
+router.post('/verification-code', authenticateVerificationCode);
 
 router.post('/logout', (req, res, next) => {
     try {
@@ -108,5 +53,61 @@ router.get('/user', async (req, res, next) => {
         next(err)
     }
 })
+
+async function sendVerificationEmail(req, res, next) {
+    try {
+        const user = await Auth.authenticateUser(req.body.email, req.body.password);
+        if (!user) {
+            res.status(401)
+            res.send('Incorrect email/password')
+            return;
+        }
+
+        await Auth.send2FAEmail(user);
+
+        res.status(200);
+        res.send('Correct email/password combination.');
+    } catch (err) {
+        res.status(401);
+        res.send('Could not authorise you, please try again.');
+        next(err);
+    }
+}
+async function authenticateVerificationCode(req, res, next) {
+    try {
+        const user = await Auth.authenticateUser(req.body.email, req.body.password);
+        if (!user) {
+            //TODO: Make max attempts (+ captcha?)
+            res.status(401);
+            return;
+        }
+        let verified = await Auth.authenticate2FA(user.id, req.body.verificationCode);
+        if (verified) {
+            //Logout after 1 week
+            const token = await jwt.sign({ user: user }, process.env.JWT_SECRET_KEY, { expiresIn: "7d" });
+            //Store token here
+            //TODO: Cookie expiration
+            //TODO: Sign cookies
+            const week = 7 * 24 * 60 * 60 * 1000;
+            res.cookie('authtoken', token, { maxAge: week });
+            res.cookie('user', JSON.stringify(user), { maxAge: week });
+            res.status(200);
+            res.json(user);
+        } else {
+            res.status(401);
+            res.send('Incorrect verification code');
+            return;
+        }
+    } catch (err) {
+        if (err.name == 'MaxIncorrect2FAError') {
+            res.status(401);
+            res.send('Too many attempts');
+        } else {
+            res.status(401);
+            res.send('Could not authorise you, please try again.');
+        }
+        next(err);
+    }
+}
 
 module.exports = router

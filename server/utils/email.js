@@ -21,8 +21,6 @@ exports.send = async function(toAddress, title, body) {
         if (error) {
             //TODO: Handle errors properly
             console.error(error);
-        } else {
-            console.log('Email sent: ' + info.response);
         }
     });
 }

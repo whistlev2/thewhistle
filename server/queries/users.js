@@ -1,7 +1,7 @@
 const db = require('../db.ts')
 
 const bcrypt = require('bcrypt');
-const { DBSelectionError, DBInsertionError } = require('../utils/errors/errors');
+const { DBSelectionError, DBInsertionError, DBUpdateError } = require('../utils/errors/errors');
 const { set } = require('core-js/fn/reflect');
 
 // TODO - combine the users.js API functions with this file
@@ -116,8 +116,8 @@ exports.createUser = async function (user) {
     }
 }
 
-exports.addVerificationHash = async function (userID, hash) {
-    let query = `UPDATE users SET verification_hash='${hash}', login_attempts=0 WHERE id='${userID}'`;
+exports.addVerificationCode = async function (userID, verificationCode) {
+    let query = `UPDATE users SET verification_code='${verificationCode}', login_attempts=0 WHERE id='${userID}'`;
     try {
         await db.query(query);
     } catch (err) {
@@ -126,12 +126,7 @@ exports.addVerificationHash = async function (userID, hash) {
 }
 
 exports.setAttempts = async function (userID, attempts) {
-    let setVerificationCode = '';
-    if (attempts > 3) {
-        let verificationCode = Math.random().toString(36).substring(1, 7);
-        const hash = bcrypt.hashSync(verificationCode, 10);
-        setVerificationCode = `, verification_hash='${hash}'`;
-    }
+    let setVerificationCode = attempts > 3 ? `, verification_code=''` : '';
     let query = `UPDATE users SET login_attempts=${attempts}${setVerificationCode} WHERE id='${userID}'`;
     try {
         await db.query(query);

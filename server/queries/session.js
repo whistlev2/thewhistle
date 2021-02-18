@@ -116,6 +116,16 @@ async function getCurrentReport(sessionID) {
     return results.rows[0].current_report;
 }
 
+function generateEmailVerificationCode() {
+    let chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let length = 6;
+    let verificationCode = '';
+    for (var i = length; i > 0; --i) {
+        verificationCode += chars[Math.floor(Math.random() * chars.length)]
+    }
+    return verificationCode
+}
+
 exports.getReportsToUpdate = async function (sectionID, sessionID) {
     let allReports = await FormSections.getForAllReports(sectionID);
     let reports = allReports ? await getReports(sessionID) : [ await getCurrentReport(sessionID) ];
@@ -177,7 +187,7 @@ exports.submitReporterSection = async function (sectionID, sessionID, reporter, 
 
 exports.sendEmailVerification = async function (sessionID, email) {
     //TODO: Validate email back-end
-    let verificationCode = Math.random().toString(36).substring(1, 7);
+    let verificationCode = generateEmailVerificationCode();
     let emailTitle = 'End Everyday Racism Email Verification'
     let reporterNumber = await getReporterNumberFromSession(sessionID);
     let emailBody = generateEmailVerificationBody(verificationCode, reporterNumber);

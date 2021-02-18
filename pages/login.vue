@@ -4,7 +4,7 @@
             {{ error }}
         </p>
         <LoginForm v-if="!passwordAuthenticated" :login="login" />
-        <LoginVerification v-else :requireResend="requireResend" :authenticate="authenticateVerificationCode" @resend="resendEmailVerification" >
+        <LoginVerification v-else :requireResend="requireResend" :authenticate="authenticateVerificationCode" @resend="resendEmailVerification" />
     </div>
 </template>
 <style scoped>
@@ -38,7 +38,8 @@ export default {
 
     methods: {
         login(loginInfo) {
-            axios.post('api/auth/login', loginInfo).then((response) => {
+            axios.post('/api/auth/login', loginInfo).then((response) => {
+                this.passwordAuthenticated = true;
                 this.loginDetails = loginInfo;
                 this.error = null;
             }).catch((err) => {
@@ -51,12 +52,13 @@ export default {
         },
 
         authenticateVerificationCode(verificationCode) {
-            let url = `api/auth/2fa`;
+            let url = `/api/auth/verification-code`;
             let body = {
                 email: this.loginDetails.email,
                 password: this.loginDetails.password,
                 verificationCode: verificationCode
             };
+            
             axios.post(url, body).then((response) => {
                 this.$nuxt.$emit('login');
                 this.$router.push('/');
@@ -70,13 +72,13 @@ export default {
                         this.error = 'Incorrect verification code. Please try again.';
                     }  
                 } else {
-                    this.error = 'Something went wrong';
+                    this.error = 'Could not authenticate you. Please try again.';
                 }
             });
         },
 
         resendEmailVerification() {
-            let url = `api/auth/resend-code`;
+            let url = `/api/auth/resend-code`;
             axios.post(url, this.loginDetails).then((response) => {
                 this.error = null;
                 this.requireResend = false;

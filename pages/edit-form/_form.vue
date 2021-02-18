@@ -85,7 +85,6 @@ export default {
         },
 
         openAddSectionModal(index) {
-            console.log('OPEN MODAL', index);
             this.newSection = {
                 title: '',
                 type: '',

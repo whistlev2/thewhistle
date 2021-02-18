@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 const db = require('../db.ts')
 const Users = require('./users.js')
 const { UserAuthenticationError, MaxIncorrect2FAError } = require('../utils/errors/errors.js')
+const Email = require('../utils/email.js')
 
 exports.serializeUser = function (user, done) {
     return done(null, user.id)
@@ -40,6 +41,16 @@ function addUserOrgs(userID, organisations) {
             }
         })
     }
+}
+
+function generateVerificationCode() {
+    let chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let length = 6;
+    let verificationCode = '';
+    for (var i = length; i > 0; --i) {
+        verificationCode += chars[Math.floor(Math.random() * chars.length)]
+    }
+    return verificationCode
 }
 
 exports.updatePassword = function (id, currentPassword, newPassword) {
@@ -106,7 +117,7 @@ exports.authenticateUser = async function (email, password) {
             return null;
         }
         const match = await bcrypt.compare(password, user.password)
-        user.verification_hash = null;
+        user.verification_code = null;
         user.login_attempts = null;
         user.password = null;
         return match ? user : null;
@@ -116,32 +127,30 @@ exports.authenticateUser = async function (email, password) {
 }
 
 exports.send2FAEmail = async function (user) {
-    let verificationCode = Math.random().toString(36).substring(1, 7);
-    const hash = bcrypt.hashSync(verificationCode, 10);
+    let verificationCode = generateVerificationCode()
 
-    await Users.addVerificationHash(user.id, hash);
+    await Users.addVerificationCode(user.id, verificationCode);
 
-    let emailBody = `Hi ${user.first_name}!\nYour login verification code is ${hash}.\nMany thanks,\nThe Whistle Team`;
+    let emailBody = `Hi ${user.first_name}!\nYour login verification code is ${verificationCode}.\nMany thanks,\nThe Whistle Team`;
     await Email.send(user.email, 'The Whistle Login Verification', emailBody);
 }
 
-exports.authenticate2FA = async function (userID, verificationCode) {
+exports.authenticate2FA = async function (userID, testVerificationCode) {
     try {
         const results = await db.query(`SELECT * FROM users WHERE id='${userID}'`);
         const user = results.rows[0];
         if (!user) {
-            return null;
+            return false;
         }
-        user.orgs = await Users.getUserOrgs(user.id);
-        const match = await bcrypt.compare(verificationCode, user.verification_hash);
-        if (!match) {
+        if (user.verification_code.length == 6 && testVerificationCode == user.verification_code) {
+            user.orgs = await Users.getUserOrgs(user.id);
+            return true;
+        } else {
             await Users.setAttempts(userID, user.login_attempts + 1);
             if (user.login_attempts > 2) {
                 throw new MaxIncorrect2FAError();
             }
-            return null;
-        } else {
-            return true;
+            return false;
         }
     } catch (err) {
         throw new UserAuthenticationError(err);
