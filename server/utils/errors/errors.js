@@ -68,6 +68,12 @@ class InvalidVerificationCodeError extends WhistleError {
     }
 }
 
+class MaxIncorrect2FAError extends WhistleError {
+    constructor() {
+        super('More than 3 incorrect 2FA attempts', 'MaxIncorrect2FAError');
+    }
+}
+
 exports.InvalidReporterError = InvalidReporterError;
 exports.DBInsertionError = DBInsertionError;
 exports.DBSelectionError = DBSelectionError;
@@ -77,3 +83,4 @@ exports.TypeformUpdateError = TypeformUpdateError;
 exports.TypeformWebhookError = TypeformWebhookError;
 exports.FormAccessError = FormAccessError;
 exports.InvalidVerificationCodeError = InvalidVerificationCodeError;
+exports.MaxIncorrect2FAError = MaxIncorrect2FAError;

@@ -15,11 +15,18 @@ exports.setup = function(options: any, seedLink: any): any {
 };
 
 exports.up = function(db: any, callback: any): any {
-    db.addColumn('users', '2fa_hash', { type: 'string' }, callback)
+    function addAttemptsColumn(): void {
+        db.addColumn('users', 'login_attempts', { type: 'int'}, callback);
+    }
+
+    db.addColumn('users', 'verification_hash', { type: 'string' }, addAttemptsColumn);
 };
 
 exports.down = function(db: any, callback: any): any {
-    db.removeColumn('users', '2fa_hash', callback)
+    function removeAttemptsColumn(): void {
+        db.removeColumn('users', 'login_attempts', callback);
+    }
+    db.removeColumn('users', 'verification_hash', removeAttemptsColumn);
 };
 
 exports._meta = {

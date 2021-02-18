@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt')
 
 const db = require('../db.ts')
 const Users = require('./users.js')
-const { UserAuthenticationError } = require('../utils/errors/errors.js')
+const { UserAuthenticationError, MaxIncorrect2FAError } = require('../utils/errors/errors.js')
 
 exports.serializeUser = function (user, done) {
     return done(null, user.id)
@@ -105,11 +105,47 @@ exports.authenticateUser = async function (email, password) {
         if (!user) {
             return null;
         }
-        //TODO: Check this still works
-        user.orgs = await Users.getUserOrgs(user.id);
         const match = await bcrypt.compare(password, user.password)
+        user.verification_hash = null;
+        user.login_attempts = null;
         user.password = null;
         return match ? user : null;
+    } catch (err) {
+        throw new UserAuthenticationError(err);
+    }
+}
+
+exports.send2FAEmail = async function (user) {
+    let verificationCode = Math.random().toString(36).substring(1, 7);
+    const hash = bcrypt.hashSync(verificationCode, 10);
+
+    await Users.addVerificationHash(user.id, hash);
+
+    let emailBody = `Hi ${user.first_name}!\nYour login verification code is ${hash}.\nMany thanks,\nThe Whistle Team`;
+    await Email.send(user.email, 'The Whistle Login Verification', emailBody);
+}
+
+exports.authenticate2FA = async function (userID, verificationCode) {
+    try {
+        const results = await db.query(`SELECT * FROM users WHERE id='${userID}'`);
+        const user = results.rows[0];
+        if (!user) {
+            return null;
+        }
+        user.orgs = await Users.getUserOrgs(user.id);
+        const match = await bcrypt.compare(verificationCode, user.verification_hash);
+        if (!match) {
+            await Users.setAttempts(userID, user.login_attempts + 1);
+            if (user.login_attempts > 2) {
+                throw new MaxIncorrect2FAError();
+            }
+            return null;
+        } else {
+            user.password = null;
+            user.verification_hash = null;
+            user.login_attempts = null;
+            return user;
+        }
     } catch (err) {
         throw new UserAuthenticationError(err);
     }

@@ -76,7 +76,7 @@ async function getReporterNumberFromSession(sessionID) {
 }
 
 function generateEmailVerificationBody(verificationCode, reporterNumber) {
-    return `Hello!\n\nThank you so much for your interest in reporting an incident of racism to the End Everyday Racism project.\n\nYour verification code is ${verificationCode}. This code helps us verify that you are a member of the Cambridge community. Since we do not store your email address, you will need to generate a new authentication code every time you submit a report.\n\nYour reporter number is ${reporterNumber}. You can use this number to report multiple incidents. That lets us know that a set of reports all come from the same source.\n\nThank you again for participating in this project.\n\nEnd Everyday Racism Team`;
+    return `Hello!\n\nThank you for your interest in reporting an incident of racism to the End Everyday Racism project.\n\nYour verification code is ${verificationCode}. This code helps us verify that you are a member of the Cambridge community. Since we do not store your email address, you will need to generate a new authentication code every time you submit a report.\n\nYour reporter number is ${reporterNumber}. You can use this number to report multiple incidents. That lets us know that a set of reports all come from the same source.\n\nThank you again for participating in this project.\n\nEnd Everyday Racism Team`;
 }
 
 async function updateVerificationCode(sessionID, verificationCode) {

@@ -114,3 +114,22 @@ exports.createUser = async function (user) {
         }
     }
 }
+
+exports.addVerificationHash = async function (userID, hash) {
+    let query = `UPDATE users SET verification_hash='${hash}', login_attempts=0 WHERE id='${userID}'`;
+    try {
+        await db.query(query);
+    } catch (err) {
+        throw new DBUpdateError('users', query, err);
+    }
+}
+
+exports.setAttempts = async function (userID, attempts) {
+    let query = `UPDATE users SET login_attempts=${attempts} WHERE id='${userID}'`;
+    try {
+        await db.query(query);
+    } catch (err) {
+        throw new DBUpdateError('users', query, err);
+    }
+}
+
