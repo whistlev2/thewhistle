@@ -14,7 +14,7 @@ async function insertReportSessionRelation(reportID, sessionID) {
 }
 
 async function updateQueue(sessionID, queue, currentSection) {
-    const query = `UPDATE reportsessions SET queue='${JSON.stringify({ value: queue, currentSection: currentSection })}' WHERE id='${sessionID}'`;
+    const query = `UPDATE reportsessions SET queue='${JSON.stringify({ value: queue.value, completed: queue.completed, currentSection: currentSection })}' WHERE id='${sessionID}'`;
     try {
         await db.query(query);
     } catch (err) {
@@ -158,10 +158,9 @@ exports.shiftNextSection = async function (sessionID, test) {
         throw new DBSelectionError('reportsessions', query, err);
     }
 
-    let queue = results.rows[0].queue.value;
+    let queue = results.rows[0].queue;
 
-    let nextSectionID = queue.length > 0 ? queue.shift() : results.rows[0].queue.completed;
-
+    let nextSectionID = queue.value.length > 0 ? queue.value.shift() : queue.completed;
     await updateQueue(sessionID, queue, nextSectionID);
 
     let nextSection = await FormSections.getSection(nextSectionID, test);

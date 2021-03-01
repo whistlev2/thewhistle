@@ -27,13 +27,15 @@
 //TODO: Sort broken refresh
 
 //import Typeform from './Typeform.vue'
-import Questions from './sections/Questions.vue'
+import Questions from './sections/Questions.vue';
+import Completed from './sections/Completed.vue';
 //TODO: Do imports
 import axios from 'axios';
 
 export default {
     components: {
-        Questions
+        Questions,
+        Completed
     },
 
     data() {
@@ -65,7 +67,7 @@ export default {
         },
 
         showNextSection(section) {
-            this.currentSection = section;
+            this.currentSection = section[0];
         }
     }
 

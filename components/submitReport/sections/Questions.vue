@@ -2,7 +2,6 @@
     <div style="margin: 0 auto; width: 600px;">
         <!-- TODO - ensure height works -->
         <div style="width: 100%; height: 500px;" id="my-embedded-typeform"></div>
-        <v-btn v-if="sectionComplete" outlined @click="next" class="blueBtn">Next</v-btn>
     </div>
 </template>
 
@@ -14,15 +13,10 @@
 </style>
 
 <script>
-import * as typeformEmbed from '@typeform/embed'
+import * as typeformEmbed from '@typeform/embed';
+import axios from 'axios';
 
 export default {
-
-    data() {
-        return {
-            sectionComplete: false
-        };
-    },
 
     mounted() {
         const url = `${this.$attrs.section.json._links.display}?session=${this.$attrs.sessionID}`;
@@ -35,16 +29,14 @@ export default {
         typeformEmbed.makeWidget(el, url, {
             hideFooter: true,
             hideHeaders: true,
-            opacity: 0
+            opacity: 0,
+            onSubmit: this.onSectionComplete
         });
 
-        //typeformEmbed.makePopup(url, { onSubmit: this.onSectionComplete });
     },
 
     methods: {
-        /* onSectionComplete(event) {
-            let responseID = event.response_id;
-            this.sectionComplete = true;
+        onSectionComplete(event) {
 
             let url = `/api/report/next-section/${this.$attrs.sessionID}`;
             
@@ -60,7 +52,7 @@ export default {
                     //TODO: Check response
                 })
             
-        }, */
+        }
     }
 }
 </script>

@@ -293,8 +293,6 @@ exports.getSectionJSON = async function (sectionID) {
     }
 }
 
-exports.getSectionJSON()
-
 //Used to get /submit-report pages
 exports.getFormFromSlug = async function (slug, test) {
     let query = `SELECT logic, test_logic, forms.web AS web, forms.title AS title, forms.description AS description, forms.id AS form_id FROM formsectionlogic JOIN forms ON forms.id=formsectionlogic.form WHERE forms.slug='${slug}'`;
