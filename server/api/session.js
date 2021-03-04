@@ -1,5 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const path = require('path');
 
 const Session = require('../queries/session.js');
 const fs = require('fs');
@@ -14,10 +15,11 @@ async function sendSessionPDF(req, res, next) {
             if (payload && payload.sessionID) {
                 let sessionID = payload.sessionID;
                 await Session.generatePDF(sessionID);
-                let filePath = `../../temp/session-${sessionID}.pdf`;
+                let filePath = path.join(__dirname, `..\\..\\temp\\session-${sessionID}.pdf`);
                 res.status(200);
-                res.sendFile('C:\\Users\\Louis\\dev\\thewhistle\\temp\\session-46.pdf');
-                //fs.unlinkSync(filePath); //Deletes file
+                res.sendFile(filePath, () => {
+                    fs.unlinkSync(filePath); //Deletes file
+                });
             } else {
                 res.status(500);
                 res.send('Could not get session information.');

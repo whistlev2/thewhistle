@@ -219,8 +219,10 @@ async function generateReportPDFText(reportID) {
     let report = await Report.getResponses(reportID);
     let text = '';
     text += `REPORT ${reportID}\n`;
+    let fieldText = ''
     for (let i = 0; i < report.length; i++) {
-        text += `${report[i].question_ref}: ${report[i].value}\n`
+        fieldText = `${report[i].question_ref}: ${report[i].value}\n`;
+        text += fieldText;
     }
     text += '\n\n';
     return text;
@@ -229,8 +231,10 @@ async function generateReportPDFText(reportID) {
 async function generateSessionPDFText(sessionID) {
     let reports = await getReports(sessionID);
     let text = '';
+    let reportText = '';
     for (let i = 0; i < reports.length; i++) {
-        text += await generateReportPDFText(reports[i]);
+        reportText = await generateReportPDFText(reports[i]);
+        text += reportText;
     }
     return text;
 }

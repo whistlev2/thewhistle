@@ -70,7 +70,7 @@ exports.submitTypeformSection = async function (sectionID, payload) {
     try {
         let hiddenFields = payload.form_response.hidden;
         let sessionID = hiddenFields.session;
-        let reports = session.getReportsToUpdate(sectionID, sessionID);
+        let reports = await session.getReportsToUpdate(sectionID, sessionID);
         const definitions = payload.form_response.definition.fields;
         const answers = payload.form_response.answers;
         let promises = [];
