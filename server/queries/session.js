@@ -216,7 +216,7 @@ exports.submitEmailVerificationSection = async function (sessionID, testVerifica
 }
 
 async function generateReportPDFText(reportID) {
-    let report = Report.getResponses(reportID);
+    let report = await Report.getResponses(reportID);
     let text = '';
     text += `REPORT ${reportID}\n`;
     for (let i = 0; i < report.length; i++) {
