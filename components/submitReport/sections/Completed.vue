@@ -13,23 +13,13 @@
 </style>
 
 <script>
+import axios from 'axios';
 
 export default {
-
-    data() {
-    },
-
     methods: {
         downloadPDF() {
-            let url = `/api/report/download-pdf/${this.$attrs.sessionID}`;
-            //TODO: Implement
-            axios.get(url)
-                .then((response) => {
-                    
-                })
-                .catch((response) => {
-                    //TODO: Check response
-                })
+            let url = `/api/session/download-pdf`;
+            window.open(url);
         },
     }
 }

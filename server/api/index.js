@@ -8,6 +8,7 @@ const auth = require('./auth.js')
 const editForm = require('./editForm.js')
 const organisations = require('./organisations.js')
 const errors = require('./errors.js');
+const session = require('./session.js');
 
 const router = express.Router()
 // Set up routes
@@ -27,5 +28,7 @@ router.use('/auth', auth);
 router.use('/organisations', organisations);
 
 router.use('/errors', errors);
+
+router.use('/session', session);
 
 module.exports = router

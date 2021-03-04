@@ -1,4 +1,6 @@
 const express = require('express');
+const jwt = require('jsonwebtoken');
+
 const report = require('../queries/report.js');
 const session = require('../queries/session.js');
 const forms = require('../queries/forms.js')
@@ -35,6 +37,11 @@ async function startReport(req, res, next) {
         let completedSection = await forms.getCompleted(req.params.form, req.body.test);
         let sessionID = await session.startSession(reportID, sectionQueue, completedSection);
         let firstSection = await session.shiftNextSection(sessionID, req.body.test);
+        
+        const token = await jwt.sign({ sessionID: sessionID }, process.env.JWT_SECRET_KEY, { expiresIn: "2h" });
+        const twoHours = 2 * 60 * 60 * 1000;
+        res.cookie('reportSession', token, { maxAge: twoHours });
+        
         res.status(200);
         res.json({
             sessionID: sessionID,

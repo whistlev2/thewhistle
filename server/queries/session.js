@@ -1,3 +1,4 @@
+const { jsPDF } = require("jspdf");
 const db = require('../db.ts');
 const { InvalidVerificationCodeError, InvalidReporterError, DBSelectionError, DBInsertionError, DBUpdateError } = require('../utils/errors/errors');
 const FormSections = require('./formsections.js');
@@ -159,7 +160,7 @@ exports.shiftNextSection = async function (sessionID, test) {
     }
 
     let queue = results.rows[0].queue;
-
+    
     let nextSectionID = queue.value.length > 0 ? queue.value.shift() : queue.completed;
     await updateQueue(sessionID, queue, nextSectionID);
 
@@ -212,4 +213,32 @@ exports.submitEmailVerificationSection = async function (sessionID, testVerifica
     } else {
         throw new InvalidVerificationCodeError();
     }
+}
+
+async function generateReportPDFText(reportID) {
+    let report = Report.getResponses(reportID);
+    let text = '';
+    text += `REPORT ${reportID}\n`;
+    for (let i = 0; i < report.length; i++) {
+        text += `${report[i].question_ref}: ${report[i].value}\n`
+    }
+    text += '\n\n';
+    return text;
+}
+
+async function generateSessionPDFText(sessionID) {
+    let reports = await getReports(sessionID);
+    let text = '';
+    for (let i = 0; i < reports.length; i++) {
+        text += await generateReportPDFText(reports[i]);
+    }
+    return text;
+}
+
+exports.generatePDF = async function (sessionID) {
+    let text = await generateSessionPDFText(sessionID);
+    let path = `./temp/session-${sessionID}.pdf`;
+    const doc = new jsPDF();
+    doc.text(text, 10, 10);
+    await doc.save(path);
 }
