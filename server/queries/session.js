@@ -221,7 +221,12 @@ async function generateReportPDFText(reportID) {
     text += `REPORT ${reportID}\n`;
     let fieldText = ''
     for (let i = 0; i < report.length; i++) {
-        fieldText = `${report[i].question_ref}: ${report[i].value}\n`;
+        if (report[i].definition.type == 'file_upload') {
+            let fileName = report[i].value.substr(report[i].value.lastIndexOf('/') + 1);
+            fieldText = `${report[i].question_ref}: "${fileName}\n`;
+        } else {
+            fieldText = `${report[i].question_ref}: ${report[i].value}\n`;
+        }
         text += fieldText;
     }
     text += '\n\n';
