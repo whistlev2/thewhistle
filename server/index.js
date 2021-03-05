@@ -39,7 +39,6 @@ async function start() {
     dotenv.config();
     let nuxt = await configNuxt();
     const { host, port } = nuxt.options.server;
-
     app.use(bodyParser.json()); // support json encoded bodies
     app.use(bodyParser.urlencoded({
         extended: true
@@ -57,7 +56,6 @@ async function start() {
     app.use('/api', api)
     app.use(nuxt.render)
     app.use(errorhandler({log: logError}));
-    
     // Listen the server
     app.listen(process.env.PORT || 3000)
 

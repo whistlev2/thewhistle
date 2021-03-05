@@ -21,15 +21,27 @@ export default async function (context) {
     // }
 
     if (path.startsWith('/reports') && params.hasOwnProperty('form')) {
-        context.reports = await Pages.loadReports(params.form, false);
+        try {
+            context.reports = await Pages.loadReports(params.form, false);
+        } catch (err) {
+            console.error('Could not get reports');
+        }
     }
 
     if (path.startsWith('/test-reports') && params.hasOwnProperty('form')) {
-        context.reports = await Pages.loadReports(params.form, true);
+        try {
+            context.reports = await Pages.loadReports(params.form, true);
+        } catch (err) {
+            console.error('Could not get test reports');
+        }
     }
 
     if (path.startsWith('/errors')) {
-        context.errors = await Pages.loadErrors();
+        try {
+            context.errors = await Pages.loadErrors();
+        } catch (err) {
+            console.error('Could not get errors');
+        }
     }
 
     /* if (path.startsWith('/edit-form/') && params.hasOwnProperty('form')) {
@@ -42,21 +54,32 @@ export default async function (context) {
     // }
 
     if (path.startsWith('/submit-report/') && params.hasOwnProperty('form')) {
-        context.form = await Pages.loadFormFromSlug(params.form, false);
+        try {
+            context.form = await Pages.loadFormFromSlug(params.form, false);
+        } catch (err) {
+            console.error('Could not get form');
+        }
     }
 
     if (path.startsWith('/submit-test-report/') && params.hasOwnProperty('form')) {
-        context.form = await Pages.loadFormFromSlug(params.form, true);
+        try {
+            context.form = await Pages.loadFormFromSlug(params.form, true);
+        } catch (err) {
+            console.error('Could not get test form')
+        }
     }
 
     // TODO - change conditions for path
     if (params.hasOwnProperty('htmlform')) {
-        context.survey = extractTestSurvey(getTestSurvey());
+        try {
+            context.survey = extractTestSurvey(getTestSurvey());
+        } catch (err) {
+            console.error('Could not get HTML form');
+        }
     }
     // TODO - change conditions for path
     /* if (params.hasOwnProperty('lowtech')) {
         context.questions = Lowtech.getNextQuestions(params.lowtech);
     } */
-
     return context
 }

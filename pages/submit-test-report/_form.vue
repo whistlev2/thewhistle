@@ -1,15 +1,20 @@
 <template>
     <div>
-        <h1>{{ form.title }} Test</h1>
-        <div v-if="form.web">
-            <no-ssr style="height: 100%">
-                <!-- TODO: Make work for multiple sections and other section types -->
-                <Webform :test="true" :form="form"></Webform>
-            </no-ssr>
-        </div>
-        <div v-else-if="form.sections[0].type=='sms'">
-            Display SMS Emulator Here
-        </div>
+        <template v-if="form">
+            <h1>{{ form.title }} Test</h1>
+            <div v-if="form.web">
+                <no-ssr style="height: 100%">
+                    <!-- TODO: Make work for multiple sections and other section types -->
+                    <Webform :test="true" :form="form"></Webform>
+                </no-ssr>
+            </div>
+            <div v-else-if="form.sections[0].type=='sms'">
+                Display SMS Emulator Here
+            </div>
+        </template>
+        <template v-else>
+            Could not get form.
+        </template>
     </div>
 </template>
 

@@ -302,28 +302,32 @@ exports.getFormFromSlug = async function (slug, test) {
     } catch (err) {
         throw new DBSelectionError('formsectionlogic', query, err);
     }
-    const web = results.rows[0].web;
-    const title = results.rows[0].title;
-    const description = results.rows[0].description;
-    const formID = results.rows[0].form_id;
-    const sectionLogic = test ? results.rows[0].test_logic.sections : results.rows[0].logic.sections;
-    for (let i = 0; i < sectionLogic.length; i++) {
-        let query = `SELECT type, json, test_json FROM formsections WHERE id=${sectionLogic[i].sectionID}`;
-        try {
-            results = await db.query(query);
-        } catch (err) {
-            throw new DBSelectionError('formsections', query, err);
+    if (results.rows[0]) {
+        const web = results.rows[0].web;
+        const title = results.rows[0].title;
+        const description = results.rows[0].description;
+        const formID = results.rows[0].form_id;
+        const sectionLogic = test ? results.rows[0].test_logic.sections : results.rows[0].logic.sections;
+        for (let i = 0; i < sectionLogic.length; i++) {
+            let query = `SELECT type, json, test_json FROM formsections WHERE id=${sectionLogic[i].sectionID}`;
+            try {
+                results = await db.query(query);
+            } catch (err) {
+                throw new DBSelectionError('formsections', query, err);
+            }
+            sectionLogic[i].type = results.rows[0].type;
+            sectionLogic[i].json = test ? results.rows[0].test_json : results.rows[0].json;
         }
-        sectionLogic[i].type = results.rows[0].type;
-        sectionLogic[i].json = test ? results.rows[0].test_json : results.rows[0].json;
-    }
-    return {
-        web: web,
-        id: formID,
-        slug: slug,
-        title: title,
-        description: description,
-        sections: sectionLogic
+        return {
+            web: web,
+            id: formID,
+            slug: slug,
+            title: title,
+            description: description,
+            sections: sectionLogic
+        }
+    } else {
+        
     }
 }
 
