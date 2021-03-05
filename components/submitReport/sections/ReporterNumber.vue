@@ -29,6 +29,7 @@
 }
 </style>
 <script>
+import axios from 'axios';
 
 //TODO: Sort broken refresh
 
@@ -71,9 +72,10 @@ export default {
 
             axios.post(url, data)
                 .then((response) => {
-                    this.currentSection = response.data.nextSection //TODO: Implement this
+                    this.$emit('complete', response.data);
                 })
                 .catch((err) => {
+                    console.log('OH NO', err)
                     if (err.response) {
                         if (err.response.status == '404') {
                             this.noReporterMatchInDB = true;

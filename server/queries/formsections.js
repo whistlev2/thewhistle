@@ -27,7 +27,7 @@ exports.getSection = async function (sectionID, test) {
         throw new DBSelectionError('formsections', query, err);
     }
 
-    return results.rows;
+    return results.rows[0];
 }
 
 exports.insertSection = async function (formID, type, json, testJSON, allReports) {

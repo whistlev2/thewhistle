@@ -280,6 +280,15 @@ exports.updateAssigned = async function (report, user, assignedID) {
     }
 }
 
+exports.updateReporter = async function (reportID, reporterNumber) {
+    let query = `UPDATE reports SET reporter='${reporterNumber}' WHERE id='${reportID}'`;
+    try {
+        await db.query(query);
+    } catch (err) {
+        throw new DBUpdateError('reports', query, err);
+    }
+}
+
 exports.updateStatus = async function (report, user, status) {
     let query = `UPDATE reports SET status='${status}' WHERE id='${report}'`;
     try {

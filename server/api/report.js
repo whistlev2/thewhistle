@@ -45,7 +45,7 @@ async function startReport(req, res, next) {
         res.status(200);
         res.json({
             sessionID: sessionID,
-            nextSection: firstSection[0]
+            nextSection: firstSection
         });
     } catch (err) {
         res.status(500);

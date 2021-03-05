@@ -26,11 +26,11 @@ async function updateQueue(sessionID, queue, currentSection) {
 
 
 async function addReporter(sectionID, sessionID, reporterNumber, usedBefore) {
-    let reports = await this.getReportsToUpdate(sectionID, sessionID);
+    let reports = await getReportsToUpdate(sectionID, sessionID);
     
     let promises = [];
     for (let i = 0; i < reports.length; i++) {
-        promises.push(updateReporter(reports[i], reporterNumber));
+        promises.push(Report.updateReporter(reports[i], reporterNumber));
         promises.push(Report.insertQuestionResponse(reports[i], sectionID, 'usedBefore', { ref: 'usedBefore', title: 'Used before?', type: 'custom' }, usedBefore));
     }
 
@@ -127,11 +127,13 @@ function generateEmailVerificationCode() {
     return verificationCode
 }
 
-exports.getReportsToUpdate = async function (sectionID, sessionID) {
+async function getReportsToUpdate(sectionID, sessionID) {
     let allReports = await FormSections.getForAllReports(sectionID);
     let reports = allReports ? await getReports(sessionID) : [ await getCurrentReport(sessionID) ];
     return reports;
 }
+
+exports.getReportsToUpdate = getReportsToUpdate;
 
 exports.startSession = async function (reportID, sectionQueue, completed) {
     const query = 'INSERT INTO reportsessions(current_report, queue) VALUES($1, $2) RETURNING id'

@@ -27,6 +27,8 @@
 //TODO: Sort broken refresh
 
 //import Typeform from './Typeform.vue'
+import ReporterNumber from './sections/ReporterNumber.vue';
+import EmailVerification from './sections/EmailVerification.vue';
 import Questions from './sections/Questions.vue';
 import Completed from './sections/Completed.vue';
 //TODO: Do imports
@@ -35,7 +37,9 @@ import axios from 'axios';
 export default {
     components: {
         Questions,
-        Completed
+        Completed,
+        ReporterNumber,
+        EmailVerification
     },
 
     data() {
@@ -67,7 +71,7 @@ export default {
         },
 
         showNextSection(section) {
-            this.currentSection = section[0];
+            this.currentSection = section;
         }
     }
 
