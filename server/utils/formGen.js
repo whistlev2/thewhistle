@@ -377,8 +377,10 @@ function generateEmailVerificationSection(title) {
     return {
         title: title,
         allowedEndings: [],
-        subject: '',
-        text: ''
+        email: {
+            subject: '',
+            text: ''
+        }
     };
 }
 

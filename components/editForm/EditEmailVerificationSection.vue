@@ -2,11 +2,10 @@
     <div>
         <div class="email">
             <v-text-field v-model="$attrs.section.json.email.subject" @change="updateSection" label="Subject" outlined />
-            <v-textarea  v-model="$attrs.section.json.email.text" @change="updateSection" label="Custom Email Text" outlined>
+            <v-textarea v-model="$attrs.section.json.email.text" @change="updateSection" label="Custom Email Text" outlined />
         </div>
         <div v-if="$attrs.section.json.allowedEndings.length == 0">
             Currently accepts any email address.
-        </div>
         </div>
         <div v-for="(ending, index) in $attrs.section.json.allowedEndings" :key="index">
             <v-text-field label="Email Ending" outlined v-model="$attrs.section.json.allowedEndings[index]"

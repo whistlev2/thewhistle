@@ -56,7 +56,7 @@ async function startReport(req, res, next) {
 
 async function sendEmailVerification(req, res, next) {
     try {
-        await session.sendEmailVerification(req.params.session, req.body.sectionID, req.body.email, req.body.updateStatus);
+        await session.sendEmailVerification(req.params.session, req.body.sectionID, req.body.email, req.body.test);
         res.status(200);
         res.send('Email verified');
     } catch (err) {

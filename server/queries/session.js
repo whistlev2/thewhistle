@@ -77,12 +77,13 @@ async function getReporterNumberFromSession(sessionID) {
     }
 }
 
-function generateEmailVerificationBody(verificationCode, reporterNumber, customText) 
+function generateEmailVerificationBody(verificationCode, reporterNumber, customText) {
     let body = `Hello!\n\nYour verification code is ${verificationCode}.\n\nSince we do not store your email address, you will need to generate a new authentication code every time you submit a report.\n\n`;
     if (reporterNumber) {
-        body += `Your reporter number is ${reporterNumber}. You can use this number to report multiple incidents. That lets us know that a set of reports all come from the same source.\n\n`
+        body += `Your reporter number is ${reporterNumber}. You can use this number to report multiple incidents. That lets us know that a set of reports all come from the same source.\n\n`;
     }
     body += customText;
+    return body;
 }
 
 async function updateVerificationCode(sessionID, verificationCode) {
@@ -196,7 +197,7 @@ exports.sendEmailVerification = async function (sessionID, sectionID, email, tes
     //TODO: Validate email back-end
     let verificationCode = generateEmailVerificationCode();
 
-    let section = Forms.getSectionJSON(sectionID, test);
+    let section = await Forms.getSectionJSON(sectionID, test);
 
     let reporterNumber = await getReporterNumberFromSession(sessionID);
     let emailBody = generateEmailVerificationBody(verificationCode, reporterNumber, section.form.email.text);

@@ -284,7 +284,7 @@ exports.getEditFormJSON = async function(slug) {
 }
 
 exports.getSectionJSON = async function (sectionID, test) {
-    let query = `SELECT ${test ? 'test_' : ''}json, type FROM formsections WHERE id='${sectionID}'`;
+    let query = `SELECT ${test ? 'test_' : ''}json AS json, type FROM formsections WHERE id='${sectionID}'`;
     let results = {};
     try {
         results = await db.query(query);
@@ -292,7 +292,7 @@ exports.getSectionJSON = async function (sectionID, test) {
         throw new DBSelectionError('formsections', query, err);
     }
     return {
-        form: results.rows[0].test_json,
+        form: results.rows[0].json,
         type: results.rows[0].type
     }
 }

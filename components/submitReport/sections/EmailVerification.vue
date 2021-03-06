@@ -6,10 +6,10 @@
         <v-btn outlined :disabled="!validEmail" @click="sendVerification" class="blueBtn">{{ emailSent ? 'Resend' : 'Send' }} Verification Code</v-btn>
         <div v-if="emailSent">
             <v-form v-model="validCode">
+                <v-text-field v-model="verificationCode" @change="incorrectVerificationCode = false" :rules="verificationCodeRules" outlined></v-text-field>
                 <p v-if="incorrectVerificationCode" class="err">
                     Incorrect Verification Code. Please Try Again.
                 </p>
-                <v-text-field v-model="verificationCode" @change="incorrectVerificationCode = false" :rules="verificationCodeRules" outlined></v-text-field>
             </v-form>
             <v-btn outlined :disabled="!validCode" @click="verifyCode" class="blueBtn">Verify Code</v-btn>
         </div>
@@ -73,6 +73,7 @@ export default {
             
             let data = {
                 email: this.email,
+                test: this.$attrs.test,
                 sectionID: this.$attrs.section.id
             };
 
