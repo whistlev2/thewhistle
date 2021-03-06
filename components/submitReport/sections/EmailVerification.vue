@@ -4,6 +4,7 @@
             <v-text-field v-model="email" label="Email" :rules="emailRules" outlined></v-text-field>
         </v-form>
         <v-btn outlined :disabled="!validEmail" @click="sendVerification" class="blueBtn">{{ emailSent ? 'Resend' : 'Send' }} Verification Code</v-btn>
+        <br><br>
         <div v-if="emailSent">
             <v-form v-model="validCode">
                 <v-text-field v-model="verificationCode" @change="incorrectVerificationCode = false" :rules="verificationCodeRules" outlined></v-text-field>
