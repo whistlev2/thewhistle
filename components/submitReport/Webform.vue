@@ -67,6 +67,7 @@ export default {
                         this.currentSection = response.data.nextSection;
                     } else {
                         this.currentSection = response.data.nextSection.json;
+                        this.currentSection.id = response.data.nextSection.id;
                         this.currentSection.type = response.data.nextSection.type;
                     }
                 })

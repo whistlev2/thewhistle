@@ -37,21 +37,25 @@ export default {
             validEmail: false,
             validCode: false,
             incorrectVerificationCode: false,
-            emailRules: [(v) => this.isValidEmail(v) || 'Invalid email address', (v) => this.validEnding || ('Email ending must match ' + this.$attrs.section.allowedEndings.join(', ')) ],
+            emailRules: [(v) => this.isValidEmail(v) || 'Invalid email address', (v) => this.validEnding || !this.$attrs.section.allowedEndings || ('Email ending must match ' + this.$attrs.section.allowedEndings.join(', ')) ],
             verificationCodeRules: [(v) => v.length == 6 || 'Must be 6 characters long', (v) => this.isAlphanumeric(this.verificationCode) || 'Must only contain letters and numbers']
         }
     },
 
     computed: {
         validEnding: function () {
-            if (this.$attrs.section.allowedEndings.length == 0) {
-                return true;
-            } else {
-                for (let i = 0; i < this.$attrs.section.allowedEndings.length; i++) {
-                    if (this.email.endsWith(this.$attrs.section.allowedEndings[i])) {
-                        return true;
+            if (this.$attrs.section.allowedEndings) {
+                if (this.$attrs.section.allowedEndings.length == 0) {
+                    return true;
+                } else {
+                    for (let i = 0; i < this.$attrs.section.allowedEndings.length; i++) {
+                        if (this.email.endsWith(this.$attrs.section.allowedEndings[i])) {
+                            return true;
+                        }
                     }
+                    return false;
                 }
+            } else {
                 return false;
             }
         }

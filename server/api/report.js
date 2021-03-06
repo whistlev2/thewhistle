@@ -44,7 +44,6 @@ async function startReport(req, res, next) {
         const token = await jwt.sign({ sessionID: sessionID }, process.env.JWT_SECRET_KEY, { expiresIn: "2h" });
         const twoHours = 2 * 60 * 60 * 1000;
         res.cookie('reportSession', token, { maxAge: twoHours });
-        
         res.status(200);
         res.json({
             sessionID: sessionID,
@@ -70,6 +69,7 @@ async function sendEmailVerification(req, res, next) {
 }
 
 async function submitSection(req, res, next) {
+    
     try {
         let nextSection = {};
         switch(req.body.type) {

@@ -187,7 +187,7 @@ exports.submitReporterSection = async function (sectionID, sessionID, reporter, 
 
     await addReporter(sectionID, sessionID, reporter, usedBefore);
 
-    let nextSection = await this.shift|NextSection(sessionID, test);
+    let nextSection = await this.shiftNextSection(sessionID, test);
 
     return nextSection;
 }
