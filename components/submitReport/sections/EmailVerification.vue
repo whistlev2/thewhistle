@@ -31,20 +31,18 @@ export default {
 
     data() {
         return {
-            email,
-            verificationCode,
+            email: '',
+            verificationCode: '',
             emailSent: false,
+            validEmail: false,
+            validCode: false,
             incorrectVerificationCode: false,
-            emailRules: [() => this.validEmail || 'Invalid email address', () => this.validEnding || ('Email ending must match ' + this.$this.attrs.section.allowedEndings.join(', ')) ],
-            verificationCodeRules: [() => this.verificationCode.length == 6 || 'Must be 6 characters long', () => isAlphanumeric(this.verificationCode) || 'Must only contain letters and numbers']
+            emailRules: [(v) => this.isValidEmail(v) || 'Invalid email address', (v) => this.validEnding || ('Email ending must match ' + this.$attrs.section.allowedEndings.join(', ')) ],
+            verificationCodeRules: [(v) => v.length == 6 || 'Must be 6 characters long', (v) => this.isAlphanumeric(this.verificationCode) || 'Must only contain letters and numbers']
         }
     },
 
     computed: {
-        validEmail: function () {
-            const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            return emailRegex.test(this.email);
-        },
         validEnding: function () {
             if (this.$attrs.section.allowedEndings.length == 0) {
                 return true;
@@ -60,6 +58,10 @@ export default {
     },
 
     methods: {
+        isValidEmail(email) {
+            const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return emailRegex.test(email);
+        },
 
         isAlphanumeric(value) {
             const regex = /^[a-z0-9]+$/i;

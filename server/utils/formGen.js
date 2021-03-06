@@ -4,10 +4,12 @@ const Typeform = require('../interfaces/typeform.js');
 
 
 async function updateSection(section) {
+    let sectionID = section.id;
     if (section.type == 'Questions') {
         await Typeform.updateForm(section); //Note: Here, section.id is typeformID
+        section.type = 'Questions';
     }
-    let retSection = await Forms.updateJSON(section.id, section);
+    let retSection = await Forms.updateJSON(sectionID, section);
     return retSection;
 }
 

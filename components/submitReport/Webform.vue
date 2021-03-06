@@ -63,7 +63,12 @@ export default {
                 .then((response) => {
                     this.sessionID = response.data.sessionID; //TODO: Make this session ID instead of report ID
                     this.startedReport = true;
-                    this.currentSection = response.data.nextSection //TODO: Implement this
+                    if (response.data.nextSection.type == 'Questions') {
+                        this.currentSection = response.data.nextSection;
+                    } else {
+                        this.currentSection = response.data.nextSection.json;
+                        this.currentSection.type = response.data.nextSection.type;
+                    }
                 })
                 .catch((response) => {
                     //TODO: Check response

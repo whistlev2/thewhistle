@@ -116,7 +116,6 @@ export default {
                 section.sectionLogic = { default: this.newSection.default };
                 section.title = this.newSection.title;
                 section.type = this.newSection.type;
-                console.log('section', section);
                 this.editJSON.splice(this.newSection.index, 0, section);
                 if (this.editJSON.length == 1) {
                     this.currentTab = 1;

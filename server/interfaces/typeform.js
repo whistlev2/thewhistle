@@ -77,6 +77,7 @@ function moveAlwaysJumps(formLogic) {
 function adaptForm(form) {
     form.id = form.typeformID;
     delete form.typeformID;
+    delete form.type;
     if (form.logic) {
         form.logic = moveAlwaysJumps(form.logic);
     }

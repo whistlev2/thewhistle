@@ -3,7 +3,7 @@ const db = require('../db.ts');
 const { InvalidVerificationCodeError, InvalidReporterError, DBSelectionError, DBInsertionError, DBUpdateError } = require('../utils/errors/errors');
 const FormSections = require('./formsections.js');
 const Report = require('./report.js');
-
+const Email = require('../utils/email.js')
 async function insertReportSessionRelation(reportID, sessionID) {
     const query = 'INSERT INTO reportsessionrelation(report, session) VALUES($1, $2)';
     const values = [reportID, sessionID];
@@ -208,8 +208,7 @@ exports.submitEmailVerificationSection = async function (sessionID, testVerifica
     }
 
     let verificationCode = results.rows[0].verification_code;
-
-    if (testVerificationCode.toLowerCase() == verificationCode) {
+    if (testVerificationCode == verificationCode) {
         let nextSection = await this.shiftNextSection(sessionID, test);
         return nextSection;
     } else {

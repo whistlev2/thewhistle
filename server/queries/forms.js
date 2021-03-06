@@ -330,8 +330,6 @@ exports.getFormFromSlug = async function (slug, test) {
             description: description,
             sections: sectionLogic
         }
-    } else {
-        
     }
 }
 
