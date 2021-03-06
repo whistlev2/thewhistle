@@ -3,6 +3,7 @@
         
         <h1>{{ title }}</h1>
         <p>{{ description }}</p>
+        <v-textarea v-model="completed.text" @change="updateCompleted" label="Text Shown On Completion" outlined></v-text-field>
         <v-btn outlined :to="`/submit-test-report/${$route.params.form}`" class="blueBtn">View test form</v-btn>
         <v-btn v-if="editJSON.length == 0" outlined v-on:click="openAddSectionModal(0)" class="blueBtn">Add first section</v-btn>
         <v-tabs v-else align-with-title v-model="currentTab">
@@ -60,6 +61,7 @@ export default {
         return {
             title: '',
             description: '',
+            completed: {},
             web: false,
             editJSON: [],
             currentTab: null,
@@ -86,11 +88,19 @@ export default {
             axios.get(url).then((d) => {
                 this.title = d.data.title;
                 this.description = d.data.description;
+                this.completed = d.data.completed;
                 this.web = d.data.web;
                 this.editJSON = d.data.sectionLogic;
                 this.currentTab = this.editJSON.length > 0 ? 1 : 0;
                 this.currentSection = this.currentTab;
             })
+        },
+
+        updateCompleted() {
+            let url = `/api/edit-form/${this.$route.params.form}/update-completed`;
+            axios.patch(url, this.completed).then((response) => {
+                //TODO: Handle errors
+            });
         },
 
         openAddSectionModal(index) {
