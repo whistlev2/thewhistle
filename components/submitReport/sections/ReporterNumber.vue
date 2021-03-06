@@ -69,13 +69,11 @@ export default {
             if (this.usedBefore && this.hasReporter) {
                 data.reporter = this.reporter;
             }
-
             axios.post(url, data)
                 .then((response) => {
                     this.$emit('complete', response.data);
                 })
                 .catch((err) => {
-                    console.log('OH NO', err)
                     if (err.response) {
                         if (err.response.status == '404') {
                             this.noReporterMatchInDB = true;

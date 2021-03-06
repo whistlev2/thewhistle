@@ -47,9 +47,9 @@ exports.createWebhook = async function (typeformID, sectionID, test) {
         throw new TypeformWebhookError(data.url, err);
     }
 }
-
-exports.getForm = function (form) {
-    const url = `https://${TYPEFORM_API_BASE_URL}/forms/${form}`;
+//TODO: Remove if not used
+exports.getForm = function (typeformID) {
+    const url = `https://${TYPEFORM_API_BASE_URL}/forms/${typeformID}`;
     const response = request.get(url, bearer, jsonCallback);
 }
 
@@ -75,15 +75,17 @@ function moveAlwaysJumps(formLogic) {
 }
 
 function adaptForm(form) {
+    form.id = form.typeformID;
+    delete form.typeformID;
     if (form.logic) {
         form.logic = moveAlwaysJumps(form.logic);
     }
     return form;
 }
 
-exports.updateForm = async function (typeformID, form) {
+exports.updateForm = async function (form) {
     form = adaptForm(form);
-    const url = `https://${TYPEFORM_API_BASE_URL}/forms/${typeformID}`;
+    const url = `https://${TYPEFORM_API_BASE_URL}/forms/${form.id}`;
     const data = JSON.stringify(form);
     try {
         await axios({

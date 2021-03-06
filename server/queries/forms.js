@@ -267,7 +267,11 @@ exports.getEditFormJSON = async function(slug) {
         }
         sectionLogic[i].title = results.rows[0].json.title;
         sectionLogic[i].type = results.rows[0].type;
-        sectionLogic[i].questions = generateEditJSON(results.rows[0].json);
+        if (sectionLogic[i].type == 'Questions') {
+            sectionLogic[i].questions = generateEditJSON(results.rows[0].json);
+        } else {
+            sectionLogic[i].json = results.rows[0].json;
+        }
     }
 
     return {
@@ -339,8 +343,7 @@ exports.updateJSON = async function(sectionID, form) {
     } catch (err) {
         throw new DBUpdateError('formsections', query, err);
     }
-    const retForm = generateEditJSON(form);
-    return retForm;
+    return form.type == 'Questions' ? generateEditJSON(form) : form;
 }
 
 exports.getFormIDFromSlug = async function (slug) {

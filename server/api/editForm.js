@@ -11,6 +11,8 @@ router.post('/:slug/create', createForm);
 
 router.post('/:slug/add-section', addSection);
 
+router.patch('/:sectionID/update-section', updateSection);
+
 router.patch('/:sectionID/update-question-title/:questionRef', updateQuestionTitle);
 
 router.post('/:sectionID/add-first-question', addFirstQuestion)
@@ -72,6 +74,22 @@ async function addSection(req, res, next) {
     } catch (err) {
         res.status(500);
         res.send('Could not add section');
+        next(err);
+    }
+}
+
+async function updateSection(req, res, next) {
+    try {
+        //TODO: Input validations
+        let section = req.body.section;
+        section.id = req.params.sectionID;
+        section = await FormGen.updateSection(req.body.section);
+        res.json({
+            section: section
+        });
+    } catch (err) {
+        res.status(500);
+        res.send('Could not update section');
         next(err);
     }
 }

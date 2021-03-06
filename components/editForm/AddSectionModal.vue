@@ -48,11 +48,17 @@ export default {
         return {
             notBlank: [v => !!v || 'Required'],
             valid: false,
-            sectionTypes: this.$attrs.web ?
+        }
+    },
+
+    computed: {
+        sectionTypes: function () {
+            return this.$attrs.web ?
                 ['Questions', 'Reporter Number', 'Email Verification'] :
                 ['Questions', 'Reporter Number', 'Files']
         }
     },
+
     methods: {
         closeModal() {
             this.$attrs.show = false;

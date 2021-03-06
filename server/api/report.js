@@ -88,7 +88,7 @@ async function submitSection(req, res, next) {
             res.status(404);
             res.send(err.message);
         } else if (err.name == 'InvalidVerificationCodeError') {
-            res.status(404);
+            res.status(401);
             res.send(err.message);
         } else {
             res.status(500);

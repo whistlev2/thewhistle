@@ -18,7 +18,11 @@
             </v-tab>
             <v-tabs-items v-model="currentTab">
                 <v-tab-item v-for="tab in tabs" :key="tab.key">
-                    <EditQuestionSection v-if="tab.isSection && tab.section.type == 'Questions'" :section="tab.section" :web="web" />
+                    <template v-if="tab.isSection">
+                        <EditQuestionSection v-if="tab.section.type == 'Questions'" :section="tab.section" :web="web" />
+                        <EditEmailVerificationSection v-if="tab.section.type == 'Email Verification'" :section="tab.section" :web="web" />
+                        <EditReporterNumberSection v-if="tab.section.type == 'Reporter Number'" :section="tab.section" :web="web" />
+                    </template>
                 </v-tab-item>
             </v-tabs-items>
         </v-tabs>
@@ -37,6 +41,9 @@
 
 <script>
 import EditQuestionSection from '../../components/editForm/EditQuestionSection.vue';
+import EditEmailVerificationSection from '../../components/editForm/EditEmailVerificationSection.vue';
+import EditReporterNumberSection from '../../components/editForm/EditReporterNumberSection.vue';
+
 import AddSectionModal from '../../components/editForm/AddSectionModal.vue';
 
 import axios from 'axios';
@@ -44,7 +51,9 @@ import axios from 'axios';
 export default {
     components: {
         EditQuestionSection,
-        AddSectionModal
+        AddSectionModal,
+        EditEmailVerificationSection,
+        EditReporterNumberSection
     },
     
     data() {
@@ -107,6 +116,7 @@ export default {
                 section.sectionLogic = { default: this.newSection.default };
                 section.title = this.newSection.title;
                 section.type = this.newSection.type;
+                console.log('section', section);
                 this.editJSON.splice(this.newSection.index, 0, section);
                 if (this.editJSON.length == 1) {
                     this.currentTab = 1;
