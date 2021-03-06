@@ -1,5 +1,6 @@
 const FormGen = require('../utils/formGen');
 const Forms = require('../queries/forms.js');
+const FormSections = require('../queries/formsections.js')
 
 const express = require('express');
 
@@ -12,6 +13,8 @@ router.post('/:slug/create', createForm);
 router.post('/:slug/add-section', addSection);
 
 router.patch('/:sectionID/update-section', updateSection);
+
+router.patch('/:slug/update-completed', updateCompleted);
 
 router.patch('/:sectionID/update-question-title/:questionRef', updateQuestionTitle);
 
@@ -83,6 +86,22 @@ async function updateSection(req, res, next) {
         //TODO: Input validations
         let section = req.body.section;
         section.id = req.params.sectionID;
+        section = await FormGen.updateSection(req.body.section);
+        res.json({
+            section: section
+        });
+    } catch (err) {
+        res.status(500);
+        res.send('Could not update section');
+        next(err);
+    }
+}
+
+async function updateCompleted(req, res, next) {
+    try {
+        //TODO: Input validations
+        let section = req.body.completed;
+        section.id = await FormSections.getCompletedSectionFromSlug(req.params.slug);
         section = await FormGen.updateSection(req.body.section);
         res.json({
             section: section

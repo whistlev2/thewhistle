@@ -53,3 +53,16 @@ exports.insertSection = async function (formID, type, json, testJSON, allReports
 
     return results.rows[0].id;
 }
+
+exports.getCompletedSectionFromSlug = async function (slug) {
+    let query = `SELECT id FROM formsections JOIN forms ON formsections.form = forms.id WHERE forms.slug='${slug}' AND type='Completed'`;
+    let results = {};
+
+    try {
+        results = await db.query(query);
+    } catch (err) {
+        throw new DBSelectionError('formsections', query, err);
+    }
+
+    return results.rows[0].id
+}

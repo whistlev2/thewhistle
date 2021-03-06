@@ -34,7 +34,7 @@ async function startReport(req, res, next) {
     try {
         let reportID = await report.startReport(req.params.form, req.body.test);
         let sectionQueue = await forms.generateInitialSectionQueue(req.params.form, req.body.test);
-        let completedSection = await forms.getCompleted(req.params.form, req.body.test);
+        let completedSection = await forms.getCompleted(req.params.form);
         let sessionID = await session.startSession(reportID, sectionQueue, completedSection);
         let firstSection = await session.shiftNextSection(sessionID, req.body.test);
         
