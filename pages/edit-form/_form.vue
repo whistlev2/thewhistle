@@ -20,7 +20,7 @@
                 <v-tab-item v-for="tab in tabs" :key="tab.key">
                     <template v-if="tab.isSection">
                         <EditQuestionSection v-if="tab.section.type == 'Questions'" :section="tab.section" :web="web" />
-                        <EditEmailVerificationSection v-if="tab.section.type == 'Email Verification'" :section="tab.section" :web="web" />
+                        <EditEmailVerificationSection v-if="tab.section.type == 'Email Verification'" :section="tab.section" :web="web" :title="title" />
                         <EditReporterNumberSection v-if="tab.section.type == 'Reporter Number'" :section="tab.section" :web="web" />
                     </template>
                 </v-tab-item>

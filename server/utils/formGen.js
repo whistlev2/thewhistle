@@ -376,7 +376,9 @@ function generateReporterSection(title) {
 function generateEmailVerificationSection(title) {
     return {
         title: title,
-        allowedEndings: []
+        allowedEndings: [],
+        subject: '',
+        text: ''
     };
 }
 
@@ -480,7 +482,7 @@ exports.addSection = async function (formSlug, newSection) {
 }
 
 exports.updateQuestionTitle = async function(sectionID, questionRef, questionTitle) {
-    let sectionJSON = await Forms.getSectionJSON(sectionID);
+    let sectionJSON = await Forms.getSectionJSON(sectionID, true);
     let section = sectionJSON.form;
     //TODO: Reflect these changes for other updateSections and also where the old .id is used (front-end)?
     section.typeformID = section.id;
@@ -499,7 +501,7 @@ exports.updateQuestionTitle = async function(sectionID, questionRef, questionTit
 
 exports.addFirstQuestion = async function(sectionID, question) {
     try {
-        let sectionJSON = await Forms.getSectionJSON(sectionID);
+        let sectionJSON = await Forms.getSectionJSON(sectionID, true);
         let section = sectionJSON.form;
         section.typeformID = section.id;
         section.id = sectionID;
@@ -518,7 +520,7 @@ exports.addFirstQuestion = async function(sectionID, question) {
 }
 
 exports.addQuestionBefore = async function(sectionID, adjacentQuestionRef, question) {
-    let sectionJSON = await Forms.getSectionJSON(sectionID);
+    let sectionJSON = await Forms.getSectionJSON(sectionID, true);
     let section = sectionJSON.form;
     section.typeformID = section.id;
     section.id = sectionID;
@@ -541,7 +543,7 @@ exports.addQuestionBefore = async function(sectionID, adjacentQuestionRef, quest
 }
 
 exports.addQuestionAfter = async function(sectionID, adjacentQuestionRef, question) {
-    let sectionJSON = await Forms.getSectionJSON(sectionID);
+    let sectionJSON = await Forms.getSectionJSON(sectionID, true);
     let section = sectionJSON.form;
     section.typeformID = section.id;
     section.id = sectionID;
@@ -562,7 +564,7 @@ exports.addQuestionAfter = async function(sectionID, adjacentQuestionRef, questi
 }
 
 exports.deleteQuestion = async function (sectionID, questionRef) {
-    let sectionJSON = await Forms.getSectionJSON(sectionID);
+    let sectionJSON = await Forms.getSectionJSON(sectionID, true);
     let section = sectionJSON.form;
     section.typeformID = section.id;
     section.id = sectionID;
@@ -581,7 +583,7 @@ exports.deleteQuestion = async function (sectionID, questionRef) {
 }
 
 exports.updateQuestionJump = async function (sectionID, questionRef, jump) {
-    let sectionJSON = await Forms.getSectionJSON(sectionID);
+    let sectionJSON = await Forms.getSectionJSON(sectionID, true);
     let section = sectionJSON.form;
     section.typeformID = section.id;
     section.id = sectionID;
@@ -623,7 +625,7 @@ exports.updateQuestionJump = async function (sectionID, questionRef, jump) {
 }
 
 exports.addOption = async function (sectionID, questionRef, option) {
-    let sectionJSON = await Forms.getSectionJSON(sectionID);
+    let sectionJSON = await Forms.getSectionJSON(sectionID, true);
     let section = sectionJSON.form;
     section.typeformID = section.id;
     section.id = sectionID;
@@ -645,7 +647,7 @@ exports.addOption = async function (sectionID, questionRef, option) {
 }
 
 exports.updateOptionJump = async function (sectionID, questionRef, optionRef, jump) {
-    let sectionJSON = await Forms.getSectionJSON(sectionID);
+    let sectionJSON = await Forms.getSectionJSON(sectionID, true);
     let section = sectionJSON.form;
     section.typeformID = section.id;
     section.id = sectionID;
@@ -687,7 +689,7 @@ exports.updateOptionJump = async function (sectionID, questionRef, optionRef, ju
 }
 
 exports.deleteOption = async function (sectionID, questionRef, choiceRef) {
-    let sectionJSON = await Forms.getSectionJSON(sectionID);
+    let sectionJSON = await Forms.getSectionJSON(sectionID, true);
     let section = sectionJSON.form;
     section.typeformID = section.id;
     section.id = sectionID;
@@ -731,7 +733,7 @@ exports.deleteOption = async function (sectionID, questionRef, choiceRef) {
 
 exports.updateRequired = async function (sectionID, questionRef, required) {
     try {
-        let sectionJSON = await Forms.getSectionJSON(sectionID);
+        let sectionJSON = await Forms.getSectionJSON(sectionID, true);
         let section = sectionJSON.form;
         section.typeformID = section.id;
         section.id = sectionID;
@@ -757,7 +759,7 @@ exports.updateRequired = async function (sectionID, questionRef, required) {
 }
 
 exports.deleteDescription = async function (sectionID, questionRef) {
-    let sectionJSON = await Forms.getSectionJSON(sectionID);
+    let sectionJSON = await Forms.getSectionJSON(sectionID, true);
     let section = sectionJSON.form;
     section.typeformID = section.id;
     section.id = sectionID;
@@ -776,7 +778,7 @@ exports.deleteDescription = async function (sectionID, questionRef) {
 }
 
 exports.updateAllowMultiple = async function (sectionID, questionRef, allowMultiple) {
-    let sectionJSON = await Forms.getSectionJSON(sectionID);
+    let sectionJSON = await Forms.getSectionJSON(sectionID, true);
     let section = sectionJSON.form;
     section.typeformID = section.id;
     section.id = sectionID;
@@ -799,7 +801,7 @@ exports.updateAllowMultiple = async function (sectionID, questionRef, allowMulti
 }
 
 exports.updateAllowOther = async function (sectionID, questionRef, allowOther) {
-    let sectionJSON = await Forms.getSectionJSON(sectionID);
+    let sectionJSON = await Forms.getSectionJSON(sectionID, true);
     let section = sectionJSON.form;
     section.typeformID = section.id;
     section.id = sectionID;
@@ -822,7 +824,7 @@ exports.updateAllowOther = async function (sectionID, questionRef, allowOther) {
 }
 
 exports.updateDescription = async function (sectionID, questionRef, description) {
-    let sectionJSON = await Forms.getSectionJSON(sectionID);
+    let sectionJSON = await Forms.getSectionJSON(sectionID, true);
     let section = sectionJSON.form;
     section.typeformID = section.id;
     section.id = sectionID;

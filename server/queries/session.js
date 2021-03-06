@@ -2,6 +2,7 @@ const { jsPDF } = require("jspdf");
 const db = require('../db.ts');
 const { InvalidVerificationCodeError, InvalidReporterError, DBSelectionError, DBInsertionError, DBUpdateError } = require('../utils/errors/errors');
 const FormSections = require('./formsections.js');
+const Forms = require('./forms.js')
 const Report = require('./report.js');
 const Email = require('../utils/email.js')
 async function insertReportSessionRelation(reportID, sessionID) {
@@ -76,8 +77,12 @@ async function getReporterNumberFromSession(sessionID) {
     }
 }
 
-function generateEmailVerificationBody(verificationCode, reporterNumber) {
-    return `Hello!\n\nThank you for your interest in reporting an incident of racism to the End Everyday Racism project.\n\nYour verification code is ${verificationCode}. This code helps us verify that you are a member of the Cambridge community. Since we do not store your email address, you will need to generate a new authentication code every time you submit a report.\n\nYour reporter number is ${reporterNumber}. You can use this number to report multiple incidents. That lets us know that a set of reports all come from the same source.\n\nThank you again for participating in this project.\n\nEnd Everyday Racism Team`;
+function generateEmailVerificationBody(verificationCode, reporterNumber, customText) 
+    let body = `Hello!\n\nYour verification code is ${verificationCode}.\n\nSince we do not store your email address, you will need to generate a new authentication code every time you submit a report.\n\n`;
+    if (reporterNumber) {
+        body += `Your reporter number is ${reporterNumber}. You can use this number to report multiple incidents. That lets us know that a set of reports all come from the same source.\n\n`
+    }
+    body += customText;
 }
 
 async function updateVerificationCode(sessionID, verificationCode) {
@@ -187,13 +192,15 @@ exports.submitReporterSection = async function (sectionID, sessionID, reporter, 
     return nextSection;
 }
 
-exports.sendEmailVerification = async function (sessionID, email) {
+exports.sendEmailVerification = async function (sessionID, sectionID, email, test) {
     //TODO: Validate email back-end
     let verificationCode = generateEmailVerificationCode();
-    let emailTitle = 'End Everyday Racism Email Verification'
+
+    let section = Forms.getSectionJSON(sectionID, test);
+
     let reporterNumber = await getReporterNumberFromSession(sessionID);
-    let emailBody = generateEmailVerificationBody(verificationCode, reporterNumber);
-    Email.send(email, emailTitle, emailBody); //TODO: Implement this (note: it's async)
+    let emailBody = generateEmailVerificationBody(verificationCode, reporterNumber, section.form.email.text);
+    Email.send(email, section.form.email.subject, emailBody); //TODO: Implement this (note: it's async)
     updateVerificationCode(sessionID, verificationCode);
 }
 

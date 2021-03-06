@@ -283,8 +283,8 @@ exports.getEditFormJSON = async function(slug) {
     //TODO: Add in ret example structures documentation
 }
 
-exports.getSectionJSON = async function (sectionID) {
-    let query = `SELECT test_json, type FROM formsections WHERE id='${sectionID}'`;
+exports.getSectionJSON = async function (sectionID, test) {
+    let query = `SELECT ${test ? 'test_' : ''}json, type FROM formsections WHERE id='${sectionID}'`;
     let results = {};
     try {
         results = await db.query(query);

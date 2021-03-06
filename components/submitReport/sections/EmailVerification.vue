@@ -72,7 +72,8 @@ export default {
             let url = `/api/report/send-email-verification/${this.$attrs.sessionID}`;
             
             let data = {
-                email: this.email
+                email: this.email,
+                sectionID: this.$attrs.section.id
             };
 
             axios.post(url, data)
