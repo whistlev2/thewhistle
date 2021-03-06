@@ -3,8 +3,11 @@
         
         <h1>{{ title }}</h1>
         <p>{{ description }}</p>
-        <v-textarea v-model="completed.text" @change="updateCompleted" label="Text Shown On Completion" outlined></v-text-field>
         <v-btn outlined :to="`/submit-test-report/${$route.params.form}`" class="blueBtn">View test form</v-btn>
+        <br><br>
+        <v-textarea v-model="completed.text" @change="updateCompleted" label="Text Shown On Completion" outlined />
+        <v-switch v-model="completed.allowDownload" class="ma-2" label="Allow reporter to download PDF?" @change="updateCompleted"></v-switch>
+
         <v-btn v-if="editJSON.length == 0" outlined v-on:click="openAddSectionModal(0)" class="blueBtn">Add first section</v-btn>
         <v-tabs v-else align-with-title v-model="currentTab">
             <v-tabs-slider color="yellow"></v-tabs-slider>

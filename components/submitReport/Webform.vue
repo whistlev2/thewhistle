@@ -9,7 +9,7 @@
             <Questions v-if="currentSection.type == 'Questions'" :section="currentSection" :sessionID="sessionID" :test="$attrs.test" @complete="showNextSection"></Questions>
             <EmailVerification v-if="currentSection.type == 'Email Verification'" :section="currentSection" :sessionID="sessionID" :test="$attrs.test" @complete="showNextSection"></EmailVerification>
             <ReporterNumber v-if="currentSection.type == 'Reporter Number'" :section="currentSection" :sessionID="sessionID" :test="$attrs.test" @complete="showNextSection"></ReporterNumber>
-            <Completed v-if="currentSection.type == 'completed'" :section="currentSection" :sessionID="sessionID"></Completed>
+            <Completed v-if="currentSection.type == 'Completed'" :section="currentSection" :sessionID="sessionID"></Completed>
         </div>
     </div>
 </template>

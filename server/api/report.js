@@ -18,6 +18,8 @@ router.get('/:id', getReport);
 
 router.get('/next-section/:sessionID', getNextSection);
 
+router.get('/next-section/:sessionID/test', getNextTestSection);
+
 router.post('/assigned/:id', postAssigned);
 
 router.post('/status/:id', postStatus);
@@ -36,6 +38,7 @@ async function startReport(req, res, next) {
         let sectionQueue = await forms.generateInitialSectionQueue(req.params.form, req.body.test);
         let completedSection = await forms.getCompleted(req.params.form);
         let sessionID = await session.startSession(reportID, sectionQueue, completedSection);
+        
         let firstSection = await session.shiftNextSection(sessionID, req.body.test);
         
         const token = await jwt.sign({ sessionID: sessionID }, process.env.JWT_SECRET_KEY, { expiresIn: "2h" });
@@ -150,15 +153,22 @@ function getReport(req, res, next) {
 
 async function getNextSection(req, res, next) {
     try {
-        //TODO: Check questionresponses to see if anything from the typeform section has been submitted
-        //Send final section
-        //Can use reportsessions.queue json and add completed sections field
-        //await session.waitForTypeformSubmission(req.params.sessionID, req.body.sectionID);
-        let nextSection = await session.shiftNextSection(req.params.sessionID, req.body.test);
+        let nextSection = await session.shiftNextSection(req.params.sessionID, false);
         res.json(nextSection);
     } catch (err) {
         res.status(500);
         res.send('Could not get next section');
+        next(err);
+    }
+}
+
+async function getNextTestSection(req, res, next) {
+    try {
+        let nextSection = await session.shiftNextSection(req.params.sessionID, true);
+        res.json(nextSection);
+    } catch (err) {
+        res.status(500);
+        res.send('Could not get next test section');
         next(err);
     }
 }

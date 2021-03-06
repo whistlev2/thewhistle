@@ -100,12 +100,11 @@ async function updateSection(req, res, next) {
 async function updateCompleted(req, res, next) {
     try {
         //TODO: Input validations
-        let section = req.body.completed;
+        let section = req.body;
         section.id = await FormSections.getCompletedSectionFromSlug(req.params.slug);
-        section = await FormGen.updateSection(req.body.section);
-        res.json({
-            section: section
-        });
+        await FormGen.updateSection(section);
+        res.status(200);
+        res.send();
     } catch (err) {
         res.status(500);
         res.send('Could not update section');

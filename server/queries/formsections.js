@@ -55,7 +55,7 @@ exports.insertSection = async function (formID, type, json, testJSON, allReports
 }
 
 exports.getCompletedSectionFromSlug = async function (slug) {
-    let query = `SELECT id FROM formsections JOIN forms ON formsections.form = forms.id WHERE forms.slug='${slug}' AND type='Completed'`;
+    let query = `SELECT formsections.id AS id FROM formsections JOIN forms ON formsections.form = forms.id WHERE forms.slug='${slug}' AND type='Completed'`;
     let results = {};
 
     try {

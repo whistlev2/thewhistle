@@ -38,12 +38,8 @@ export default {
     methods: {
         onSectionComplete(event) {
 
-            let url = `/api/report/next-section/${this.$attrs.sessionID}`;
-            
-            let body = {
-                test: this.$attrs.test
-            }
-            axios.get(url, body)
+            let url = `/api/report/next-section/${this.$attrs.sessionID}${this.$attrs.test ? '/test' : ''}`;
+            axios.get(url)
                 .then((response) => {
                     let section = response.data;
                     this.$emit('complete', section);

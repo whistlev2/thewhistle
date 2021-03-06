@@ -171,7 +171,6 @@ exports.shiftNextSection = async function (sessionID, test) {
     
     let nextSectionID = queue.value.length > 0 ? queue.value.shift() : queue.completed;
     await updateQueue(sessionID, queue, nextSectionID);
-
     let nextSection = await FormSections.getSection(nextSectionID, test);
     return nextSection;
 }
@@ -188,7 +187,7 @@ exports.submitReporterSection = async function (sectionID, sessionID, reporter, 
 
     await addReporter(sectionID, sessionID, reporter, usedBefore);
 
-    let nextSection = await this.shiftNextSection(sessionID, test);
+    let nextSection = await this.shift|NextSection(sessionID, test);
 
     return nextSection;
 }

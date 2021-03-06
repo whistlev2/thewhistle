@@ -276,13 +276,13 @@ exports.getEditFormJSON = async function(slug) {
         }
     }
 
-    let completedID = getCompleted(formID);
-    let completed = getSectionJSON(completedID, true);
+    let completedID = await getCompleted(formID);
+    let completed = await getSectionJSON(completedID, true);
 
     return {
         title: title,
         description: description,
-        completed: completed,
+        completed: completed.form,
         web: web,
         sectionLogic: sectionLogic
     }
