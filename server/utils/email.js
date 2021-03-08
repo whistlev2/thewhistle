@@ -1,6 +1,5 @@
 const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
-const { access } = require('fs-extra');
 
 
 exports.send = async function(toAddress, title, body) {
