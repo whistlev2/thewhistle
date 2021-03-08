@@ -78,7 +78,7 @@ export default {
         },
 
         showNextSection(section) {
-            this.questionsKey++;
+            this.questionsKey++; //Incrementing key rerenders component (necessary for Typeform)
             this.currentSection = section;
         }
     }

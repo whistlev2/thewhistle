@@ -38,19 +38,23 @@ export default {
             validEmail: false,
             validCode: false,
             incorrectVerificationCode: false,
-            emailRules: [(v) => this.isValidEmail(v) || 'Invalid email address', (v) => this.validEnding || !this.$attrs.section.allowedEndings || ('Email ending must match ' + this.$attrs.section.allowedEndings.join(', ')) ],
+            emailRules: [(v) => this.isValidEmail(v) || 'Invalid email address', (v) => this.validEnding(v) || !this.$attrs.section.json.allowedEndings || ('Email ending must match ' + this.$attrs.section.json.allowedEndings.join(', ')) ],
             verificationCodeRules: [(v) => v.length == 6 || 'Must be 6 characters long', (v) => this.isAlphanumeric(this.verificationCode) || 'Must only contain letters and numbers']
         }
     },
 
     computed: {
-        validEnding: function () {
-            if (this.$attrs.section.allowedEndings) {
-                if (this.$attrs.section.allowedEndings.length == 0) {
+        
+    },
+
+    methods: {
+        validEnding(email) {
+            if (this.$attrs.section.json.allowedEndings) {
+                if (this.$attrs.section.json.allowedEndings.length == 0) {
                     return true;
                 } else {
-                    for (let i = 0; i < this.$attrs.section.allowedEndings.length; i++) {
-                        if (this.email.endsWith(this.$attrs.section.allowedEndings[i])) {
+                    for (let i = 0; i < this.$attrs.section.json.allowedEndings.length; i++) {
+                        if (email.endsWith(this.$attrs.section.json.allowedEndings[i])) {
                             return true;
                         }
                     }
@@ -59,10 +63,8 @@ export default {
             } else {
                 return false;
             }
-        }
-    },
+        },
 
-    methods: {
         isValidEmail(email) {
             const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             return emailRegex.test(email);
