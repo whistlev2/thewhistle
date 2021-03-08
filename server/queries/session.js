@@ -38,8 +38,8 @@ async function addReporter(sectionID, sessionID, reporterNumber, usedBefore) {
     Promise.all(promises);
 }
 
-async function validateReporter(formID, reporter) {
-    let query = `SELECT id FROM reports WHERE reporter='${reporter}' AND form=${formID}`;
+async function validateReporter(sectionID, reporter) {
+    let query = `SELECT reports.id FROM reports JOIN formsections ON formsections.form=reports.form WHERE reporter='${reporter}' AND formsections.id='${sectionID}'`;
     try {
         const results = await db.query(query);
         return results.rows.length > 0;
@@ -177,7 +177,7 @@ exports.shiftNextSection = async function (sessionID, test) {
 
 exports.submitReporterSection = async function (sectionID, sessionID, reporter, usedBefore, test) {
     if (reporter) {
-        let validReporter = await validateReporter(formID, reporter);
+        let validReporter = await validateReporter(sectionID, reporter);
         if (!validReporter) {
             throw new InvalidReporterError(`${reporter} is not a valid reporter number for this form.`);
         }

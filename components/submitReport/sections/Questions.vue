@@ -1,7 +1,7 @@
 <template>
     <div style="margin: 0 auto; width: 600px;">
         <!-- TODO - ensure height works -->
-        <div style="width: 100%; height: 500px;" id="my-embedded-typeform"></div>
+        <div style="width: 100%; height: 500px;" id="embedded-typeform"></div>
     </div>
 </template>
 
@@ -19,25 +19,28 @@ import axios from 'axios';
 export default {
 
     mounted() {
-        const url = `${this.$attrs.section.json._links.display}?session=${this.$attrs.sessionID}`;
-        var el = document.getElementById("my-embedded-typeform");
-        //TODO: Make this run on start report event
-        // When instantiating a widget embed, you must provide the DOM element
-        // that will contain your typeform, the URL of your typeform, and your
-        // desired embed settings
-        // TODO: add callback for submit button
-        typeformEmbed.makeWidget(el, url, {
-            hideFooter: true,
-            hideHeaders: true,
-            opacity: 0,
-            onSubmit: this.onSectionComplete
-        });
-
+        this.displayTypeform();
     },
 
     methods: {
-        onSectionComplete(event) {
+        displayTypeform() {
+            const url = `${this.$attrs.section.json._links.display}?session=${this.$attrs.sessionID}`;
+            var el = document.getElementById('embedded-typeform');
+            //TODO: Make this run on start report event
+            // When instantiating a widget embed, you must provide the DOM element
+            // that will contain your typeform, the URL of your typeform, and your
+            // desired embed settings
+            // TODO: add callback for submit button
+            typeformEmbed.makeWidget(el, url, {
+                hideFooter: true,
+                hideHeaders: true,
+                opacity: 0,
+                onSubmit: this.onSectionComplete
+            });
+            this.currentDiv++;
+        },
 
+        onSectionComplete(event) {
             let url = `/api/report/next-section/${this.$attrs.sessionID}${this.$attrs.test ? '/test' : ''}`;
             axios.get(url)
                 .then((response) => {
@@ -45,6 +48,7 @@ export default {
                     this.$emit('complete', section);
                 })
                 .catch((response) => {
+                    console.error(response);
                     //TODO: Check response
                 })
             

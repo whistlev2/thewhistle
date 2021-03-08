@@ -6,7 +6,7 @@
             <v-btn outlined v-on:click="startReport" class="blueBtn">Start Report</v-btn>
         </div>
         <div v-else>
-            <Questions v-if="currentSection.type == 'Questions'" :section="currentSection" :sessionID="sessionID" :test="$attrs.test" @complete="showNextSection"></Questions>
+            <Questions :key="questionsKey" v-if="currentSection.type == 'Questions'" :section="currentSection" :sessionID="sessionID" :test="$attrs.test" @complete="showNextSection"></Questions>
             <EmailVerification v-if="currentSection.type == 'Email Verification'" :section="currentSection" :sessionID="sessionID" :test="$attrs.test" @complete="showNextSection"></EmailVerification>
             <ReporterNumber v-if="currentSection.type == 'Reporter Number'" :section="currentSection" :sessionID="sessionID" :test="$attrs.test" @complete="showNextSection"></ReporterNumber>
             <Completed v-if="currentSection.type == 'Completed'" :section="currentSection" :sessionID="sessionID"></Completed>
@@ -46,7 +46,8 @@ export default {
         return {
             startedReport: false,
             sessionID: '',
-            currentSection: {}
+            currentSection: {},
+            questionsKey: 0
         }
     },
 
@@ -77,6 +78,7 @@ export default {
         },
 
         showNextSection(section) {
+            this.questionsKey++;
             this.currentSection = section;
         }
     }
