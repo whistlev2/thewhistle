@@ -1,26 +1,37 @@
 const nodemailer = require('nodemailer');
+const { google } = require('googleapis');
+const { access } = require('fs-extra');
+
 
 exports.send = async function(toAddress, title, body) {
-    let fromAddress = process.env.EMAIL;
-    let password = process.env.EMAIL_PASSWORD;
+    const clientID = process.env.EMAIL_CLIENT_ID;
+    const clientSecret = process.env.EMAIL_CLIENT_SECRET;
+    const redirectURI = process.env.EMAIL_REDIRECT_URI;
+    const refreshToken = process.env.EMAIL_REFRESH_TOKEN;
+    const userEmail = process.env.EMAIL_USER;
+
+    let oAuth2Client = new google.auth.OAuth2(clientID, clientSecret, redirectURI);
+    oAuth2Client.setCredentials({ refresh_token: refreshToken });
+    let accessToken = await oAuth2Client.getAccessToken()
     var transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: fromAddress,
-            pass: password
+            type: 'OAuth2',
+            user: userEmail,
+            clientId: clientID,
+            clientSecret: clientSecret,
+            refreshToken: refreshToken,
+            accessToken: accessToken
         }
     });
     var mailOptions = {
-        from: fromAddress,
+        from: userEmail,
         to: toAddress,
         subject: title,
         text: body
     };
-    console.log('FROM', fromAddress);
-    console.log('PASS', password);
     transporter.sendMail(mailOptions, function(error, info){
         if (error) {
-            console.log('COULD NOT SEND')
             //TODO: Handle errors properly
             console.error(error);
         }

@@ -57,6 +57,7 @@
     "express-subdomain": "^1.0.5",
     "file-system": "^2.2.2",
     "fs-extra": "^8.1.0",
+    "googleapis": "^67.1.1",
     "js-cookie": "^2.2.1",
     "jsonwebtoken": "^8.5.1",
     "jspdf": "^2.3.0",
