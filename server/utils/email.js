@@ -16,9 +16,11 @@ exports.send = async function(toAddress, title, body) {
         subject: title,
         text: body
     };
-
+    console.log('FROM', fromAddress);
+    console.log('PASS', password);
     transporter.sendMail(mailOptions, function(error, info){
         if (error) {
+            console.log('COULD NOT SEND')
             //TODO: Handle errors properly
             console.error(error);
         }
