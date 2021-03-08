@@ -37,7 +37,7 @@ export default {
 
     data() {
         return {
-            usedBefore: true,
+            usedBefore: false,
             hasReporter: true,
             reporter: '',
             noReporterMatchInDB: false
