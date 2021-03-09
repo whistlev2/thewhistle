@@ -491,7 +491,7 @@ exports.updateQuestionTitle = async function(sectionID, questionRef, questionTit
     section.id = sectionID;
     section.type = sectionJSON.type;
     //TODO: Handle case that the question doesn't exist
-    for (let i = 0; i < form.fields.length; i++) {
+    for (let i = 0; i < section.fields.length; i++) {
         if (section.fields[i].ref == questionRef) {
             section.fields[i].title = questionTitle;
             break;
