@@ -61,6 +61,13 @@ module.exports = {
         '@nuxtjs/axios',
         'cookie-universal-nuxt'
     ],
+
+    publicRuntimeConfig: {
+        axios: {
+            baseURL: process.env.BASE_URL,
+            browserBaseURL: process.env.BROWSER_BASE_URL
+        }
+    },
     /*
      ** vuetify module configuration
      ** https://github.com/nuxt-community/vuetify-module

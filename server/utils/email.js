@@ -11,7 +11,7 @@ exports.send = async function(toAddress, title, body) {
 
     let oAuth2Client = new google.auth.OAuth2(clientID, clientSecret, redirectURI);
     oAuth2Client.setCredentials({ refresh_token: refreshToken });
-    let accessToken = await oAuth2Client.getAccessToken()
+    let accessToken = await oAuth2Client.getAccessToken();
     var transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {

@@ -33,10 +33,10 @@ class Pages {
       return form.data;
     }
 
-    static async loadFormFromSlug(slug, test) {
+    static async loadFormFromSlug(slug, test, $axios) {
         try {
-            const url = process.env.baseURL + `/api/forms/${slug}${test ? '/test' : ''}`;
-            const form = await axios.get(url);
+            const url = `api/forms/${slug}${test ? '/test' : ''}`;
+            const form = await $axios.get(url);
             return form.data;
         } catch (err) {
             console.error('Error loading form from slug', err);

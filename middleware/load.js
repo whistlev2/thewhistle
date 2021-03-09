@@ -55,7 +55,7 @@ export default async function (context) {
 
     if (path.startsWith('/submit-report/') && params.hasOwnProperty('form')) {
         try {
-            context.form = await Pages.loadFormFromSlug(params.form, false);
+            context.form = await Pages.loadFormFromSlug(params.form, false, context.$axios);
         } catch (err) {
             console.error('Could not get form');
         }
@@ -63,7 +63,7 @@ export default async function (context) {
 
     if (path.startsWith('/submit-test-report/') && params.hasOwnProperty('form')) {
         try {
-            context.form = await Pages.loadFormFromSlug(params.form, true);
+            context.form = await Pages.loadFormFromSlug(params.form, true, context.$axios);
         } catch (err) {
             console.error('Could not get test form')
         }
