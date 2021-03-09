@@ -22,7 +22,7 @@ export default async function (context) {
 
     if (path.startsWith('/reports') && params.hasOwnProperty('form')) {
         try {
-            context.reports = await Pages.loadReports(params.form, false);
+            context.reports = await Pages.loadReports(params.form, false, context.$axios);
         } catch (err) {
             console.error('Could not get reports');
         }
@@ -30,7 +30,7 @@ export default async function (context) {
 
     if (path.startsWith('/test-reports') && params.hasOwnProperty('form')) {
         try {
-            context.reports = await Pages.loadReports(params.form, true);
+            context.reports = await Pages.loadReports(params.form, true, context.$axios);
         } catch (err) {
             console.error('Could not get test reports');
         }
@@ -38,7 +38,7 @@ export default async function (context) {
 
     if (path.startsWith('/errors')) {
         try {
-            context.errors = await Pages.loadErrors();
+            context.errors = await Pages.loadErrors(context.$axios);
         } catch (err) {
             console.error('Could not get errors');
         }

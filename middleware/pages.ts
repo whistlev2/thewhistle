@@ -1,8 +1,6 @@
-import axios from 'axios';
-
 class Pages {
 
-    static async loadEditForm(formSlug) {
+    /* static async loadEditForm(formSlug) {
         try {
             const url = process.env.baseURL + '/api/edit-form/' + formSlug;
             const form = await axios.get(url);
@@ -10,17 +8,17 @@ class Pages {
         } catch (err) {
             //TODO: Handle error properly
         }
-    }
+    } */
 
-    static async loadReports(form, test) {
-        const url = `/api/reports/${form}${test ? '/test' : ''}`;
-        const reports = await axios.get(url);
+    static async loadReports(form, test, $axios) {
+        const url = `api/reports/${form}${test ? '/test' : ''}`;
+        const reports = await $axios.get(url);
         return reports.data;
     }
 
 
-    static async loadForms(user) {
-        const userId = 1 // user.id
+/*     static async loadForms(user) {
+        const userId = 1; // user.id
         const url = process.env.baseURL + '/api/forms/user/' + userId;
         const form = await axios.get(url);
         return form.data;
@@ -31,7 +29,7 @@ class Pages {
       const url = process.env.baseURL + '/api/users/organisation/'+ orgId +'/users';
       const form = await axios.get(url);
       return form.data;
-    }
+    } */
 
     static async loadFormFromSlug(slug, test, $axios) {
         try {
@@ -43,9 +41,9 @@ class Pages {
         }
     }
 
-    static async loadErrors() {
-        const url = '/api/errors';
-        const errors = await axios.get(url);
+    static async loadErrors($axios) {
+        const url = 'api/errors';
+        const errors = await $axios.get(url);
         return errors.data;
     }
 
